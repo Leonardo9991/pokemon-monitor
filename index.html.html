@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PokéMonitor v6 — TCG Intelligence</title>
+<style>
+/* ─── FONT: Calibri → system fallback chain ─── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root {
+  --font: 'Calibri', 'Inter', 'Segoe UI', Arial, sans-serif;
+  --font-mono: 'Consolas', 'Courier New', monospace;
+  --bg:#080c12; --bg2:#0d1219; --panel:#101820;
+  --border:#1f2d3d; --border2:#2c3f54;
+  --accent:#e8c542; --a2:rgba(232,197,66,.12);
+  --red:#ff4d6a;   --r2:rgba(255,77,106,.12);
+  --green:#39d98a; --g2:rgba(57,217,138,.12);
+  --blue:#4da6ff;  --b2:rgba(77,166,255,.12);
+  --purple:#b06aff;--p2:rgba(176,106,255,.12);
+  --dim:#3d4f63; --text:#d0e0f0; --text2:#8aa4bc; --text3:#506070;
+  --fs-xs:11px; --fs-sm:13px; --fs-md:14px; --fs-lg:16px; --fs-xl:20px; --fs-2xl:26px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--bg);}
+body{color:var(--text);font-family:var(--font);font-size:var(--fs-md);}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.015) 2px,rgba(0,0,0,.015) 4px);pointer-events:none;z-index:9999;}
+
+/* ─── SCROLLBARS ─── */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* ─── APP SHELL ─── */
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+/* ─── TOPBAR ─── */
+.topbar{flex-shrink:0;height:52px;background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 16px;gap:14px;z-index:200;}
+.logo{font-family:var(--font);font-size:20px;font-weight:800;color:var(--accent);
+  text-shadow:0 0 20px rgba(232,197,66,.3);white-space:nowrap;flex-shrink:0;}
+.logo sub{font-size:10px;color:var(--text3);font-weight:400;margin-left:5px;}
+.pills{display:flex;gap:6px;}
+.pill{display:flex;align-items:center;gap:5px;font-size:var(--fs-xs);color:var(--text2);
+  padding:3px 9px;border:1px solid var(--border);background:rgba(255,255,255,.02);}
+.dot{width:6px;height:6px;border-radius:50%;animation:blink 2s ease-in-out infinite;flex-shrink:0;}
+.dot.g{background:var(--green);box-shadow:0 0 6px var(--green);}
+.dot.y{background:var(--accent);box-shadow:0 0 5px var(--accent);animation-delay:.6s;}
+.dot.r{background:var(--red);box-shadow:0 0 5px var(--red);animation-delay:1.2s;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* SEARCH */
+.gsearch{flex:1;max-width:420px;position:relative;}
+.gsearch input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border2);
+  color:var(--text);font-family:var(--font);font-size:var(--fs-sm);padding:6px 12px;outline:none;transition:all .15s;}
+.gsearch input:focus{border-color:rgba(232,197,66,.5);background:rgba(232,197,66,.03);}
+.gsearch input::placeholder{color:var(--text3);}
+.sdrop{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg2);
+  border:1px solid var(--border2);z-index:9000;max-height:340px;overflow-y:auto;
+  box-shadow:0 12px 40px rgba(0,0,0,.9);}
+.sdrop.open{display:block;}
+.scat{padding:6px 12px 4px;font-size:var(--fs-xs);letter-spacing:1.5px;color:var(--text3);
+  text-transform:uppercase;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border);font-weight:600;}
+.sri{padding:8px 12px;border-bottom:1px solid rgba(31,45,61,.5);display:flex;
+  justify-content:space-between;align-items:center;cursor:pointer;transition:background .1s;}
+.sri:hover{background:rgba(255,255,255,.04);}
+.sri-n{font-size:var(--fs-sm);color:var(--text);font-weight:600;}
+.sri-s{font-size:var(--fs-xs);color:var(--text3);margin-top:1px;}
+.sri-p{font-size:var(--fs-sm);font-weight:700;flex-shrink:0;margin-left:10px;}
+.sri-empty{padding:10px 12px;font-size:var(--fs-sm);color:var(--text3);}
+
+.topbar-r{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.bell-btn{position:relative;width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border);background:rgba(255,255,255,.02);cursor:pointer;font-size:17px;transition:all .15s;}
+.bell-btn:hover{border-color:var(--accent);background:var(--a2);}
+.bell-badge{position:absolute;top:4px;right:4px;width:9px;height:9px;background:var(--red);
+  border-radius:50%;animation:blink 1.5s infinite;}
+.tdisp{font-size:var(--fs-sm);color:var(--accent);border:1px solid rgba(232,197,66,.25);
+  padding:4px 11px;background:rgba(232,197,66,.05);font-weight:700;font-family:var(--font-mono);}
+
+/* ─── TICKER ─── */
+.ticker-wrap{flex-shrink:0;height:26px;background:rgba(232,197,66,.04);
+  border-bottom:1px solid rgba(232,197,66,.15);overflow:hidden;display:flex;align-items:center;position:relative;}
+.ticker-wrap::before,.ticker-wrap::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none;}
+.ticker-wrap::before{left:0;background:linear-gradient(90deg,var(--bg2),transparent);}
+.ticker-wrap::after{right:0;background:linear-gradient(-90deg,var(--bg2),transparent);}
+.ticker{display:flex;animation:scroll 65s linear infinite;white-space:nowrap;}
+.ticker:hover{animation-play-state:paused;}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ti{display:inline-flex;align-items:center;gap:8px;padding:0 20px;font-size:var(--fs-xs);
+  border-right:1px solid rgba(232,197,66,.08);}
+.ti-n{color:var(--accent);font-weight:700;}
+.ti-c.up{color:var(--green);}
+.ti-c.dn{color:var(--red);}
+
+/* ─── NAV TABS ─── */
+.nav{flex-shrink:0;height:42px;background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:stretch;padding:0 16px;gap:2px;}
+.ntab{display:flex;align-items:center;gap:6px;padding:0 16px;font-size:var(--fs-sm);
+  color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;
+  white-space:nowrap;font-weight:600;}
+.ntab:hover{color:var(--text2);}
+.ntab.active{color:var(--accent);border-bottom-color:var(--accent);
+  background:linear-gradient(180deg,transparent,rgba(232,197,66,.04));}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:5px;}
+.gtab{padding:4px 11px;font-size:var(--fs-sm);border:1px solid var(--border);
+  color:var(--text3);cursor:pointer;transition:all .15s;font-weight:500;}
+.gtab:hover{border-color:var(--border2);color:var(--text2);}
+.gtab.active{background:var(--a2);border-color:rgba(232,197,66,.4);color:var(--accent);}
+
+/* ─── PAGES ─── */
+.pages{flex:1;overflow:hidden;position:relative;}
+.page{position:absolute;inset:0;display:none;overflow:hidden;}
+.page.active{display:flex;}
+
+/* ═══ SHARED PANEL COMPONENTS ═══ */
+.panel{display:flex;flex-direction:column;overflow:hidden;background:var(--panel);}
+.panel-bg{background:var(--bg);}
+.pscroll{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.ph{padding:8px 12px;border-bottom:1px solid var(--border);font-size:var(--fs-xs);
+  letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;font-weight:700;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(255,255,255,.01);flex-shrink:0;}
+.ph .cnt{font-size:15px;font-weight:800;color:var(--text2);letter-spacing:0;}
+.lbadge{font-size:10px;padding:2px 6px;background:var(--g2);border:1px solid rgba(57,217,138,.2);color:var(--green);font-weight:600;}
+.rbadge{font-size:10px;padding:2px 6px;background:var(--r2);border:1px solid rgba(255,77,106,.2);color:var(--red);font-weight:600;animation:blink 1.5s infinite;}
+.sdiv{font-size:var(--fs-xs);letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;
+  font-weight:700;padding:6px 12px 4px;background:rgba(255,255,255,.01);
+  border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+
+/* DRAG HANDLES */
+.dh-v{flex-shrink:0;width:5px;background:var(--border);cursor:col-resize;position:relative;transition:background .15s;z-index:10;}
+.dh-v::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:1px;height:48px;background:var(--border2);}
+.dh-v:hover,.dh-v.drag{background:rgba(232,197,66,.3);}
+.dh-v:hover::after,.dh-v.drag::after{background:rgba(232,197,66,.6);}
+.dh-h{flex-shrink:0;height:5px;width:100%;background:var(--border);cursor:row-resize;position:relative;transition:background .15s;z-index:10;}
+.dh-h::after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:1px;width:60px;background:var(--border2);}
+.dh-h:hover,.dh-h.drag{background:rgba(232,197,66,.3);}
+.dh-h:hover::after,.dh-h.drag::after{background:rgba(232,197,66,.6);}
+
+/* ═══ PAGE 1: MARKETS ═══ */
+#page-markets{flex-direction:column;}
+.markets-workspace{flex:1;display:flex;overflow:hidden;min-height:0;}
+.markets-bottom{flex-shrink:0;display:flex;overflow:hidden;}
+
+/* LEFT SIDEBAR */
+.stabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
+.stab{flex:1;padding:8px 4px;font-size:var(--fs-xs);letter-spacing:.5px;text-transform:uppercase;
+  color:var(--text3);text-align:center;cursor:pointer;border-right:1px solid var(--border);
+  transition:all .15s;font-weight:700;}
+.stab:last-child{border-right:none;}
+.stab.active{color:var(--accent);background:var(--a2);border-bottom:2px solid var(--accent);}
+.stab-c{display:none;flex:1;overflow:hidden;flex-direction:column;}
+.stab-c.active{display:flex;}
+
+/* Hotspot */
+.hi{padding:10px 12px;border-bottom:1px solid rgba(31,45,61,.5);cursor:pointer;
+  transition:background .1s;position:relative;flex-shrink:0;}
+.hi:hover{background:rgba(255,255,255,.03);}
+.hi.critical{border-left:3px solid var(--red);}
+.hi.high{border-left:3px solid var(--accent);}
+.hi.medium{border-left:3px solid var(--blue);}
+.hi.low{border-left:3px solid var(--dim);}
+@keyframes afl{0%,100%{background:rgba(255,77,106,.04)}50%{background:rgba(255,77,106,.1)}}
+.anomaly{animation:afl 2s infinite;}
+.hi-n{font-size:var(--fs-md);font-weight:700;color:var(--text);margin-bottom:2px;padding-right:22px;}
+.hi-s{font-size:var(--fs-xs);color:var(--text3);margin-bottom:6px;}
+.hi-m{display:flex;gap:8px;align-items:center;}
+.pb{font-size:var(--fs-lg);font-weight:800;}
+.pb.up{color:var(--green);}.pb.dn{color:var(--red);}
+.cc{font-size:var(--fs-xs);padding:2px 5px;font-weight:600;}
+.cc.up{background:var(--g2);color:var(--green);border:1px solid rgba(57,217,138,.2);}
+.cc.dn{background:var(--r2);color:var(--red);border:1px solid rgba(255,77,106,.2);}
+.vb{height:3px;background:var(--border);margin-top:6px;overflow:hidden;}
+.vf{height:100%;}
+.hsi{position:absolute;right:10px;top:10px;font-size:14px;opacity:.7;}
+
+/* Top100 */
+.t100f{padding:6px 10px;border-bottom:1px solid var(--border);display:flex;gap:4px;flex-shrink:0;}
+.tf{font-size:var(--fs-xs);padding:3px 8px;border:1px solid var(--border);color:var(--text3);cursor:pointer;transition:all .1s;font-weight:600;}
+.tf:hover,.tf.active{border-color:var(--accent);color:var(--accent);background:var(--a2);}
+.t100r{display:grid;grid-template-columns:26px 1fr 65px 40px;align-items:center;gap:5px;
+  padding:7px 10px;border-bottom:1px solid rgba(31,45,61,.4);cursor:pointer;transition:background .1s;}
+.t100r:hover{background:rgba(255,255,255,.03);}
+.rnk{font-size:var(--fs-xs);color:var(--text3);text-align:center;font-weight:700;}
+.rnk.t3{font-size:var(--fs-md);}
+.cn{font-size:var(--fs-sm);font-weight:700;color:var(--text);line-height:1.3;}
+.cs{font-size:10px;color:var(--text3);}
+.cp{font-size:var(--fs-sm);font-weight:800;color:var(--accent);text-align:right;}
+.cd{font-size:var(--fs-xs);text-align:right;font-weight:600;}
+.cd.up{color:var(--green);}.cd.dn{color:var(--red);}
+
+/* YT creators */
+.ytg{padding:6px;display:flex;flex-direction:column;gap:5px;}
+.ytc{display:flex;gap:8px;align-items:center;padding:8px 9px;border:1px solid var(--border);
+  background:rgba(255,255,255,.015);cursor:pointer;transition:all .15s;text-decoration:none;}
+.ytc:hover{border-color:var(--border2);background:rgba(255,255,255,.04);transform:translateX(2px);}
+.yta{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--border2);}
+.yti{flex:1;min-width:0;}
+.ytn{font-size:var(--fs-sm);font-weight:700;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ytm{font-size:var(--fs-xs);color:var(--text3);}
+.yts{color:var(--text2);}
+.ytr{text-align:right;flex-shrink:0;}
+.ytb{font-size:10px;padding:2px 5px;margin-bottom:2px;display:inline-block;font-weight:600;}
+.ytb.pull{background:var(--r2);border:1px solid rgba(255,77,106,.25);color:var(--red);}
+.ytb.invest{background:var(--g2);border:1px solid rgba(57,217,138,.25);color:var(--green);}
+.ytb.jp{background:var(--p2);border:1px solid rgba(176,106,255,.25);color:var(--purple);}
+.ytb.review{background:var(--b2);border:1px solid rgba(77,166,255,.25);color:var(--blue);}
+.ytv{font-size:10px;color:var(--text3);}
+
+/* Main center */
+.idx-row{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);flex-shrink:0;}
+.idx-card{padding:12px 14px;border-right:1px solid var(--border);position:relative;overflow:hidden;}
+.idx-card:last-child{border-right:none;}
+.idx-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;}
+.idx-card.gold::after{background:linear-gradient(90deg,transparent,var(--accent),transparent);}
+.idx-card.gc::after{background:linear-gradient(90deg,transparent,var(--green),transparent);}
+.idx-card.rc::after{background:linear-gradient(90deg,transparent,var(--red),transparent);}
+.idx-card.bc::after{background:linear-gradient(90deg,transparent,var(--blue),transparent);}
+.il{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+.iv{font-size:var(--fs-2xl);font-weight:800;line-height:1;margin-bottom:4px;}
+.iv.gold{color:var(--accent);text-shadow:0 0 16px rgba(232,197,66,.25);}
+.iv.green{color:var(--green);}
+.iv.red{color:var(--red);}
+.iv.blue{color:var(--blue);}
+.id-d{font-size:var(--fs-xs);display:flex;align-items:center;gap:4px;}
+
+.chart-sec{padding:12px 14px;border-bottom:1px solid var(--border);}
+.chart-hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:9px;}
+.chart-ttl{font-size:var(--fs-lg);font-weight:700;color:var(--text);}
+.chart-ttl small{font-size:var(--fs-xs);font-weight:400;color:var(--text3);margin-left:8px;}
+.cbtns{display:flex;gap:3px;}
+.cbtn{padding:3px 8px;font-size:var(--fs-xs);border:1px solid var(--border);color:var(--text3);
+  cursor:pointer;background:transparent;transition:all .1s;font-weight:600;}
+.cbtn:hover,.cbtn.active{border-color:var(--accent);color:var(--accent);background:var(--a2);}
+.chart-wrap{height:130px;}
+svg.sp{width:100%;height:100%;}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+.gp{border-right:1px solid var(--border);overflow:hidden;}
+.gp:last-child{border-right:none;}
+.ni{padding:9px 12px;border-bottom:1px solid rgba(31,45,61,.5);cursor:pointer;transition:background .1s;display:flex;gap:8px;}
+.ni:hover{background:rgba(255,255,255,.02);}
+.nsev{width:3px;align-self:stretch;flex-shrink:0;}
+.nsev.critical{background:var(--red);}
+.nsev.high{background:var(--accent);}
+.nsev.medium{background:var(--blue);}
+.nsev.low{background:var(--dim);}
+.nsrc{font-size:10px;color:var(--text3);margin-bottom:2px;display:flex;gap:6px;}
+.nsrc .sn{color:var(--accent);font-weight:600;}
+.nh{font-size:var(--fs-sm);color:var(--text);line-height:1.5;font-weight:600;}
+.ntags{display:flex;gap:3px;margin-top:3px;}
+.ntag{font-size:10px;padding:1px 4px;border:1px solid var(--border2);color:var(--text3);font-weight:600;}
+.ntag.hot{border-color:rgba(255,77,106,.3);color:var(--red);background:var(--r2);}
+.ntag.w{border-color:rgba(232,197,66,.3);color:var(--accent);background:var(--a2);}
+.hmap{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;padding:8px 10px 10px;}
+.hc{aspect-ratio:1;border-radius:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,filter .15s;}
+.hc:hover{transform:scale(1.1);z-index:10;filter:brightness(1.3);}
+.hcl{font-size:9px;color:rgba(255,255,255,.65);text-align:center;line-height:1.2;}
+.hcv{font-size:11px;font-weight:800;color:rgba(255,255,255,.95);}
+
+/* Right panel */
+.aibr{padding:12px 13px;border-bottom:1px solid var(--border);}
+.aihdr{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.aibage{font-size:10px;padding:2px 6px;background:var(--p2);border:1px solid rgba(176,106,255,.3);color:var(--purple);font-weight:700;}
+.aitxt{font-size:var(--fs-sm);color:var(--text2);line-height:1.7;border-left:2px solid rgba(176,106,255,.3);padding-left:10px;}
+.aitxt strong{color:var(--text);}
+.alrt{padding:10px 13px;border-bottom:1px solid rgba(31,45,61,.5);display:flex;gap:8px;cursor:pointer;transition:background .1s;}
+.alrt:hover{background:rgba(255,255,255,.02);}
+.alrti{font-size:16px;flex-shrink:0;}
+.alrtt{font-size:var(--fs-sm);font-weight:700;color:var(--text);margin-bottom:2px;}
+.alrtm{font-size:var(--fs-xs);color:var(--text3);}
+.alrtm span{color:var(--accent);font-weight:600;}
+.smrow{display:flex;align-items:center;padding:5px 13px;border-bottom:1px solid rgba(31,45,61,.4);}
+.smrow:last-child{border-bottom:none;}
+.smn{font-size:var(--fs-sm);color:var(--text);font-weight:600;min-width:100px;}
+.smb{flex:1;margin:0 9px;height:3px;background:var(--border);overflow:hidden;}
+.smf{height:100%;}
+.smc{font-size:var(--fs-xs);color:var(--text3);min-width:28px;text-align:right;font-weight:600;}
+.gt{width:100%;border-collapse:collapse;}
+.gt th{padding:5px 11px;text-align:left;color:var(--text3);letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);background:rgba(255,255,255,.01);font-size:10px;font-weight:700;}
+.gt td{padding:7px 11px;border-bottom:1px solid rgba(31,45,61,.4);color:var(--text2);font-size:var(--fs-sm);}
+.gt tr:hover td{background:rgba(255,255,255,.02);color:var(--text);}
+.gt .grd{color:var(--blue);font-weight:700;}
+.gt .up{color:var(--green);font-weight:600;}
+.gt .dn{color:var(--red);font-weight:600;}
+
+/* predictions */
+.pred-grid{display:grid;grid-template-columns:repeat(3,1fr);}
+.pred-item{padding:12px 13px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+.pred-item:nth-child(3n){border-right:none;}
+.pred-q{font-size:var(--fs-sm);font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.45;}
+.pred-bars{display:flex;gap:5px;margin-bottom:5px;}
+.pred-y{flex:1;padding:5px;background:var(--g2);border:1px solid rgba(57,217,138,.2);text-align:center;}
+.pred-n{flex:1;padding:5px;background:var(--r2);border:1px solid rgba(255,77,106,.2);text-align:center;}
+.pred-y .pv{font-size:18px;font-weight:800;color:var(--green);}
+.pred-n .pv{font-size:18px;font-weight:800;color:var(--red);}
+.plbl{font-size:10px;color:var(--text3);font-weight:600;}
+.pred-track{height:6px;background:var(--border);overflow:hidden;margin-bottom:5px;}
+.pred-fill{height:100%;background:linear-gradient(90deg,var(--green),rgba(57,217,138,.3));transition:width .5s;}
+.pred-meta{font-size:10px;color:var(--text3);display:flex;justify-content:space-between;font-weight:600;}
+.pred-meta .vol{color:var(--blue);}
+
+/* econ */
+.econ-row{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--border);}
+.econ-card{padding:11px 13px;border-right:1px solid var(--border);}
+.econ-card:last-child{border-right:none;}
+.ec-l{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:5px;}
+.ec-v{font-size:22px;font-weight:800;line-height:1;}
+.ec-d{font-size:var(--fs-xs);margin-top:3px;font-weight:600;}
+
+/* regions */
+.reg-row{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);}
+.reg-col{border-right:1px solid var(--border);}
+.reg-col:last-child{border-right:none;}
+.rni{padding:8px 11px;border-bottom:1px solid rgba(31,45,61,.4);cursor:pointer;transition:background .1s;}
+.rni:hover{background:rgba(255,255,255,.02);}
+.rni-s{font-size:10px;color:var(--accent);margin-bottom:2px;font-weight:600;}
+.rni-h{font-size:var(--fs-sm);color:var(--text);font-weight:600;line-height:1.45;}
+.rni-t{font-size:10px;color:var(--text3);margin-top:2px;}
+
+/* Bottom section */
+.bp-row{flex-shrink:0;display:flex;overflow:hidden;}
+.bp-col{flex:1;display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border);}
+.bp-col:last-child{border-right:none;}
+
+/* Streams */
+.sli{padding:10px 11px;border-bottom:1px solid rgba(31,45,61,.5);cursor:pointer;transition:all .1s;display:flex;gap:9px;}
+.sli:hover,.sli.active{background:rgba(255,77,106,.06);border-left:3px solid var(--red);}
+.sli-em{width:40px;height:30px;border-radius:3px;background:var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.sli-b{flex:1;min-width:0;}
+.sli-top{display:flex;gap:6px;align-items:center;margin-bottom:3px;}
+.sli-pl{font-size:10px;padding:1px 5px;font-weight:700;}
+.sli-pl.yt{background:rgba(255,0,0,.12);color:#ff4444;border:1px solid rgba(255,0,0,.15);}
+.sli-pl.twitch{background:rgba(145,70,255,.12);color:#9146ff;border:1px solid rgba(145,70,255,.15);}
+.sli-pl.tiktok{background:rgba(0,242,234,.08);color:#00f2ea;border:1px solid rgba(0,242,234,.15);}
+.sli-name{font-size:var(--fs-sm);font-weight:700;color:var(--text);}
+.sli-ttl{font-size:var(--fs-xs);color:var(--text2);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.sli-v{font-size:var(--fs-xs);color:var(--red);display:flex;align-items:center;gap:4px;font-weight:600;}
+.sli-v::before{content:'●';font-size:8px;animation:blink 1.5s infinite;}
+
+/* ═══ PAGE 2: LIVE ═══ */
+#page-live{flex-direction:row;}
+.live-main{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--border);overflow:hidden;}
+.live-embed-area{flex:1;background:#000;position:relative;overflow:hidden;min-height:0;
+  display:flex;align-items:center;justify-content:center;}
+.live-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  background:radial-gradient(ellipse at center,#111820,#080c12);cursor:pointer;width:100%;height:100%;}
+.live-ph .big-play{width:80px;height:80px;border-radius:50%;background:rgba(255,77,106,.12);
+  border:2px solid rgba(255,77,106,.4);display:flex;align-items:center;justify-content:center;
+  font-size:32px;transition:all .2s;}
+.live-ph:hover .big-play{background:rgba(255,77,106,.24);transform:scale(1.08);}
+.live-ph .ph-name{font-size:22px;font-weight:800;color:var(--text);}
+.live-ph .ph-title{font-size:var(--fs-md);color:var(--text2);text-align:center;max-width:480px;line-height:1.5;}
+.live-ph .ph-viewers{font-size:var(--fs-md);color:var(--red);display:flex;align-items:center;gap:7px;font-weight:700;}
+.live-ph .ph-viewers::before{content:'●';animation:blink 1.5s infinite;}
+.live-ph .ph-sub{font-size:var(--fs-sm);color:var(--text3);}
+.live-info-bar{padding:12px 16px;border-top:1px solid var(--border);background:var(--panel);
+  display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.lib-name{font-size:18px;font-weight:800;color:var(--text);}
+.lib-plat{font-size:11px;padding:3px 8px;}
+.lib-plat.yt{background:rgba(255,0,0,.15);color:#ff4444;border:1px solid rgba(255,0,0,.2);}
+.lib-plat.twitch{background:rgba(145,70,255,.15);color:#9146ff;border:1px solid rgba(145,70,255,.2);}
+.lib-plat.tiktok{background:rgba(0,242,234,.1);color:#00f2ea;border:1px solid rgba(0,242,234,.2);}
+.lib-viewers{font-size:var(--fs-md);color:var(--red);display:flex;align-items:center;gap:5px;font-weight:700;}
+.lib-viewers::before{content:'●';font-size:9px;animation:blink 1.5s infinite;}
+.lib-open{margin-left:auto;padding:6px 16px;background:rgba(255,77,106,.1);border:1px solid rgba(255,77,106,.3);
+  color:var(--red);font-size:var(--fs-sm);cursor:pointer;transition:all .15s;font-weight:700;}
+.lib-open:hover{background:rgba(255,77,106,.2);}
+.stream-list-col{width:300px;flex-shrink:0;background:var(--panel);display:flex;flex-direction:column;overflow:hidden;}
+.stream-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.pred-full-grid{display:grid;grid-template-columns:1fr 1fr;padding:0;gap:0;}
+.pred-full-item{padding:14px 16px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+.pred-full-item:nth-child(2n){border-right:none;}
+
+/* ═══ PAGE 3: ALERTS ═══ */
+#page-alerts{flex-direction:row;}
+.alerts-setup{width:420px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.alerts-list-col{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.alert-setup-inner{padding:16px;overflow-y:auto;flex:1;}
+.alert-form{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:16px;margin-bottom:14px;}
+.af-title{font-size:var(--fs-lg);font-weight:800;color:var(--text);margin-bottom:3px;}
+.af-sub{font-size:var(--fs-sm);color:var(--text3);margin-bottom:16px;}
+.af-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.af-full{margin-bottom:12px;}
+.af-lbl{font-size:var(--fs-xs);color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:4px;}
+.af-inp{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border2);
+  color:var(--text);font-family:var(--font);font-size:var(--fs-sm);padding:7px 10px;outline:none;transition:border-color .15s;}
+.af-inp:focus{border-color:rgba(232,197,66,.4);}
+.af-inp::placeholder{color:var(--text3);}
+.af-sel{width:100%;background:var(--bg);border:1px solid var(--border2);
+  color:var(--text);font-family:var(--font);font-size:var(--fs-sm);padding:7px 10px;outline:none;}
+.cond-row{display:flex;gap:6px;margin-bottom:12px;}
+.cond-btn{flex:1;padding:8px 6px;border:1px solid var(--border);text-align:center;cursor:pointer;transition:all .15s;}
+.cond-btn:hover{border-color:var(--border2);}
+.cond-btn.active{border-color:rgba(232,197,66,.4);background:var(--a2);}
+.cond-btn .ci{font-size:18px;display:block;margin-bottom:3px;}
+.cond-btn .cl{font-size:var(--fs-xs);color:var(--text3);font-weight:600;}
+.cond-btn.active .cl{color:var(--accent);}
+.af-create{width:100%;padding:10px;background:var(--a2);border:1px solid rgba(232,197,66,.35);
+  color:var(--accent);font-family:var(--font);font-size:var(--fs-md);cursor:pointer;font-weight:700;transition:all .15s;}
+.af-create:hover{background:rgba(232,197,66,.2);}
+.triggered-banner{background:rgba(255,77,106,.08);border:1px solid rgba(255,77,106,.3);
+  padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.tb-t{font-size:var(--fs-md);font-weight:800;color:var(--red);}
+.tb-m{font-size:var(--fs-sm);color:var(--text2);margin-top:2px;}
+.alert-list-scroll{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.aa{border-bottom:1px solid var(--border);overflow:hidden;}
+.aa.triggered{background:rgba(255,77,106,.05);}
+.aa-hdr{padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.aa-st{font-size:var(--fs-xs);padding:2px 7px;background:var(--g2);color:var(--green);border:1px solid rgba(57,217,138,.2);font-weight:700;}
+.aa.triggered .aa-st{background:var(--r2);color:var(--red);border-color:rgba(255,77,106,.2);}
+.aa-cn{font-size:var(--fs-md);font-weight:800;color:var(--text);}
+.aa-body{padding:8px 14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.aa-stat .asl{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:3px;}
+.aa-stat .asv{font-size:16px;font-weight:800;}
+.aa-ft{padding:7px 14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.aa-time{font-size:var(--fs-xs);color:var(--text3);}
+.aa-del{font-size:var(--fs-xs);padding:3px 8px;border:1px solid var(--border);color:var(--text3);cursor:pointer;transition:all .1s;background:transparent;font-weight:600;}
+.aa-del:hover{border-color:var(--red);color:var(--red);}
+
+/* ═══ PAGE 4: COMPARE ═══ */
+#page-compare{flex-direction:column;}
+.cmp-bar{padding:12px 16px;background:var(--panel);border-bottom:1px solid var(--border);
+  display:flex;gap:12px;align-items:center;flex-shrink:0;}
+.cmp-bar input{flex:1;max-width:500px;background:rgba(255,255,255,.04);border:1px solid var(--border2);
+  color:var(--text);font-family:var(--font);font-size:var(--fs-md);padding:8px 12px;outline:none;transition:border-color .15s;}
+.cmp-bar input:focus{border-color:rgba(232,197,66,.4);}
+.cmp-bar input::placeholder{color:var(--text3);}
+.cmp-btn{padding:8px 18px;background:var(--a2);border:1px solid rgba(232,197,66,.35);
+  color:var(--accent);font-family:var(--font);font-size:var(--fs-md);cursor:pointer;font-weight:700;transition:all .15s;}
+.cmp-btn:hover{background:rgba(232,197,66,.18);}
+.cmp-quick{display:flex;gap:5px;flex-wrap:wrap;}
+.cq{font-size:var(--fs-sm);padding:4px 10px;border:1px solid var(--border);color:var(--text3);cursor:pointer;transition:all .1s;font-weight:600;}
+.cq:hover{border-color:var(--border2);color:var(--text2);}
+.cmp-rate{margin-left:auto;font-size:var(--fs-sm);color:var(--text3);}
+.cmp-grid-hdr{display:grid;grid-template-columns:1fr 140px 1fr;border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,.01);flex-shrink:0;}
+.cgh{padding:10px 14px;}
+.cgh-t{font-size:var(--fs-lg);font-weight:800;}
+.cgh-t.en{color:var(--blue);}
+.cgh-t.mid{color:var(--accent);text-align:center;}
+.cgh-t.jp{color:var(--purple);}
+.cgh-s{font-size:var(--fs-xs);color:var(--text3);margin-top:2px;font-weight:600;}
+.cmp-body-scroll{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.cmp-row{display:grid;grid-template-columns:1fr 140px 1fr;border-bottom:1px solid rgba(31,45,61,.5);}
+.cmp-cell{padding:12px 14px;border-right:1px solid rgba(31,45,61,.4);}
+.cmp-cell.mid{background:rgba(255,255,255,.01);border-right:1px solid rgba(31,45,61,.4);}
+.cmp-cell:last-child{border-right:none;}
+.cc-name{font-size:var(--fs-md);font-weight:700;color:var(--text);margin-bottom:2px;}
+.cc-set{font-size:var(--fs-xs);color:var(--text3);margin-bottom:7px;font-weight:600;}
+.cc-price{font-size:22px;font-weight:800;margin-bottom:3px;}
+.cc-price.en{color:var(--blue);}
+.cc-price.jp{color:var(--purple);}
+.cc-delta{font-size:var(--fs-sm);font-weight:600;}
+.cmp-mid-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:5px;}
+.wb{font-size:var(--fs-sm);font-weight:700;padding:4px 10px;}
+.wb.jp{background:var(--p2);color:var(--purple);border:1px solid rgba(176,106,255,.3);}
+.wb.en{background:var(--b2);color:var(--blue);border:1px solid rgba(77,166,255,.3);}
+.wb.eq{background:var(--a2);color:var(--accent);border:1px solid rgba(232,197,66,.3);}
+.spread-t{font-size:var(--fs-xs);color:var(--text3);text-align:center;font-weight:600;}
+.jp-usd{font-size:var(--fs-sm);color:var(--text2);font-weight:600;}
+.cmp-empty{padding:24px;font-size:var(--fs-md);color:var(--text3);text-align:center;}
+
+/* ═══ PAGE 5: PORTFOLIO ═══ */
+#page-portfolio{flex-direction:row;}
+.port-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.port-right{width:320px;flex-shrink:0;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.port-banner{padding:14px 16px;background:linear-gradient(135deg,rgba(13,21,32,.9),rgba(17,26,40,.9));
+  border-bottom:1px solid var(--border);display:flex;gap:20px;align-items:center;flex-shrink:0;}
+.port-stat .psv{font-size:22px;font-weight:800;line-height:1;}
+.port-stat .psl{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-top:3px;}
+.port-divider{width:1px;height:44px;background:var(--border);}
+.port-add-btn{margin-left:auto;display:flex;align-items:center;gap:7px;padding:9px 18px;
+  background:var(--a2);border:1px solid rgba(232,197,66,.35);color:var(--accent);
+  font-family:var(--font);font-size:var(--fs-sm);cursor:pointer;transition:all .15s;font-weight:700;}
+.port-add-btn:hover{background:rgba(232,197,66,.2);}
+.port-table-wrap{flex:1;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.port-table{width:100%;border-collapse:collapse;}
+.port-table th{padding:7px 14px;text-align:left;color:var(--text3);font-size:10px;
+  letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,.01);font-weight:700;white-space:nowrap;}
+.port-table th.r{text-align:right;}
+.port-table td{padding:10px 14px;border-bottom:1px solid rgba(31,45,61,.4);color:var(--text2);font-size:var(--fs-sm);}
+.port-table tr:hover td{background:rgba(255,255,255,.025);color:var(--text);}
+.port-table .pn{font-size:var(--fs-md);font-weight:700;color:var(--text);}
+.port-table .ps{font-size:10px;color:var(--text3);}
+.port-table .grd{color:var(--blue);font-weight:700;}
+.port-table .up{color:var(--green);text-align:right;font-weight:700;}
+.port-table .dn{color:var(--red);text-align:right;font-weight:700;}
+.port-table .r{text-align:right;}
+.port-table .act-btn{font-size:var(--fs-xs);padding:3px 9px;background:rgba(255,255,255,.03);
+  border:1px solid var(--border);color:var(--text3);cursor:pointer;transition:all .1s;}
+.port-table .act-btn:hover{border-color:var(--red);color:var(--red);}
+.port-form{padding:16px;border-bottom:1px solid var(--border);}
+.port-form-title{font-size:var(--fs-sm);letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;font-weight:700;margin-bottom:12px;}
+.pf-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.pf-lbl{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:4px;}
+.pf-inp{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border2);
+  color:var(--text);font-family:var(--font);font-size:var(--fs-sm);padding:6px 9px;outline:none;transition:border-color .15s;}
+.pf-inp:focus{border-color:rgba(232,197,66,.4);}
+.pf-inp::placeholder{color:var(--text3);}
+.pf-sel{width:100%;background:var(--bg);border:1px solid var(--border2);
+  color:var(--text);font-family:var(--font);font-size:var(--fs-sm);padding:6px 9px;outline:none;}
+.pf-btn{width:100%;padding:9px;background:var(--g2);border:1px solid rgba(57,217,138,.3);
+  color:var(--green);font-family:var(--font);font-size:var(--fs-md);cursor:pointer;font-weight:700;transition:all .15s;margin-top:2px;}
+.pf-btn:hover{background:rgba(57,217,138,.2);}
+.port-dist{padding:14px 16px;flex:1;overflow-y:auto;}
+.port-dist-title{font-size:10px;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+.dist-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.dist-lbl{font-size:var(--fs-sm);color:var(--text2);min-width:65px;font-weight:600;}
+.dist-bar{flex:1;height:8px;background:var(--border);overflow:hidden;}
+.dist-fill{height:100%;opacity:.85;}
+.dist-pct{font-size:var(--fs-sm);color:var(--text3);min-width:35px;text-align:right;font-weight:700;}
+.port-chart{padding:14px 16px;border-top:1px solid var(--border);}
+.port-chart-title{font-size:10px;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+
+/* ─── FLOATING LIVE WIDGET ─── */
+#float-stream{
+  position:fixed;bottom:20px;right:20px;width:300px;
+  background:var(--bg2);border:1px solid rgba(255,77,106,.35);
+  box-shadow:0 8px 40px rgba(0,0,0,.85),0 0 0 1px rgba(255,77,106,.1);
+  z-index:8000;display:none;flex-direction:column;
+  border-radius:4px;overflow:hidden;
+  resize:both; /* native resize */
+  min-width:220px; min-height:180px;
+}
+#float-stream.open{display:flex;}
+#fs-titlebar{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;
+  background:rgba(255,77,106,.08);border-bottom:1px solid rgba(255,77,106,.2);
+  cursor:move; flex-shrink:0; user-select:none;
+}
+#fs-live-dot{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 6px var(--red);animation:blink 1.2s infinite;flex-shrink:0;}
+#fs-name{font-size:12px;font-weight:700;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#fs-viewers{font-size:11px;color:var(--red);font-weight:600;flex-shrink:0;}
+#fs-close{width:22px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);font-size:15px;border-radius:3px;flex-shrink:0;}
+#fs-close:hover{background:rgba(255,77,106,.2);color:var(--red);}
+#fs-embed{flex:1;min-height:0;background:#000;position:relative;overflow:hidden;}
+#fs-embed iframe{width:100%;height:100%;border:none;}
+#fs-embed .fs-ph{
+  width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;cursor:pointer;
+  background:radial-gradient(ellipse at center,#141f2e,#080c12);
+}
+#fs-embed .fs-ph-icon{font-size:36px;}
+#fs-embed .fs-ph-name{font-size:15px;font-weight:800;color:var(--text);}
+#fs-embed .fs-ph-btn{
+  padding:7px 18px;background:rgba(255,77,106,.12);border:1px solid rgba(255,77,106,.4);
+  color:var(--red);font-size:12px;font-weight:700;cursor:pointer;
+  transition:all .15s;border-radius:2px;
+}
+#fs-embed .fs-ph-btn:hover{background:rgba(255,77,106,.25);}
+#fs-ph-sub{font-size:11px;color:var(--text3);}
+#fs-switcher{flex-shrink:0;display:flex;overflow-x:auto;border-top:1px solid var(--border);scrollbar-width:none;}
+#fs-switcher::-webkit-scrollbar{display:none;}
+.fs-sw-item{flex-shrink:0;padding:5px 10px;cursor:pointer;font-size:11px;color:var(--text3);
+  border-right:1px solid var(--border);transition:all .1s;display:flex;align-items:center;gap:4px;font-weight:600;}
+.fs-sw-item:hover,.fs-sw-item.active{background:rgba(255,77,106,.07);color:var(--text);}
+.fs-sw-item .fs-dot{width:5px;height:5px;border-radius:50%;background:var(--red);animation:blink 1.5s infinite;flex-shrink:0;}
+
+/* Float toggle btn in topbar */
+.float-toggle{display:flex;align-items:center;gap:5px;padding:3px 10px;
+  border:1px solid rgba(255,77,106,.3);background:rgba(255,77,106,.06);
+  color:var(--red);font-size:11px;cursor:pointer;transition:all .15s;font-weight:700;}
+.float-toggle:hover{background:rgba(255,77,106,.15);border-color:var(--red);}
+.float-toggle.on{background:rgba(255,77,106,.12);border-color:var(--red);
+  box-shadow:0 0 8px rgba(255,77,106,.2);}
+
+/* ─── GAME MODAL ─── */
+#game-modal{
+  position:fixed;inset:0;z-index:7000;display:none;
+  align-items:center;justify-content:center;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(4px);
+}
+#game-modal.open{display:flex;}
+#game-modal-inner{
+  width:820px;max-height:85vh;background:var(--bg2);
+  border:1px solid var(--border2);overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:0 24px 80px rgba(0,0,0,.9);
+}
+#gm-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0;}
+#gm-title{font-size:20px;font-weight:800;color:var(--text);}
+#gm-sub{font-size:12px;color:var(--text3);}
+#gm-close{margin-left:auto;font-size:20px;cursor:pointer;color:var(--text3);width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
+#gm-close:hover{color:var(--text);}
+#gm-body{overflow-y:auto;padding:0;scrollbar-width:thin;}
+.gm-section{border-bottom:1px solid var(--border);padding:14px 18px;}
+.gm-sec-title{font-size:10px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+.gm-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.gm-card{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:10px 12px;}
+.gm-card-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.gm-card-set{font-size:10px;color:var(--text3);margin-bottom:7px;}
+.gm-card-price{font-size:18px;font-weight:800;}
+.gm-card-delta{font-size:11px;font-weight:600;margin-top:3px;}
+.gm-idx-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.gm-idx{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:10px 12px;}
+.gm-idx-l{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:4px;}
+.gm-idx-v{font-size:22px;font-weight:800;}
+.gm-news{display:flex;flex-direction:column;gap:6px;}
+.gm-ni{padding:8px 0;border-bottom:1px solid rgba(31,45,61,.5);display:flex;gap:10px;}
+.gm-ni:last-child{border-bottom:none;}
+.gm-ni-src{font-size:10px;color:var(--accent);font-weight:600;flex-shrink:0;min-width:120px;}
+.gm-ni-h{font-size:13px;color:var(--text);font-weight:600;}
+.gm-ni-t{font-size:10px;color:var(--text3);margin-top:2px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ─── TOPBAR ─── -->
+<div class="topbar">
+  <div class="logo">PokéMonitor<sub>v6 // TCG INTELLIGENCE</sub></div>
+  <div class="pills">
+    <div class="pill"><span class="dot g"></span>TCGPlayer LIVE</div>
+    <div class="pill"><span class="dot y"></span>eBay 3m ago</div>
+    <div class="pill"><span class="dot g"></span>Reddit LIVE</div>
+    <div class="pill"><span class="dot r"></span>PSA ERR</div>
+    <div class="pill"><span class="dot g"></span>YT Live</div>
+  </div>
+  <div class="gsearch">
+    <input type="text" id="si" placeholder="🔍  Tìm card, set, giá... (vd: Charizard, Lugia)" 
+      oninput="doSearch(this.value)" onfocus="openDrop()" onblur="closeDrop()">
+    <div class="sdrop" id="sdrop">
+      <div class="scat">🇺🇸 Card Tiếng Anh</div><div id="srEN"></div>
+      <div class="scat">🇯🇵 Card Tiếng Nhật</div><div id="srJP"></div>
+      <div class="scat">🌐 Nguồn Tra Giá Ngoài</div><div id="srExt"></div>
+    </div>
+  </div>
+  <div class="topbar-r">
+    <div class="float-toggle fw-btn" id="fw-toggle-btn" onclick="toggleFloat()" title="Xem Live Stream nổi">📺 LIVE</div>
+    <div class="bell-btn" onclick="gotoPage('alerts')" title="Price Alerts">🔔<div class="bell-badge"></div></div>
+    <div class="tdisp" id="clock">--:--:--</div>
+  </div>
+</div>
+
+<!-- ─── TICKER ─── -->
+<div class="ticker-wrap"><div class="ticker" id="ticker"></div></div>
+
+<!-- ─── NAV ─── -->
+<div class="nav">
+  <div class="ntab active" id="nt-markets" onclick="gotoPage('markets')">📊 Markets</div>
+  <div class="ntab" id="nt-live" onclick="gotoPage('live')">📺 Live Streams</div>
+  <div class="ntab" id="nt-alerts" onclick="gotoPage('alerts')">🔔 Price Alerts</div>
+  <div class="ntab" id="nt-compare" onclick="gotoPage('compare')">⚖️ EN vs JP</div>
+  <div class="ntab" id="nt-portfolio" onclick="gotoPage('portfolio')">💼 Portfolio</div>
+  <div class="nav-r">
+    <div class="gtab active" onclick="setGame(this)">Pokémon</div>
+    <div class="gtab" onclick="setGame(this)">MTG</div>
+    <div class="gtab" onclick="setGame(this)">One Piece</div>
+    <div class="gtab" onclick="setGame(this)">Lorcana</div>
+  </div>
+</div>
+
+<!-- ─── PAGES ─── -->
+<div class="pages">
+
+<!-- ══ PAGE: MARKETS ══ -->
+<div class="page active" id="page-markets">
+  <div style="display:flex;flex-direction:column;width:100%;overflow:hidden;">
+    <!-- Top workspace: 3 resizable columns -->
+    <div class="markets-workspace" id="mws">
+      <!-- LEFT -->
+      <div class="panel" id="pl" style="width:230px;">
+        <div class="stabs">
+          <div class="stab active" onclick="sw(this,'hot')">🔥 HOT</div>
+          <div class="stab" onclick="sw(this,'en')">🇺🇸 EN</div>
+          <div class="stab" onclick="sw(this,'jp')">🇯🇵 JP</div>
+          <div class="stab" onclick="sw(this,'yt')">▶ YT</div>
+        </div>
+        <div class="stab-c active" id="stab-hot">
+          <div class="ph"><span>PRICE HOTSPOTS</span><span class="cnt" id="hct">—</span></div>
+          <div class="pscroll" id="hl"></div>
+        </div>
+        <div class="stab-c" id="stab-en">
+          <div class="ph"><span>TOP 100 — ENGLISH</span><span class="lbadge">TCGPlayer</span></div>
+          <div class="t100f">
+            <div class="tf active" onclick="ft100(this,'all','en')">All</div>
+            <div class="tf" onclick="ft100(this,'vintage','en')">Vintage</div>
+            <div class="tf" onclick="ft100(this,'modern','en')">Modern</div>
+            <div class="tf" onclick="ft100(this,'graded','en')">Graded</div>
+          </div>
+          <div class="pscroll" id="t100-en"></div>
+        </div>
+        <div class="stab-c" id="stab-jp">
+          <div class="ph"><span>TOP 100 — JAPANESE</span><span class="lbadge">Mercari·YJP</span></div>
+          <div class="t100f">
+            <div class="tf active" onclick="ft100(this,'all','jp')">All</div>
+            <div class="tf" onclick="ft100(this,'vintage','jp')">Vintage</div>
+            <div class="tf" onclick="ft100(this,'modern','jp')">Modern</div>
+            <div class="tf" onclick="ft100(this,'promo','jp')">Promo</div>
+          </div>
+          <div class="pscroll" id="t100-jp"></div>
+        </div>
+        <div class="stab-c" id="stab-yt">
+          <div class="ph"><span>TOP CREATORS</span></div>
+          <div class="pscroll"><div class="ytg" id="ytg"></div></div>
+        </div>
+      </div>
+      <div class="dh-v" data-a="pl" data-b="pm" data-side="left"></div>
+      <!-- MAIN -->
+      <div class="panel panel-bg pscroll" id="pm" style="flex:1;">
+        <div class="idx-row">
+          <div class="idx-card gold"><div class="il">TCG Market Index</div><div class="iv gold" id="im">847.3</div><div class="id-d"><span style="color:var(--green)">▲ +12.4</span><span style="color:var(--text3);margin-left:5px">(+1.49%) 24h</span></div></div>
+          <div class="idx-card gc"><div class="il">Vintage (Base–Neo)</div><div class="iv green">2,341</div><div class="id-d"><span style="color:var(--green)">▲ +88 (+3.9%) 24h</span></div></div>
+          <div class="idx-card rc"><div class="il">Modern Sealed Avg</div><div class="iv red">$183</div><div class="id-d"><span style="color:var(--red)">▼ -4.2 (-2.2%) 24h</span></div></div>
+          <div class="idx-card bc"><div class="il">PSA 10 Premium</div><div class="iv blue">3.8×</div><div class="id-d"><span style="color:var(--text3)">vs raw — stable</span></div></div>
+        </div>
+        <div class="chart-sec">
+          <div class="chart-hdr">
+            <div class="chart-ttl">Charizard Base Set Shadowless <small>// RAW NM · TCGPlayer + eBay Avg</small></div>
+            <div class="cbtns">
+              <button class="cbtn" onclick="sc(this,'1d')">1D</button>
+              <button class="cbtn" onclick="sc(this,'7d')">7D</button>
+              <button class="cbtn active" onclick="sc(this,'30d')">30D</button>
+              <button class="cbtn" onclick="sc(this,'90d')">90D</button>
+              <button class="cbtn" onclick="sc(this,'1y')">1Y</button>
+            </div>
+          </div>
+          <div class="chart-wrap"><svg class="sp" id="mc" viewBox="0 0 800 130" preserveAspectRatio="none"></svg></div>
+        </div>
+        <div class="grid2">
+          <div class="gp"><div class="ph"><span>📡 SIGNAL FEED</span><span class="lbadge">LIVE</span></div><div id="nf"></div></div>
+          <div class="gp"><div class="ph"><span>🗺 SET HEATMAP (30D)</span></div><div class="hmap" id="hmap"></div></div>
+        </div>
+        <div class="ph"><span>🎯 COMMUNITY PREDICTIONS</span><span class="lbadge">Live</span></div>
+        <div class="pred-grid" id="pred-grid"></div>
+        <div class="ph"><span>📈 INDICATORS</span></div>
+        <div class="econ-row" id="econ-row"></div>
+        <div class="ph"><span>🌍 LIVE REGIONAL NEWS</span></div>
+        <div class="reg-row" id="reg-row"></div>
+      </div>
+      <div class="dh-v" data-a="pm" data-b="pr" data-side="right"></div>
+      <!-- RIGHT -->
+      <div class="panel" id="pr" style="width:268px;">
+        <div class="pscroll">
+          <div class="aibr">
+            <div class="aihdr"><div class="aibage">AI BRIEF</div><span style="font-size:11px;color:var(--text3)">3 phút trước</span></div>
+            <div class="aitxt"><strong>Thị trường tích lũy mạnh.</strong> Prismatic Evolutions tăng sau tin đồn <strong>reprint bị hủy</strong>. Shadowless Charizard vượt <strong>$8,500</strong> PSA 9. Reddit spike <strong>+340%</strong> "151 reprint". <strong>Blaine's Charizard</strong> Z-score 3.8σ bất thường. PSA backlog giảm 65 ngày. USD/JPY tăng — JP card nhập rẻ hơn.</div>
+          </div>
+          <div class="sdiv"><span>⚡ ANOMALY ALERTS</span><span class="rbadge">4 ACTIVE</span></div>
+          <div id="al"></div>
+          <div class="sdiv"><span>📊 SOCIAL MENTIONS (24H)</span></div>
+          <div id="sm"></div>
+          <div class="sdiv"><span>🏅 GRADED MARKET</span></div>
+          <table class="gt"><thead><tr><th>Card</th><th>Grade</th><th>Last</th><th>Δ</th></tr></thead><tbody id="gb"></tbody></table>
+          <div class="sdiv"><span>🌡 SENTIMENT</span></div>
+          <div style="display:flex;gap:5px;padding:10px 13px;border-bottom:1px solid var(--border);">
+            <div style="flex:52;background:var(--g2);border:1px solid rgba(57,217,138,.2);padding:8px;text-align:center;"><div style="font-size:20px;font-weight:800;color:var(--green)">52%</div><div style="font-size:10px;color:var(--text3);font-weight:700">BULLS</div></div>
+            <div style="flex:18;border:1px solid var(--border);padding:8px;text-align:center;"><div style="font-size:20px;font-weight:800;color:var(--text2)">18%</div><div style="font-size:10px;color:var(--text3);font-weight:700">NEUTRAL</div></div>
+            <div style="flex:30;background:var(--r2);border:1px solid rgba(255,77,106,.15);padding:8px;text-align:center;"><div style="font-size:20px;font-weight:800;color:var(--red)">30%</div><div style="font-size:10px;color:var(--text3);font-weight:700">BEARS</div></div>
+          </div>
+          <div class="sdiv"><span>🗳 POLL — Charizard BS 3 tháng tới?</span></div>
+          <div style="padding:10px 13px;" id="poll"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Bottom resizable -->
+    <div class="dh-h" id="dhb"></div>
+    <div class="bp-row" id="bpr" style="height:220px;">
+      <div class="bp-col"><div class="ph"><span>📺 LIVE STREAMS</span><span class="rbadge">● 7 LIVE</span></div><div class="pscroll" id="stream-mini"></div></div>
+      <div class="bp-col"><div class="ph"><span>🔔 PRICE ALERTS</span><span class="rbadge" id="alert-badge">1 TRIGGERED</span></div><div id="alert-mini" style="overflow-y:auto;flex:1;scrollbar-width:thin;"></div></div>
+      <div class="bp-col" style="flex:1.5;">
+        <div class="ph"><span>⚖️ EN vs JP QUICK COMPARE</span><span style="font-size:10px;color:var(--text3)">1 USD = 149.82 JPY</span></div>
+        <div style="padding:8px 12px;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;">
+          <input id="qcmp" style="flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:var(--fs-sm);padding:5px 9px;outline:none;" placeholder="Nhập tên card..." oninput="runCmp(this.value,'cmp-mini')">
+          <div style="display:flex;gap:4px;">
+            <div class="cq" onclick="quickCmp('Charizard')">Charizard</div>
+            <div class="cq" onclick="quickCmp('Lugia')">Lugia</div>
+            <div class="cq" onclick="quickCmp('Umbreon')">Umbreon</div>
+          </div>
+        </div>
+        <div class="pscroll" id="cmp-mini"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: LIVE STREAMS ══ -->
+<div class="page" id="page-live">
+  <div class="live-main">
+    <div class="live-embed-area">
+      <div class="live-ph" id="live-ph" onclick="openStream(0)">
+        <div class="big-play">▶</div>
+        <div class="ph-name" id="ph-name">🔥 Leonhart</div>
+        <div class="ph-title" id="ph-title">Opening 10 cases Prismatic Evolutions LIVE!</div>
+        <div class="ph-viewers" id="ph-viewers">24,832 đang xem</div>
+        <div class="ph-sub">Click để mở stream trong tab mới</div>
+      </div>
+    </div>
+    <div class="live-info-bar">
+      <div><div class="lib-name" id="lib-name">Leonhart</div><div style="font-size:var(--fs-sm);color:var(--text3);margin-top:2px;" id="lib-title">Opening 10 cases Prismatic Evolutions LIVE!</div></div>
+      <div class="lib-plat yt" id="lib-plat">YouTube</div>
+      <div class="lib-viewers" id="lib-viewers">24,832 viewers</div>
+      <div class="lib-open" onclick="openStream(activeStream)">↗ Mở Stream</div>
+    </div>
+  </div>
+  <div class="stream-list-col">
+    <div class="ph"><span>🔴 ĐANG LIVE</span><span class="rbadge">7 LIVE</span></div>
+    <div class="stream-list" id="stream-full"></div>
+    <div class="ph" style="margin-top:auto;border-top:1px solid var(--border);"><span>🎯 PREDICTIONS</span></div>
+    <div class="pscroll" style="max-height:200px;"><div class="pred-full-grid" id="pred-live"></div></div>
+  </div>
+</div>
+
+<!-- ══ PAGE: PRICE ALERTS ══ -->
+<div class="page" id="page-alerts">
+  <div class="alerts-setup">
+    <div class="ph"><span>🔔 PRICE ALERT SETUP</span></div>
+    <div class="alert-setup-inner">
+      <div class="triggered-banner">
+        <span style="font-size:22px">🚨</span>
+        <div><div class="tb-t">Blaine's Charizard → $158!</div><div class="tb-m">Ngưỡng $150 bị vượt · +8.9% trong 24h · 14 phút trước</div></div>
+      </div>
+      <div class="alert-form">
+        <div class="af-title">+ Tạo Price Alert Mới</div>
+        <div class="af-sub">Nhận thông báo khi giá card vượt ngưỡng bạn thiết lập</div>
+        <div class="af-full"><div class="af-lbl">Tên Card</div><input class="af-inp" id="af-card" placeholder="vd: Charizard Base Set Shadowless..."></div>
+        <div class="af-row2">
+          <div><div class="af-lbl">Nguồn Giá</div><select class="af-sel" id="af-src"><option>TCGPlayer Market</option><option>eBay Sold Avg</option><option>Mercari JP</option><option>PSA SMR Price</option></select></div>
+          <div><div class="af-lbl">Ngưỡng Giá ($)</div><input class="af-inp" id="af-price" type="number" placeholder="0.00"></div>
+        </div>
+        <div class="af-lbl" style="margin-bottom:8px;">Điều Kiện Kích Hoạt</div>
+        <div class="cond-row">
+          <div class="cond-btn active" onclick="setCond(this,'above')"><span class="ci">📈</span><span class="cl">Vượt ngưỡng</span></div>
+          <div class="cond-btn" onclick="setCond(this,'below')"><span class="ci">📉</span><span class="cl">Xuống dưới</span></div>
+          <div class="cond-btn" onclick="setCond(this,'pct')"><span class="ci">⚡</span><span class="cl">Thay đổi %</span></div>
+        </div>
+        <button class="af-create" onclick="createAlert()">+ TẠO PRICE ALERT</button>
+      </div>
+    </div>
+  </div>
+  <div class="alerts-list-col">
+    <div class="ph"><span>DANH SÁCH ALERTS ĐANG ACTIVE</span><span class="rbadge" id="alert-count-badge">1 TRIGGERED</span></div>
+    <div class="alert-list-scroll" id="alert-list-full"></div>
+  </div>
+</div>
+
+<!-- ══ PAGE: EN vs JP COMPARE ══ -->
+<div class="page" id="page-compare">
+  <div class="cmp-bar">
+    <span style="font-size:var(--fs-lg);font-weight:800;color:var(--text);white-space:nowrap;">⚖️ So Sánh Giá EN vs JP</span>
+    <input id="cmp-inp" placeholder="Nhập tên card để so sánh... (vd: Charizard, Lugia, Pikachu, Umbreon)" oninput="runCmp(this.value,'cmp-full')">
+    <button class="cmp-btn" onclick="runCmp(document.getElementById('cmp-inp').value,'cmp-full')">So Sánh</button>
+    <div class="cmp-quick">
+      <div class="cq" onclick="cmpFull('Charizard')">Charizard</div>
+      <div class="cq" onclick="cmpFull('Lugia')">Lugia</div>
+      <div class="cq" onclick="cmpFull('Umbreon')">Umbreon</div>
+      <div class="cq" onclick="cmpFull('Pikachu')">Pikachu</div>
+      <div class="cq" onclick="cmpFull('Espeon')">Espeon</div>
+      <div class="cq" onclick="cmpFull('Rayquaza')">Rayquaza</div>
+    </div>
+    <div class="cmp-rate">1 USD = 149.82 JPY · Cập nhật 2 phút trước</div>
+  </div>
+  <div class="cmp-grid-hdr">
+    <div class="cgh"><div class="cgh-t en">🇺🇸 English Cards</div><div class="cgh-s">TCGPlayer Market Price · USD</div></div>
+    <div class="cgh" style="text-align:center;border-left:1px solid var(--border);border-right:1px solid var(--border);"><div class="cgh-t mid">⚖️ Phân Tích</div><div class="cgh-s">Quy đổi & So sánh</div></div>
+    <div class="cgh"><div class="cgh-t jp">🇯🇵 Japanese Cards</div><div class="cgh-s">Mercari JP / Yahoo Auctions · JPY</div></div>
+  </div>
+  <div class="cmp-body-scroll" id="cmp-full"></div>
+</div>
+
+<!-- ══ PAGE: PORTFOLIO ══ -->
+<div class="page" id="page-portfolio">
+  <div class="port-main">
+    <div class="port-banner">
+      <div class="port-stat"><div class="psv" style="color:var(--accent)" id="port-total">$0</div><div class="psl">Portfolio Value</div></div>
+      <div class="port-divider"></div>
+      <div class="port-stat"><div class="psv" style="color:var(--green)" id="port-pnl">+$0</div><div class="psl">Total P&L</div></div>
+      <div class="port-divider"></div>
+      <div class="port-stat"><div class="psv" id="port-pct">0%</div><div class="psl">Return</div></div>
+      <div class="port-divider"></div>
+      <div class="port-stat"><div class="psv" style="color:var(--text)" id="port-count">0</div><div class="psl">Cards</div></div>
+      <div class="port-add-btn" onclick="document.getElementById('pf-name').focus()">+ Thêm Card</div>
+    </div>
+    <div class="port-table-wrap">
+      <table class="port-table">
+        <thead><tr><th>Card</th><th>Grade</th><th>Qty</th><th class="r">Buy Price</th><th class="r">Current</th><th class="r">P&L $</th><th class="r">P&L %</th><th></th></tr></thead>
+        <tbody id="port-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="port-right">
+    <div class="port-form">
+      <div class="port-form-title">+ Thêm Card Vào Portfolio</div>
+      <div><div class="pf-lbl">Tên Card</div><input class="pf-inp" id="pf-name" placeholder="vd: Charizard Base Set Shadowless" style="width:100%;margin-bottom:10px;"></div>
+      <div><div class="pf-lbl">Set</div><input class="pf-inp" id="pf-set" placeholder="vd: Base Set 1999" style="width:100%;margin-bottom:10px;"></div>
+      <div class="pf-row">
+        <div><div class="pf-lbl">Ngôn ngữ</div><select class="pf-sel" id="pf-lang"><option>English</option><option>Japanese</option><option>Korean</option></select></div>
+        <div><div class="pf-lbl">Grade</div><select class="pf-sel" id="pf-grade"><option>Raw NM</option><option>PSA 10</option><option>PSA 9</option><option>PSA 8</option><option>BGS 9.5</option><option>CGC 10</option></select></div>
+      </div>
+      <div class="pf-row">
+        <div><div class="pf-lbl">Giá Mua ($)</div><input class="pf-inp" id="pf-buy" type="number" placeholder="0.00"></div>
+        <div><div class="pf-lbl">Số Lượng</div><input class="pf-inp" id="pf-qty" type="number" value="1" placeholder="1"></div>
+      </div>
+      <button class="pf-btn" onclick="addPortCard()">+ THÊM VÀO PORTFOLIO</button>
+    </div>
+    <div class="port-dist">
+      <div class="port-dist-title">PHÂN BỔ DANH MỤC</div>
+      <div id="port-dist-inner"></div>
+    </div>
+    <div class="port-chart">
+      <div class="port-chart-title">GIÁ TRỊ PORTFOLIO (30D)</div>
+      <svg width="100%" height="70" viewBox="0 0 400 70" preserveAspectRatio="none" id="port-svg"></svg>
+    </div>
+  </div>
+</div>
+
+</div><!-- /pages -->
+</div><!-- /app -->
+
+<script>
+'use strict';
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
+const JPY = 149.82;
+
+const EN = [
+  {n:'Charizard Base Shadowless',s:'Base Set 1999',p:8240,c:'+4.3',d:'up',cat:'vintage'},
+  {n:'Pikachu Illustrator',s:'CoroCoro Promo 1998',p:420000,c:'+1.2',d:'up',cat:'graded'},
+  {n:'Tropical Wind Trophy',s:'Trophy Promo 1999',p:1800,c:'+12.5',d:'up',cat:'vintage'},
+  {n:'Charizard 1st Ed PSA10',s:'Base Set 1999',p:36000,c:'+3.2',d:'up',cat:'graded'},
+  {n:"Trainer's Pikachu",s:'Promo 1999',p:12000,c:'+2.0',d:'up',cat:'graded'},
+  {n:'Rayquaza Gold Star',s:'Deoxys EX',p:3200,c:'+5.0',d:'up',cat:'vintage'},
+  {n:'Espeon Gold Star',s:'POP Series 5',p:2800,c:'+8.1',d:'up',cat:'vintage'},
+  {n:'Umbreon Gold Star',s:'POP Series 5',p:2600,c:'+6.5',d:'up',cat:'vintage'},
+  {n:'Shining Charizard',s:'Neo Destiny',p:1800,c:'+7.2',d:'up',cat:'vintage'},
+  {n:'Lugia Neo Genesis Holo',s:'Neo Genesis 2000',p:480,c:'-2.5',d:'dn',cat:'vintage'},
+  {n:'Umbreon VMAX Alt Art',s:'Evolving Skies',p:340,c:'+2.4',d:'up',cat:'modern'},
+  {n:"Blaine's Charizard Holo",s:'Gym Heroes',p:145,c:'+43.6',d:'up',cat:'vintage'},
+  {n:"Rocket's Mewtwo Holo",s:'Team Rocket',p:420,c:'+3.8',d:'up',cat:'vintage'},
+  {n:'Palkia ex Alt Art',s:'Crown Zenith',p:189,c:'+13.2',d:'up',cat:'modern'},
+  {n:'Gardevoir ex Alt Art',s:'Paldea Evolved',p:95,c:'+22.0',d:'up',cat:'modern'},
+  {n:'Lugia ex Alt Art',s:'Silver Tempest',p:380,c:'+4.2',d:'up',cat:'modern'},
+  {n:'Mewtwo Base Set Holo',s:'Base Set 1999',p:380,c:'+0.8',d:'up',cat:'vintage'},
+  {n:'Venusaur Base Holo',s:'Base Set 1999',p:290,c:'+1.5',d:'up',cat:'vintage'},
+  {n:'Iono Full Art',s:'Paldea Evolved',p:185,c:'+8.2',d:'up',cat:'modern'},
+  {n:'Charizard V Alt Art',s:"Champion's Path",p:420,c:'-2.1',d:'dn',cat:'modern'},
+  {n:'Charizard VMAX Rainbow',s:'Darkness Ablaze',p:320,c:'+1.1',d:'up',cat:'modern'},
+  {n:'Leafeon VMAX Alt Art',s:'Evolving Skies',p:190,c:'+1.6',d:'up',cat:'modern'},
+  {n:'Mew VMAX Alt Art',s:'Fusion Strike',p:145,c:'+4.5',d:'up',cat:'modern'},
+  {n:'Rayquaza VMAX Alt Art',s:'Evolving Skies',p:280,c:'+0.9',d:'up',cat:'modern'},
+  {n:'Blastoise Base Holo',s:'Base Set 1999',p:260,c:'+1.0',d:'up',cat:'vintage'},
+].map((c,i)=>({...c, rank:i+1}));
+
+const JP = [
+  {n:'コイキング (初版旧裏)',s:'第1弾 旧裏面 1996',jpy:3200000,c:'+8.2',d:'up',cat:'vintage'},
+  {n:'ピカチュウ イラストレーター',s:'CoroCoro 1998',jpy:55000000,c:'+2.1',d:'up',cat:'promo'},
+  {n:'ミュウツー (コロコロ)',s:'コロコロ Promo 1996',jpy:8500000,c:'+3.2',d:'up',cat:'promo'},
+  {n:'カビゴン (旧裏面)',s:'第1弾 旧裏 1996',jpy:1800000,c:'+12.0',d:'up',cat:'vintage'},
+  {n:'リザードン (第1弾)',s:'第1弾 初版 1996',jpy:980000,c:'+5.3',d:'up',cat:'vintage'},
+  {n:'ファイヤー (旧裏)',s:'第1弾 旧裏 1996',jpy:2400000,c:'+9.5',d:'up',cat:'vintage'},
+  {n:'ルカリオex SA',s:'拡張パック 2023',jpy:48000,c:'+18.5',d:'up',cat:'modern'},
+  {n:'リザードンex SA',s:'黒炎の支配者 2023',jpy:42000,c:'+11.2',d:'up',cat:'modern'},
+  {n:'ブラッキー VMAX SA',s:'イーブイヒーローズ',jpy:95000,c:'+1.8',d:'up',cat:'modern'},
+  {n:'ウーラオスex SA',s:'一撃マスター 2021',jpy:58000,c:'+4.5',d:'up',cat:'modern'},
+  {n:'ピジョット ex SA',s:'ステラミラクル 2024',jpy:19000,c:'+31.0',d:'up',cat:'modern'},
+  {n:'ゲッコウガex SA',s:'レイジングサーフ',jpy:38000,c:'+9.8',d:'up',cat:'modern'},
+  {n:'サーナイトex SA',s:'スノーハザード',jpy:35000,c:'+5.6',d:'up',cat:'modern'},
+  {n:'ルギア LEGEND',s:'ハートゴールド 2010',jpy:120000,c:'+6.0',d:'up',cat:'vintage'},
+  {n:'ポッポ (旧裏面)',s:'第1弾 旧裏 1996',jpy:450000,c:'+9.0',d:'up',cat:'vintage'},
+  {n:'ミュウ (旧裏面)',s:'第1弾 旧裏 1996',jpy:380000,c:'+7.5',d:'up',cat:'vintage'},
+  {n:'カビゴン SA',s:'バイオレット ex',jpy:32000,c:'+22.0',d:'up',cat:'modern'},
+  {n:'リーフィア VMAX SA',s:'イーブイヒーローズ',jpy:75000,c:'+2.4',d:'up',cat:'modern'},
+  {n:'マリルリex SA',s:'ステラミラクル',jpy:15000,c:'+25.0',d:'up',cat:'modern'},
+  {n:'コイキング (GX)',s:'GXスタートデッキ',jpy:280000,c:'+15.0',d:'up',cat:'vintage'},
+].map((c,i)=>({...c, rank:i+1, p:Math.round(c.jpy/JPY), ps:'¥'+c.jpy.toLocaleString()}));
+
+// ═══════════════════════════════════════════════════
+// PAGE NAVIGATION — truly switches pages
+// ═══════════════════════════════════════════════════
+function gotoPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const nt = document.getElementById('nt-' + id);
+  if (nt) nt.classList.add('active');
+  // trigger compare on open
+  if (id === 'compare') {
+    const v = document.getElementById('cmp-inp').value || 'Charizard';
+    runCmp(v, 'cmp-full');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// CLOCK & MISC
+// ═══════════════════════════════════════════════════
+function updateClock(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('vi-VN',{hour12:false})+' ICT';}
+setInterval(updateClock,1000); updateClock();
+function sw(el,id){document.querySelectorAll('.stab').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.stab-c').forEach(c=>c.classList.remove('active'));el.classList.add('active');document.getElementById('stab-'+id).classList.add('active');}
+function sc(el,r){document.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('active'));el.classList.add('active');drawChart(r);}
+
+// ═══════════════════════════════════════════════════
+// DRAG RESIZE — vertical
+// ═══════════════════════════════════════════════════
+document.querySelectorAll('.dh-v').forEach(h => {
+  h.addEventListener('mousedown', e => {
+    e.preventDefault();
+    const panelA = document.getElementById(h.dataset.a);
+    const panelB = document.getElementById(h.dataset.b);
+    const side = h.dataset.side;
+    const startX = e.clientX;
+    const startA = panelA.offsetWidth;
+    const startB = panelB.offsetWidth;
+    h.classList.add('drag');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    const onMove = e => {
+      const dx = e.clientX - startX;
+      if (side === 'left') {
+        panelA.style.width = Math.max(140, Math.min(480, startA + dx)) + 'px';
+        panelA.style.flex = 'none';
+      } else {
+        panelB.style.width = Math.max(160, Math.min(500, startB - dx)) + 'px';
+        panelB.style.flex = 'none';
+      }
+    };
+    const onUp = () => {
+      h.classList.remove('drag');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+});
+
+// Horizontal drag
+document.getElementById('dhb').addEventListener('mousedown', e => {
+  e.preventDefault();
+  const bp = document.getElementById('bpr');
+  const startY = e.clientY, startH = bp.offsetHeight;
+  const h = document.getElementById('dhb');
+  h.classList.add('drag');
+  document.body.style.cursor = 'row-resize';
+  document.body.style.userSelect = 'none';
+  const onMove = e => { bp.style.height = Math.max(100, Math.min(600, startH - (e.clientY - startY))) + 'px'; };
+  const onUp = () => { h.classList.remove('drag'); document.body.style.cursor=''; document.body.style.userSelect=''; document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp); };
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+});
+
+// ═══════════════════════════════════════════════════
+// SEARCH — fully functional
+// ═══════════════════════════════════════════════════
+const EXT = [
+  {n:'TCGPlayer Market Price',s:'tcgplayer.com',url:'https://www.tcgplayer.com'},
+  {n:'eBay Sold Listings',s:'ebay.com',url:'https://www.ebay.com/sch/i.html?_nkw=pokemon+card&LH_Sold=1'},
+  {n:'Mercari JP',s:'jp.mercari.com',url:'https://jp.mercari.com/search?keyword=ポケモンカード'},
+  {n:'PSA Card Facts',s:'psacard.com',url:'https://www.psacard.com/cardlookup'},
+  {n:'130point Price Guide',s:'130point.com',url:'https://www.130point.com'},
+  {n:'Yahoo Auctions Japan',s:'auctions.yahoo.co.jp',url:'https://auctions.yahoo.co.jp'},
+  {n:'Cardmarket EU',s:'cardmarket.com',url:'https://www.cardmarket.com/en/Pokemon'},
+];
+let sTO = null;
+function doSearch(q) {
+  clearTimeout(sTO);
+  sTO = setTimeout(() => {
+    const s = q.toLowerCase().trim();
+    const enEl = document.getElementById('srEN');
+    const jpEl = document.getElementById('srJP');
+    if (!s) { enEl.innerHTML = ''; jpEl.innerHTML = ''; return; }
+    const en = EN.filter(c => c.n.toLowerCase().includes(s) || c.s.toLowerCase().includes(s)).slice(0, 5);
+    const jp = JP.filter(c => c.n.toLowerCase().includes(s) || c.s.toLowerCase().includes(s)).slice(0, 4);
+    enEl.innerHTML = en.length
+      ? en.map(c => `<div class="sri" onclick="document.getElementById('si').value='';closeDrop()"><div><div class="sri-n">${c.n}</div><div class="sri-s">${c.s}</div></div><div class="sri-p" style="color:var(--accent)">$${c.p.toLocaleString()}</div></div>`).join('')
+      : '<div class="sri-empty">Không tìm thấy card tiếng Anh</div>';
+    jpEl.innerHTML = jp.length
+      ? jp.map(c => `<div class="sri" onclick="document.getElementById('si').value='';closeDrop()"><div><div class="sri-n">${c.n}</div><div class="sri-s">${c.s}</div></div><div class="sri-p" style="color:var(--purple)">${c.ps}</div></div>`).join('')
+      : '<div class="sri-empty">Không tìm thấy card tiếng Nhật</div>';
+  }, 150);
+}
+function openDrop() {
+  const drop = document.getElementById('sdrop');
+  drop.classList.add('open');
+  document.getElementById('srExt').innerHTML = EXT.map(e =>
+    `<div class="sri" onclick="window.open('${e.url}','_blank')"><div><div class="sri-n">${e.n}</div><div class="sri-s">${e.s}</div></div><div class="sri-p" style="color:var(--blue)">→ Mở</div></div>`
+  ).join('');
+}
+function closeDrop() { setTimeout(() => document.getElementById('sdrop').classList.remove('open'), 200); }
+
+// ═══════════════════════════════════════════════════
+// TICKER
+// ═══════════════════════════════════════════════════
+(()=>{
+  const T=[{n:'Charizard Shadowless',p:'$8,240',c:'+$340',d:'up'},{n:'Pikachu Illustrator',p:'$420,000',c:'+$5k',d:'up'},{n:'Lugia WOTC Holo',p:'$480',c:'-$12',d:'dn'},{n:"Blaine's Charizard",p:'$145',c:'+$44',d:'up'},{n:'Umbreon VMAX Alt Art',p:'$340',c:'+$8',d:'up'},{n:'Prismatic Evol. Box',p:'$320',c:'-$15',d:'dn'},{n:'Tropical Wind',p:'$1,800',c:'+$200',d:'up'},{n:'Rayquaza Gold Star',p:'$3,200',c:'+$120',d:'up'},{n:'USD/JPY',p:'149.82',c:'+0.34',d:'up'},{n:'Espeon Gold Star',p:'$2,800',c:'+$80',d:'up'},{n:'151 Bundle',p:'$95',c:'+$3',d:'up'},{n:'Charizard 1st Ed PSA10',p:'$36,000',c:'+$800',d:'up'}];
+  const d=[...T,...T];
+  document.getElementById('ticker').innerHTML=d.map(t=>`<span class="ti"><span class="ti-n">${t.n}</span><span style="color:var(--text)">${t.p}</span><span class="ti-c ${t.d}">${t.c}</span></span>`).join('');
+})();
+
+// ═══════════════════════════════════════════════════
+// HOTSPOTS
+// ═══════════════════════════════════════════════════
+(()=>{
+  const HS=[
+    {n:'Charizard Base Set',s:'Base Set Shadowless',p:'$8,240',c:'+4.3%',d:'up',v:92,sev:'critical',i:'🔥'},
+    {n:"Blaine's Charizard",s:'Gym Heroes Holo',p:'$145',c:'+43.6%',d:'up',v:98,sev:'critical',i:'🚨',a:true},
+    {n:'Palkia ex Alt Art',s:'Crown Zenith',p:'$189',c:'+13.2%',d:'up',v:75,sev:'high',i:'⬆️'},
+    {n:'Umbreon VMAX Alt Art',s:'Evolving Skies',p:'$340',c:'+2.4%',d:'up',v:60,sev:'high',i:'📈'},
+    {n:'Tropical Wind',s:'Trophy Promo',p:'$1,800',c:'+12.5%',d:'up',v:20,sev:'high',i:'🏆'},
+    {n:'Prismatic Evol. Box',s:'SV8 Sealed',p:'$320',c:'-4.7%',d:'dn',v:55,sev:'medium',i:'📦'},
+    {n:'Lugia WOTC Holo',s:'Neo Genesis',p:'$480',c:'-2.5%',d:'dn',v:40,sev:'medium',i:'📉'},
+    {n:'Rayquaza Gold Star',s:'Deoxys EX',p:'$3,200',c:'+5.0%',d:'up',v:45,sev:'high',i:'⭐'},
+  ];
+  document.getElementById('hct').textContent = HS.length;
+  document.getElementById('hl').innerHTML = HS.map(h=>`<div class="hi ${h.sev}${h.a?' anomaly':''}"><div class="hsi">${h.i}</div><div class="hi-n">${h.n}</div><div class="hi-s">${h.s}</div><div class="hi-m"><span class="pb ${h.d}">${h.p}</span><span class="cc ${h.d}">${h.c}</span></div><div class="vb"><div class="vf" style="width:${h.v}%;background:${h.d==='up'?'var(--green)':'var(--red)'}"></div></div></div>`).join('');
+})();
+
+// ═══════════════════════════════════════════════════
+// TOP 100
+// ═══════════════════════════════════════════════════
+let fEN='all', fJP='all';
+function ft100(el, cat, lang) {
+  el.closest('.t100f').querySelectorAll('.tf').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  if(lang==='en'){fEN=cat;b100('en');}else{fJP=cat;b100('jp');}
+}
+function b100(lang) {
+  const data=lang==='en'?EN:JP, f=lang==='en'?fEN:fJP;
+  const rows=f==='all'?data:data.filter(c=>c.cat===f);
+  const M=['🥇','🥈','🥉'];
+  document.getElementById('t100-'+lang).innerHTML=rows.map(c=>`<div class="t100r"><div class="rnk${c.rank<=3?' t3':''}">${c.rank<=3?M[c.rank-1]:c.rank}</div><div><div class="cn">${c.n}</div><div class="cs">${c.s}</div></div><div class="cp">${lang==='en'?'$'+c.p.toLocaleString():c.ps}</div><div class="cd ${c.d}">${c.d==='up'?'+':''}${parseFloat(c.c).toFixed(1)}%</div></div>`).join('');
+}
+b100('en'); b100('jp');
+
+// ═══════════════════════════════════════════════════
+// YOUTUBE CREATORS
+// ═══════════════════════════════════════════════════
+(()=>{
+  const Y=[
+    {n:'Leonhart',sub:'3.2M',badge:'pull',v:'12M/mo',e:'🔥',url:'https://www.youtube.com/@Leonhart54',f:'🇺🇸',d:'Biggest pulls'},
+    {n:'PokeRev',sub:'2.1M',badge:'pull',v:'9M/mo',e:'📦',url:'https://www.youtube.com/@PokeRev',f:'🇺🇸',d:'Case busting'},
+    {n:'Unlistedleaf',sub:'2.8M',badge:'pull',v:'8M/mo',e:'🃏',url:'https://www.youtube.com/@unlisted_leaf',f:'🇦🇺',d:'Vintage & modern'},
+    {n:'TCA Gaming',sub:'1.4M',badge:'pull',v:'6M/mo',e:'🎮',url:'https://www.youtube.com/@TCAGaming',f:'🇺🇸',d:'Case busting'},
+    {n:'FlowstateCards',sub:'1.1M',badge:'invest',v:'5M/mo',e:'💎',url:'https://www.youtube.com/@FlowstateCards',f:'🇺🇸',d:'Market analysis'},
+    {n:'PokeGuardian',sub:'520K',badge:'jp',v:'2.2M/mo',e:'📰',url:'https://www.youtube.com/@PokeGuardian',f:'🇯🇵',d:'JP set reveals'},
+    {n:'Rare Candy TCG',sub:'450K',badge:'invest',v:'2M/mo',e:'📈',url:'https://www.youtube.com/@RareCandyTCG',f:'🇬🇧',d:'Investing'},
+    {n:'PokéCard Explorer',sub:'680K',badge:'jp',v:'3M/mo',e:'🇯🇵',url:'https://www.youtube.com/@pokecardexplorer',f:'🇯🇵',d:'JP exclusive'},
+    {n:'Pokémon Investments',sub:'290K',badge:'invest',v:'1.1M/mo',e:'💰',url:'https://www.youtube.com/@PokemonInvestments',f:'🇺🇸',d:'Deep dives'},
+    {n:'PTCGRadio',sub:'195K',badge:'review',v:'800K/mo',e:'🎯',url:'https://www.youtube.com/@PTCGRadio',f:'🇺🇸',d:'Meta analysis'},
+  ];
+  document.getElementById('ytg').innerHTML=Y.map(c=>`<a class="ytc" href="${c.url}" target="_blank" rel="noopener"><div class="yta">${c.e}</div><div class="yti"><div class="ytn">${c.f} ${c.n}</div><div class="ytm"><span class="yts">${c.sub}</span> · ${c.d}</div></div><div class="ytr"><div class="ytb ${c.badge}">${c.badge.toUpperCase()}</div><div class="ytv">${c.v}</div></div></a>`).join('');
+})();
+
+// ═══════════════════════════════════════════════════
+// NEWS FEED
+// ═══════════════════════════════════════════════════
+(()=>{
+  const N=[
+    {sev:'critical',src:'Reddit r/PokemonTCG',t:'2m',h:'PSA xác nhận backlog giảm 65 ngày — graded supply tăng',tags:['PSA','WATCH']},
+    {sev:'high',src:'PokeBeach',t:'14m',h:"Blaine's Charizard trong reprint set Q2 2025 — CHƯA XÁC NHẬN",tags:['REPRINT','HOT']},
+    {sev:'high',src:'TCGPlayer Blog',t:'28m',h:'151 set: eBay +18% tuần này — supply khan hiếm',tags:['151','WATCH']},
+    {sev:'medium',src:'YouTube / Rattle',t:'45m',h:'10 case Prismatic Evol. đạt 400k view trong 3h',tags:['SEALED']},
+    {sev:'low',src:'Twitter',t:'2h',h:'Gardevoir ex dẫn đầu meta — ảnh hưởng giá Alt Art',tags:['META']},
+  ];
+  document.getElementById('nf').innerHTML=N.map(n=>`<div class="ni"><div class="nsev ${n.sev}"></div><div><div class="nsrc"><span class="sn">${n.src}</span><span>${n.t} ago</span></div><div class="nh">${n.h}</div><div class="ntags">${n.tags.map(t=>`<span class="ntag ${t==='HOT'?'hot':t==='WATCH'?'w':''}">${t}</span>`).join('')}</div></div></div>`).join('');
+})();
+
+// ═══════════════════════════════════════════════════
+// HEATMAP
+// ═══════════════════════════════════════════════════
+(()=>{
+  const S=[{l:'BS Sdwless',v:'+43%',h:.95},{l:'Gym Heroes',v:'+41%',h:.92},{l:'Neo Gen',v:'+18%',h:.72},{l:'Evlv Skies',v:'+15%',h:.68},{l:'Crown Zen',v:'+13%',h:.63},{l:'151 SV',v:'+12%',h:.60},{l:'SV Prism',v:'+8%',h:.50},{l:'HGSS',v:'+7%',h:.44},{l:'Silver Tmp',v:'+6%',h:.42},{l:'Champion',v:'+3%',h:.30},{l:'VSTAR Uni',v:'+2%',h:.28},{l:'Shining Ft',v:'+4%',h:.35},{l:'Lost Orig',v:'-1%',h:.18},{l:'Fusion Stk',v:'-3%',h:.12},{l:'Chill Rain',v:'-5%',h:.08},{l:'BST 2021',v:'-7%',h:.05},{l:'Vivid Volt',v:'-9%',h:.03},{l:'DAA',v:'-11%',h:.01}];
+  function hc(v){if(v>.7)return`rgba(255,77,106,${.25+v*.55})`;if(v>.4)return`rgba(232,197,66,${.15+v*.5})`;if(v>.2)return`rgba(77,166,255,${.15+v*.4})`;return`rgba(57,217,138,${.04+v*.25})`;}
+  document.getElementById('hmap').innerHTML=S.map(s=>`<div class="hc" style="background:${hc(s.h)};border:1px solid ${hc(s.h)}" title="${s.l}: ${s.v}"><div class="hcv">${s.v}</div><div class="hcl">${s.l}</div></div>`).join('');
+})();
+
+// ═══════════════════════════════════════════════════
+// PREDICTIONS
+// ═══════════════════════════════════════════════════
+const PREDS = [
+  {q:"Charizard BS vượt $10,000 trước Q3 2025?",yes:68,vol:'$124K',cl:'45 ngày'},
+  {q:"Prismatic Evolutions reprint trong 2025?",yes:31,vol:'$89K',cl:'62 ngày'},
+  {q:"Blaine's Charizard giữ $200+ sau 30 ngày?",yes:74,vol:'$41K',cl:'30 ngày'},
+  {q:"PSA backlog xuống dưới 60 ngày trong 2025?",yes:55,vol:'$67K',cl:'90 ngày'},
+  {q:"Một card JP lập kỷ lục >$100M trong 2025?",yes:12,vol:'$28K',cl:'300 ngày'},
+  {q:"151 set reprint được thông báo trước Q4?",yes:44,vol:'$52K',cl:'120 ngày'},
+];
+function predHTML(cls) {
+  return PREDS.map(p=>`<div class="${cls}"><div class="pred-q">${p.q}</div><div class="pred-bars"><div class="pred-y"><div class="pv">${p.yes}%</div><div class="plbl">YES</div></div><div class="pred-n"><div class="pv">${100-p.yes}%</div><div class="plbl">NO</div></div></div><div class="pred-track"><div class="pred-fill" style="width:${p.yes}%"></div></div><div class="pred-meta"><span class="vol">Vol: ${p.vol}</span><span>Đóng: ${p.cl}</span></div></div>`).join('');
+}
+document.getElementById('pred-grid').innerHTML = predHTML('pred-item');
+document.getElementById('pred-live').innerHTML = predHTML('pred-full-item');
+
+// ═══════════════════════════════════════════════════
+// ECONOMIC
+// ═══════════════════════════════════════════════════
+(()=>{
+  const E=[{l:'USD/JPY',v:'149.82',d:'+0.34 (24h)',c:'up'},{l:'USD/EUR',v:'0.921',d:'-0.003 (24h)',c:'dn'},{l:'eBay GMV TCG',v:'$2.4M',d:'+8.2% (7d)',c:'up'},{l:'PSA Volume/mo',v:'18.4K',d:'grading subs',c:''},{l:'Reddit TCG/24h',v:'4,821',d:'+12% posts',c:'up'}];
+  document.getElementById('econ-row').innerHTML=E.map(e=>`<div class="econ-card"><div class="ec-l">${e.l}</div><div class="ec-v" style="color:${e.c==='up'?'var(--green)':e.c==='dn'?'var(--red)':'var(--text)'}">${e.v}</div><div class="ec-d" style="color:${e.c==='up'?'var(--green)':e.c==='dn'?'var(--red)':'var(--text3)'}">${e.d}</div></div>`).join('');
+})();
+
+// ═══════════════════════════════════════════════════
+// REGIONAL NEWS
+// ═══════════════════════════════════════════════════
+(()=>{
+  const R={
+    '🇺🇸 US':[{s:'TCGPlayer Blog',h:'PSA 65-day turnaround confirmed',t:'2m'},{s:'Pokebeach',h:"Reprint: Blaine's Charizard Q2 rumor",t:'18m'},{s:'eBay News',h:'Pokemon TCG +18% volume this week',t:'34m'}],
+    '🇯🇵 JP':[{s:'ポケモンカード公式',h:'新拡張パック収録カード公開',t:'5m'},{s:'Mercari JP',h:'旧裏面コイキング ¥3.2M 落札',t:'22m'},{s:'Yahoo Auctions',h:'ピカチュウ イラストレーター PSA10出品',t:'1h'}],
+    '🇪🇺 EU':[{s:'Cardmarket Blog',h:'151 prices diverging from US market',t:'8m'},{s:'TCGPlayer EU',h:'VAT changes affect JP imports',t:'45m'},{s:'Reddit EU',h:'UK collectors pay 20% premium WOTC',t:'1h'}],
+    '🇻🇳 VN':[{s:'Group TCG VN',h:'Charizard $8,240 — phản ứng thị trường VN',t:'10m'},{s:'Shopee TCG',h:'Hàng JP Mercari tăng 15% phí ship',t:'35m'},{s:'Discord TCG VN',h:'Hướng dẫn gửi thẻ PSA từ VN 2025',t:'1h'}],
+  };
+  document.getElementById('reg-row').innerHTML=Object.entries(R).map(([flag,items])=>`<div class="reg-col"><div class="ph">${flag}</div>${items.map(i=>`<div class="rni"><div class="rni-s">${i.s} · ${i.t} ago</div><div class="rni-h">${i.h}</div></div>`).join('')}</div>`).join('');
+})();
+
+// ═══════════════════════════════════════════════════
+// RIGHT PANEL — alerts, social, graded
+// ═══════════════════════════════════════════════════
+(()=>{
+  document.getElementById('al').innerHTML=[
+    {i:'🚨',t:"Blaine's Charizard — Z-score 3.8σ",m:'Volume <span>+840%</span> vs 30d baseline'},
+    {i:'⚡',t:'Tropical Wind — Z-score 2.9σ',m:'Giá vượt <span>$1,800</span> ngưỡng kháng cự'},
+    {i:'📦',t:'Prismatic Evol. Box — Sealed drop',m:'eBay avg giảm <span>-4.7%</span> trong 48h'},
+    {i:'🔍',t:'PSA Data Gap — 2h+',m:'Pop report <span>không cập nhật</span>'},
+  ].map(a=>`<div class="alrt"><div class="alrti">${a.i}</div><div><div class="alrtt">${a.t}</div><div class="alrtm">${a.m}</div></div></div>`).join('');
+  document.getElementById('sm').innerHTML=[
+    {n:'Charizard Base',p:92,c:'var(--red)'},{n:"Blaine's Charz",p:87,c:'var(--accent)'},{n:'151 Reprint',p:75,c:'var(--accent)'},{n:'Prismatic Evol.',p:68,c:'var(--blue)'},{n:'PSA Grading',p:44,c:'var(--green)'},
+  ].map(m=>`<div class="smrow"><div class="smn">${m.n}</div><div class="smb"><div class="smf" style="width:${m.p}%;background:${m.c};opacity:.75;"></div></div><div class="smc">${m.p}k</div></div>`).join('');
+  document.getElementById('gb').innerHTML=[
+    {c:'Charizard Base',g:'PSA 10',p:'$35,000',d:'+2.1%',dir:'up'},{c:'Charizard Base',g:'PSA 9',p:'$8,500',d:'+4.3%',dir:'up'},
+    {c:"Blaine's Charz",g:'PSA 10',p:'$580',d:'+48%',dir:'up'},{c:'Lugia Neo Gen',g:'PSA 9',p:'$1,200',d:'-2%',dir:'dn'},{c:'Pikachu Illus.',g:'PSA 10',p:'$6.2M',d:'N/A',dir:''},
+  ].map(r=>`<tr><td>${r.c}</td><td class="grd">${r.g}</td><td>${r.p}</td><td class="${r.dir==='up'?'up':r.dir==='dn'?'dn':''}">${r.d}</td></tr>`).join('');
+  document.getElementById('poll').innerHTML=[{l:'Tăng >10%',p:52,c:'var(--green)'},{l:'Ổn định ±5%',p:28,c:'var(--blue)'},{l:'Giảm <10%',p:20,c:'var(--red)'}]
+    .map(o=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;"><div style="font-size:var(--fs-sm);color:var(--text2);min-width:80px;font-weight:600;">${o.l}</div><div style="flex:1;height:7px;background:var(--border);overflow:hidden;"><div style="width:${o.p}%;height:100%;background:${o.c};opacity:.75;"></div></div><div style="font-size:var(--fs-sm);color:var(--text3);min-width:32px;text-align:right;font-weight:700;">${o.p}%</div></div>`).join('');
+})();
+
+// ═══════════════════════════════════════════════════
+// CHART
+// ═══════════════════════════════════════════════════
+const CD={
+  '1d':[8100,8120,8080,8150,8200,8190,8230,8240],
+  '7d':[7800,7850,7920,7880,8000,8100,8180,8240],
+  '30d':[6800,7000,7100,6900,7200,7500,7800,7950,8000,8050,8100,8200,8240],
+  '90d':[5500,5800,6000,6200,6500,6300,6800,7000,7200,7500,7800,8100,8240],
+  '1y':[3000,3500,4000,4200,5000,5800,6000,6500,7000,7800,8100,8200,8240],
+};
+function drawChart(r='30d') {
+  const data=CD[r],svg=document.getElementById('mc'),W=800,H=130,P=14;
+  const mn=Math.min(...data),mx=Math.max(...data);
+  const x=i=>P+(i/(data.length-1))*(W-P*2);
+  const y=v=>H-P-((v-mn)/(mx-mn))*(H-P*2);
+  const line=data.map((v,i)=>`${i===0?'M':'L'}${x(i)},${y(v)}`).join(' ');
+  const area=line+` L${x(data.length-1)},${H} L${x(0)},${H} Z`;
+  svg.innerHTML=`<defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#39d98a" stop-opacity=".2"/><stop offset="100%" stop-color="#39d98a" stop-opacity="0"/></linearGradient><linearGradient id="lg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#4da6ff"/><stop offset="100%" stop-color="#39d98a"/></linearGradient></defs>`
+    +[0,.25,.5,.75,1].map(t=>{const yy=P+t*(H-P*2),val=mx-t*(mx-mn);return`<line x1="${P}" y1="${yy}" x2="${W-P}" y2="${yy}" stroke="rgba(31,45,61,.9)" stroke-width="1" stroke-dasharray="3,5"/><text x="${P-4}" y="${yy+4}" fill="#506070" font-size="9" text-anchor="end" font-family="Consolas,monospace">$${(Math.round(val/100)*100).toLocaleString()}</text>`;}).join('')
+    +`<path d="${area}" fill="url(#ag)"/><path d="${line}" fill="none" stroke="url(#lg)" stroke-width="2.5" stroke-linejoin="round"/>`
+    +data.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="${i===data.length-1?5:2.5}" fill="${i===data.length-1?'#39d98a':'#1a2535'}" stroke="#39d98a" stroke-width="1.5"/>`).join('')
+    +`<rect x="${Math.min(x(data.length-1)+8,W-82)}" y="${y(data[data.length-1])-12}" width="78" height="20" fill="rgba(57,217,138,.1)" rx="2"/><text x="${Math.min(x(data.length-1)+12,W-78)}" y="${y(data[data.length-1])+3}" fill="#39d98a" font-size="12" font-family="Consolas,monospace" font-weight="bold">$${data[data.length-1].toLocaleString()}</text>`;
+}
+drawChart();
+
+// ═══════════════════════════════════════════════════
+// LIVE STREAMS
+// ═══════════════════════════════════════════════════
+const STREAMS=[
+  {n:'Leonhart',t:'Opening 10 cases Prismatic Evolutions LIVE!',v:'24,832',pl:'yt',url:'https://www.youtube.com/@Leonhart54',e:'🔥',live:true},
+  {n:'PokeRev',t:'Midnight case — 151 Set hunt',v:'18,241',pl:'yt',url:'https://www.youtube.com/@PokeRev',e:'📦',live:true},
+  {n:'Unlistedleaf',t:'Vintage WOTC holo hunt — Base Set',v:'11,509',pl:'yt',url:'https://www.youtube.com/@unlisted_leaf',e:'🃏',live:true},
+  {n:'TCA Gaming',t:'New set watch party + pulls',v:'9,122',pl:'twitch',url:'https://www.twitch.tv/tcagaming',e:'🎮',live:true},
+  {n:'PokéCard Explorer JP',t:'【生放送】黒炎の支配者 BOX開封',v:'7,845',pl:'yt',url:'https://www.youtube.com/@pokecardexplorer',e:'🇯🇵',live:true},
+  {n:'FlowstateCards',t:'Market analysis + live pulls',v:'5,301',pl:'yt',url:'https://www.youtube.com/@FlowstateCards',e:'💎',live:true},
+  {n:'TCGPull TikTok',t:'#pokemon #charizard live unboxing',v:'3,201',pl:'tiktok',url:'https://www.tiktok.com/live',e:'📱',live:true},
+  {n:'MaskedRoyale JP',t:'旧裏面ライブ開封 — Recorded',v:'—',pl:'yt',url:'https://www.youtube.com/@MaskedRoyale',e:'🀄',live:false},
+];
+let activeStream = 0;
+function streamHTML(id, onClickFn) {
+  return STREAMS.map((s,i)=>`<div class="sli${i===0?' active':''}" id="${id}-${i}" onclick="${onClickFn}(${i})"><div class="sli-em">${s.e}</div><div class="sli-b"><div class="sli-top"><span class="sli-pl ${s.pl}">${s.pl==='yt'?'YT':s.pl==='twitch'?'Twitch':'TikTok'}</span><span class="sli-name">${s.n}</span></div><div class="sli-ttl">${s.t}</div>${s.live?`<div class="sli-v">${s.v} viewers</div>`:'<div style="font-size:11px;color:var(--text3)">● Offline / Recorded</div>'}</div></div>`).join('');
+}
+function openStream(idx) {
+  activeStream = idx;
+  const s = STREAMS[idx];
+  // Update main live page
+  document.getElementById('ph-name').textContent = s.e + ' ' + s.n;
+  document.getElementById('ph-title').textContent = s.t;
+  document.getElementById('ph-viewers').textContent = s.live ? s.v + ' đang xem' : 'Offline / Recorded';
+  document.getElementById('lib-name').textContent = s.n;
+  document.getElementById('lib-title').textContent = s.t;
+  document.getElementById('lib-viewers').textContent = s.live ? s.v + ' viewers' : '—';
+  const pb = document.getElementById('lib-plat');
+  pb.className = 'lib-plat ' + s.pl;
+  pb.textContent = s.pl === 'yt' ? 'YouTube' : s.pl === 'twitch' ? 'Twitch' : 'TikTok';
+  document.getElementById('live-ph').onclick = () => openStream(idx);
+  // Highlight active
+  document.querySelectorAll('[id^="sf-"]').forEach((el,i) => el.classList.toggle('active', i===idx));
+  // Open in new tab
+  window.open(s.url, '_blank');
+}
+document.getElementById('stream-full').innerHTML = streamHTML('sf', 'openStream');
+document.getElementById('stream-mini').innerHTML = STREAMS.map((s,i)=>`<div class="sli${i===0?' active':''}" onclick="window.open('${s.url}','_blank')"><div class="sli-em">${s.e}</div><div class="sli-b"><div class="sli-top"><span class="sli-pl ${s.pl}">${s.pl==='yt'?'YT':s.pl==='twitch'?'Twitch':'TikTok'}</span><span class="sli-name">${s.n}</span></div><div class="sli-ttl">${s.t}</div>${s.live?`<div class="sli-v">${s.v} viewers</div>`:'<div style="font-size:11px;color:var(--text3)">● Offline</div>'}</div></div>`).join('');
+
+// ═══════════════════════════════════════════════════
+// PRICE ALERTS
+// ═══════════════════════════════════════════════════
+let alertCond = 'above';
+let ALERTS = [
+  {card:'Charizard Base Shadowless',cond:'Vượt ngưỡng',thresh:9000,cur:8240,src:'TCGPlayer',triggered:false,time:'2 ngày trước'},
+  {card:"Blaine's Charizard",cond:'Vượt ngưỡng',thresh:150,cur:158,src:'eBay',triggered:true,time:'14 phút trước'},
+  {card:'Prismatic Evol. Box',cond:'Xuống dưới',thresh:280,cur:320,src:'TCGPlayer',triggered:false,time:'1 tuần trước'},
+  {card:'PSA 10 Umbreon VMAX',cond:'Thay đổi ±15%',thresh:390,cur:340,src:'PSA SMR',triggered:false,time:'3 ngày trước'},
+];
+function alertRowHTML(a, i) {
+  return `<div class="aa${a.triggered?' triggered':''}"><div class="aa-hdr"><div class="aa-st">${a.triggered?'🚨 TRIGGERED':'● ACTIVE'}</div><div class="aa-cn">${a.card}</div></div><div class="aa-body"><div class="aa-stat"><div class="asl">Điều kiện</div><div class="asv" style="font-size:14px;color:var(--text2)">${a.cond}</div></div><div class="aa-stat"><div class="asl">Ngưỡng</div><div class="asv" style="color:var(--accent)">$${a.thresh.toLocaleString()}</div></div><div class="aa-stat"><div class="asl">Hiện tại</div><div class="asv" style="color:${a.triggered?'var(--red)':'var(--green)'}">$${a.cur.toLocaleString()}</div></div></div><div class="aa-ft"><span class="aa-time">${a.src} · ${a.time}</span><button class="aa-del" onclick="deleteAlert(${i})">✕ Xóa</button></div></div>`;
+}
+function renderAlerts() {
+  const html = ALERTS.map((a,i) => alertRowHTML(a,i)).join('');
+  const triggered = ALERTS.filter(a=>a.triggered).length;
+  ['alert-list-full','alert-mini'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  });
+  ['alert-badge','alert-count-badge'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = triggered > 0 ? triggered + ' TRIGGERED' : ALERTS.length + ' ACTIVE';
+  });
+}
+function deleteAlert(i) { ALERTS.splice(i,1); renderAlerts(); }
+function setCond(el, c) { document.querySelectorAll('.cond-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); alertCond = c; }
+function createAlert() {
+  const card = document.getElementById('af-card').value.trim();
+  const price = parseFloat(document.getElementById('af-price').value);
+  const src = document.getElementById('af-src').value;
+  if (!card || !price) { alert('Vui lòng nhập tên card và ngưỡng giá!'); return; }
+  const condMap = {above:'Vượt ngưỡng',below:'Xuống dưới',pct:'Thay đổi %'};
+  ALERTS.unshift({card,cond:condMap[alertCond],thresh:price,cur:Math.round(price*0.93),src,triggered:false,time:'Vừa tạo'});
+  renderAlerts();
+  document.getElementById('af-card').value = '';
+  document.getElementById('af-price').value = '';
+}
+renderAlerts();
+
+// ═══════════════════════════════════════════════════
+// EN vs JP COMPARE
+// ═══════════════════════════════════════════════════
+function buildCmpHTML(q) {
+  const s = q.toLowerCase().trim();
+  if (!s) return '<div class="cmp-empty">Nhập tên card để so sánh...</div>';
+  const en = EN.filter(c => c.n.toLowerCase().includes(s) || c.s.toLowerCase().includes(s)).slice(0,8);
+  const jp = JP.filter(c => c.n.toLowerCase().includes(s) || c.s.toLowerCase().includes(s)).slice(0,8);
+  const len = Math.max(en.length, jp.length);
+  if (len === 0) return '<div class="cmp-empty">Không tìm thấy kết quả cho "' + q + '"</div>';
+  let html = '';
+  for (let i = 0; i < len; i++) {
+    const e = en[i], j = jp[i];
+    const eUSD = e ? e.p : null, jUSD = j ? j.p : null;
+    let winner = 'eq', spread = 'N/A';
+    if (eUSD && jUSD) { const diff = Math.abs(eUSD-jUSD); spread = ((diff/Math.min(eUSD,jUSD))*100).toFixed(1)+'%'; winner = jUSD < eUSD ? 'jp' : 'en'; }
+    const wl = {jp:'🇯🇵 JP rẻ hơn',en:'🇺🇸 EN rẻ hơn',eq:'≈ Ngang nhau'}[winner];
+    html += `<div class="cmp-row">
+      <div class="cmp-cell">${e?`<div class="cc-name">${e.n}</div><div class="cc-set">${e.s}</div><div class="cc-price en">$${e.p.toLocaleString()}</div><div class="cc-delta" style="color:${e.d==='up'?'var(--green)':'var(--red)'}">${e.d==='up'?'+':''}${e.c}% (24h)</div>`:'<div style="color:var(--text3);padding:8px 0">— Không có dữ liệu EN</div>'}</div>
+      <div class="cmp-cell mid"><div class="cmp-mid-inner">${eUSD&&jUSD?`<div class="wb ${winner}">${wl}</div><div class="spread-t">Chênh lệch: ${spread}</div><div class="jp-usd">JP ≈ $${jUSD.toLocaleString()}</div>`:'<div style="color:var(--text3);font-size:12px">Thiếu dữ liệu</div>'}</div></div>
+      <div class="cmp-cell">${j?`<div class="cc-name">${j.n}</div><div class="cc-set">${j.s}</div><div class="cc-price jp">${j.ps}</div><div class="cc-delta" style="color:${j.d==='up'?'var(--green)':'var(--red)'}">${j.d==='up'?'+':''}${j.c}% (24h)</div>`:'<div style="color:var(--text3);padding:8px 0">— Không có dữ liệu JP</div>'}</div>
+    </div>`;
+  }
+  return html;
+}
+let cmpTO = null;
+function runCmp(q, targetId) {
+  clearTimeout(cmpTO);
+  cmpTO = setTimeout(() => {
+    const el = document.getElementById(targetId);
+    if (el) el.innerHTML = buildCmpHTML(q);
+  }, 200);
+}
+function quickCmp(q) { document.getElementById('qcmp').value = q; runCmp(q,'cmp-mini'); }
+function cmpFull(q) { document.getElementById('cmp-inp').value = q; runCmp(q,'cmp-full'); }
+// Init both
+runCmp('Charizard', 'cmp-mini');
+runCmp('Charizard', 'cmp-full');
+
+// ═══════════════════════════════════════════════════
+// PORTFOLIO
+// ═══════════════════════════════════════════════════
+let portfolio = [
+  {n:'Charizard Base Shadowless',s:'Base Set 1999',lang:'EN',grade:'PSA 9',qty:1,buy:6800,cur:8240},
+  {n:'Umbreon VMAX Alt Art',s:'Evolving Skies',lang:'EN',grade:'Raw NM',qty:2,buy:260,cur:340},
+  {n:'Lugia ex Alt Art',s:'Silver Tempest',lang:'EN',grade:'Raw NM',qty:1,buy:280,cur:380},
+  {n:'ルカリオex SA',s:'拡張パック 2023',lang:'JP',grade:'Raw NM',qty:3,buy:240,cur:320},
+  {n:'Palkia ex Alt Art',s:'Crown Zenith',lang:'EN',grade:'PSA 10',qty:1,buy:120,cur:189},
+];
+function renderPortfolio() {
+  let totalVal=0, totalBuy=0;
+  document.getElementById('port-tbody').innerHTML = portfolio.map((c,i) => {
+    const pnl=(c.cur-c.buy)*c.qty, pct=((c.cur-c.buy)/c.buy*100).toFixed(1), dir=pnl>=0?'up':'dn';
+    totalVal += c.cur*c.qty; totalBuy += c.buy*c.qty;
+    return `<tr>
+      <td><div class="pn">${c.n}</div><div class="ps">${c.lang} · ${c.s}</div></td>
+      <td class="grd">${c.grade}</td>
+      <td class="r" style="color:var(--text)">${c.qty}</td>
+      <td class="r">$${c.buy.toLocaleString()}</td>
+      <td class="r ${dir}" style="font-weight:700;font-size:15px;">$${c.cur.toLocaleString()}</td>
+      <td class="${dir}">$${Math.abs(pnl).toLocaleString()}</td>
+      <td class="${dir}">${pnl>=0?'+':'−'}${Math.abs(pct)}%</td>
+      <td><button class="act-btn" onclick="removePortCard(${i})">✕</button></td>
+    </tr>`;
+  }).join('');
+  const totalPnl = totalVal - totalBuy;
+  const totalPct = totalBuy > 0 ? ((totalPnl/totalBuy)*100).toFixed(1) : 0;
+  document.getElementById('port-total').textContent = '$'+Math.round(totalVal).toLocaleString();
+  document.getElementById('port-pnl').textContent = (totalPnl>=0?'+':'-')+'$'+Math.abs(Math.round(totalPnl)).toLocaleString();
+  document.getElementById('port-pnl').style.color = totalPnl>=0?'var(--green)':'var(--red)';
+  document.getElementById('port-pct').textContent = (totalPct>=0?'+':'')+totalPct+'%';
+  document.getElementById('port-pct').style.color = totalPct>=0?'var(--green)':'var(--red)';
+  document.getElementById('port-count').textContent = portfolio.length;
+  // Distribution
+  const cats={Vintage:0,Modern:0,JP:0,Graded:0};
+  portfolio.forEach(c=>{
+    const v=c.cur*c.qty;
+    if(c.lang==='JP')cats.JP+=v;
+    else if(c.grade.includes('PSA')||c.grade.includes('BGS'))cats.Graded+=v;
+    else if(['Base Set','Neo','Team Rocket','Gym'].some(x=>c.s.includes(x)))cats.Vintage+=v;
+    else cats.Modern+=v;
+  });
+  const tot=Object.values(cats).reduce((a,b)=>a+b,0)||1;
+  const colors={Vintage:'var(--accent)',Modern:'var(--blue)',JP:'var(--purple)',Graded:'var(--green)'};
+  document.getElementById('port-dist-inner').innerHTML=Object.entries(cats).map(([k,v])=>`<div class="dist-row"><div class="dist-lbl">${k}</div><div class="dist-bar"><div class="dist-fill" style="width:${(v/tot*100).toFixed(0)}%;background:${colors[k]};"></div></div><div class="dist-pct">${(v/tot*100).toFixed(0)}%</div></div>`).join('');
+  // Mini chart
+  const data=[38000,39500,40200,38800,41000,42500,43800,44900,46200,47100,Math.round(totalVal)];
+  const svg=document.getElementById('port-svg'),W=400,H=70,P=8;
+  const mn=Math.min(...data),mx=Math.max(...data);
+  const x=ii=>P+(ii/(data.length-1))*(W-P*2),y=v=>H-P-((v-mn)/(mx-mn))*(H-P*2);
+  const line=data.map((v,ii)=>`${ii===0?'M':'L'}${x(ii)},${y(v)}`).join(' ');
+  svg.innerHTML=`<defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e8c542" stop-opacity=".18"/><stop offset="100%" stop-color="#e8c542" stop-opacity="0"/></linearGradient></defs><path d="${line} L${x(data.length-1)},${H} L${x(0)},${H} Z" fill="url(#pg)"/><path d="${line}" fill="none" stroke="#e8c542" stroke-width="2" stroke-linejoin="round"/>`;
+}
+function addPortCard() {
+  const n=document.getElementById('pf-name').value.trim();
+  const s=document.getElementById('pf-set').value.trim();
+  const lang=document.getElementById('pf-lang').value;
+  const grade=document.getElementById('pf-grade').value;
+  const buy=parseFloat(document.getElementById('pf-buy').value);
+  const qty=parseInt(document.getElementById('pf-qty').value)||1;
+  if(!n||!buy){alert('Vui lòng nhập tên card và giá mua!');return;}
+  portfolio.push({n,s:s||'—',lang,grade,qty,buy,cur:Math.round(buy*1.05)});
+  renderPortfolio();
+  ['pf-name','pf-set','pf-buy'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pf-qty').value='1';
+}
+function removePortCard(i){portfolio.splice(i,1);renderPortfolio();}
+renderPortfolio();
+
+// ═══════════════════════════════════════════════════
+// LIVE INDEX SIMULATION
+// ═══════════════════════════════════════════════════
+setInterval(()=>{
+  const el=document.getElementById('im');
+  if(el) el.textContent=(parseFloat(el.textContent)+(Math.random()-.5)*1.5).toFixed(1);
+},5000);
+</script>
+
+<!-- ══════════════════════════════════════════
+  FLOATING LIVE STREAM WIDGET
+══════════════════════════════════════════ -->
+<style>
+#float-widget{
+  position:fixed;bottom:20px;right:20px;width:300px;height:230px;
+  background:var(--bg2);border:1px solid rgba(255,77,106,.4);
+  box-shadow:0 8px 40px rgba(0,0,0,.85),0 0 20px rgba(255,77,106,.08);
+  z-index:8000;display:none;flex-direction:column;overflow:hidden;
+  min-width:200px;min-height:160px;resize:both;
+}
+#float-widget.show{display:flex;}
+#fw-bar{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;
+  background:rgba(255,77,106,.08);border-bottom:1px solid rgba(255,77,106,.2);
+  cursor:move;user-select:none;flex-shrink:0;
+}
+#fw-dot{width:7px;height:7px;border-radius:50%;background:var(--red);
+  box-shadow:0 0 6px var(--red);animation:blink 1.2s infinite;flex-shrink:0;}
+#fw-title{font-size:12px;font-weight:700;color:var(--text);flex:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#fw-viewers{font-size:11px;color:var(--red);font-weight:600;flex-shrink:0;}
+#fw-x{cursor:pointer;color:var(--text3);font-size:16px;width:22px;height:22px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+#fw-x:hover{color:var(--red);}
+#fw-screen{flex:1;min-height:0;background:#000;display:flex;align-items:center;
+  justify-content:center;flex-direction:column;gap:8px;cursor:pointer;
+  background:radial-gradient(ellipse at center,#111d2b,#080c12);}
+#fw-screen:hover #fw-play{transform:scale(1.12);}
+#fw-play{width:52px;height:52px;border-radius:50%;background:rgba(255,77,106,.15);
+  border:2px solid rgba(255,77,106,.5);display:flex;align-items:center;
+  justify-content:center;font-size:22px;transition:transform .2s;}
+#fw-sname{font-size:13px;font-weight:700;color:var(--text);}
+#fw-hint{font-size:10px;color:var(--text3);}
+#fw-tabs{flex-shrink:0;display:flex;overflow-x:auto;border-top:1px solid var(--border);
+  scrollbar-width:none;max-height:32px;}
+#fw-tabs::-webkit-scrollbar{display:none;}
+.fw-tab{flex-shrink:0;padding:5px 9px;font-size:11px;color:var(--text3);
+  border-right:1px solid var(--border);cursor:pointer;transition:all .1s;
+  display:flex;align-items:center;gap:4px;font-weight:600;white-space:nowrap;}
+.fw-tab:hover,.fw-tab.on{background:rgba(255,77,106,.08);color:var(--text);}
+.fw-ldot{width:5px;height:5px;border-radius:50%;background:var(--red);
+  animation:blink 1.5s infinite;flex-shrink:0;}
+
+/* float toggle */
+.fw-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;
+  border:1px solid rgba(255,77,106,.35);background:rgba(255,77,106,.06);
+  color:var(--red);font-size:11px;cursor:pointer;font-weight:700;transition:all .15s;}
+.fw-btn:hover,.fw-btn.on{background:rgba(255,77,106,.16);border-color:var(--red);
+  box-shadow:0 0 8px rgba(255,77,106,.2);}
+
+/* game modal */
+#gmod{position:fixed;inset:0;z-index:7500;display:none;align-items:center;
+  justify-content:center;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);}
+#gmod.show{display:flex;}
+#gmod-box{width:860px;max-height:88vh;background:var(--bg2);border:1px solid var(--border2);
+  display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.9);overflow:hidden;}
+#gmod-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;
+  align-items:center;gap:12px;flex-shrink:0;}
+#gmod-name{font-size:22px;font-weight:800;color:var(--text);}
+#gmod-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+#gmod-close{margin-left:auto;font-size:22px;cursor:pointer;color:var(--text3);
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;}
+#gmod-close:hover{color:var(--text);}
+#gmod-body{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.gm-sec{padding:14px 18px;border-bottom:1px solid var(--border);}
+.gm-stitle{font-size:10px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;
+  font-weight:700;margin-bottom:10px;}
+.gm-idx4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:0;}
+.gm-idxc{background:rgba(255,255,255,.025);border:1px solid var(--border);padding:10px 12px;}
+.gm-idxc-l{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:4px;}
+.gm-idxc-v{font-size:22px;font-weight:800;line-height:1;}
+.gm-idxc-d{font-size:11px;font-weight:600;margin-top:3px;}
+.gm-cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.gm-card{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:10px 12px;}
+.gm-card-n{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;line-height:1.3;}
+.gm-card-s{font-size:10px;color:var(--text3);margin-bottom:7px;}
+.gm-card-p{font-size:18px;font-weight:800;margin-bottom:2px;}
+.gm-card-d{font-size:11px;font-weight:600;}
+.gm-newsl{display:flex;flex-direction:column;}
+.gm-ni{padding:9px 0;border-bottom:1px solid rgba(31,45,61,.5);display:flex;gap:12px;align-items:flex-start;}
+.gm-ni:last-child{border-bottom:none;}
+.gm-ni-src{font-size:10px;color:var(--accent);font-weight:700;flex-shrink:0;min-width:140px;}
+.gm-ni-h{font-size:13px;color:var(--text);font-weight:600;line-height:1.4;}
+.gm-ni-t{font-size:10px;color:var(--text3);margin-top:2px;}
+</style>
+
+<!-- Floating widget HTML -->
+<div id="float-widget">
+  <div id="fw-bar">
+    <div id="fw-dot"></div>
+    <div id="fw-title">🔥 Leonhart — Live Pulls</div>
+    <div id="fw-viewers">24,832 👁</div>
+    <div id="fw-x" onclick="closeFloat()">✕</div>
+  </div>
+  <div id="fw-screen" onclick="fwOpenStream()">
+    <div id="fw-play">▶</div>
+    <div id="fw-sname">🔥 Leonhart</div>
+    <div id="fw-hint">Click để mở trong tab mới</div>
+  </div>
+  <div id="fw-tabs"></div>
+</div>
+
+<!-- Game modal HTML -->
+<div id="gmod" onclick="if(event.target===this)this.classList.remove('show')">
+  <div id="gmod-box">
+    <div id="gmod-hdr">
+      <div>
+        <div id="gmod-name">MTG</div>
+        <div id="gmod-sub">Magic: The Gathering — Market Intelligence</div>
+      </div>
+      <div id="gmod-close" onclick="document.getElementById('gmod').classList.remove('show')">✕</div>
+    </div>
+    <div id="gmod-body"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// FLOATING STREAM WIDGET
+// ══════════════════════════════════════════
+const FW_STREAMS = [
+  {n:'Leonhart',e:'🔥',v:'24,832',url:'https://www.youtube.com/@Leonhart54',live:true},
+  {n:'PokeRev',e:'📦',v:'18,241',url:'https://www.youtube.com/@PokeRev',live:true},
+  {n:'Unlistedleaf',e:'🃏',v:'11,509',url:'https://www.youtube.com/@unlisted_leaf',live:true},
+  {n:'TCA Gaming',e:'🎮',v:'9,122',url:'https://www.twitch.tv/tcagaming',live:true},
+  {n:'PokéCard JP',e:'🇯🇵',v:'7,845',url:'https://www.youtube.com/@pokecardexplorer',live:true},
+  {n:'Flowstate',e:'💎',v:'5,301',url:'https://www.youtube.com/@FlowstateCards',live:true},
+  {n:'TCGPull',e:'📱',v:'3,201',url:'https://www.tiktok.com/live',live:true},
+];
+let fwActive = 0;
+let fwOpen = false;
+
+function fwRender(){
+  const s = FW_STREAMS[fwActive];
+  document.getElementById('fw-title').textContent = s.e+' '+s.n+' — Live';
+  document.getElementById('fw-viewers').textContent = s.live ? s.v+' 👁' : 'Offline';
+  document.getElementById('fw-sname').textContent = s.e+' '+s.n;
+  document.getElementById('fw-play').textContent = s.live ? '▶' : '⏸';
+  document.getElementById('fw-tabs').innerHTML = FW_STREAMS.map((st,i)=>
+    `<div class="fw-tab${i===fwActive?' on':''}" onclick="fwSwitch(${i})">
+      ${st.live?'<span class="fw-ldot"></span>':''}${st.e} ${st.n}
+    </div>`).join('');
+}
+
+function fwSwitch(i){ fwActive=i; fwRender(); }
+function fwOpenStream(){ window.open(FW_STREAMS[fwActive].url,'_blank'); }
+
+function toggleFloat(){
+  fwOpen = !fwOpen;
+  document.getElementById('float-widget').classList.toggle('show', fwOpen);
+  const btn = document.getElementById('fw-toggle-btn');
+  if(btn){ btn.classList.toggle('on', fwOpen); btn.innerHTML = fwOpen ? '📺 LIVE ●' : '📺 LIVE'; }
+  if(fwOpen) fwRender();
+}
+function closeFloat(){
+  fwOpen = false;
+  document.getElementById('float-widget').classList.remove('show');
+  const btn = document.getElementById('fw-toggle-btn');
+  if(btn){ btn.classList.remove('on'); btn.innerHTML='📺 LIVE'; }
+}
+
+// Alias for existing button
+function toggleFloat_alias(){ toggleFloat(); }
+
+// Drag to move
+(()=>{
+  const el = document.getElementById('float-widget');
+  const bar = document.getElementById('fw-bar');
+  let drag=false, ox=0, oy=0, sx=0, sy=0;
+  bar.addEventListener('mousedown', e=>{
+    if(e.target.id==='fw-x') return;
+    drag=true; sx=e.clientX; sy=e.clientY;
+    const r=el.getBoundingClientRect();
+    ox=r.left; oy=r.top;
+    el.style.right='auto'; el.style.bottom='auto';
+    el.style.left=ox+'px'; el.style.top=oy+'px';
+    document.body.style.userSelect='none';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e=>{
+    if(!drag) return;
+    const nl=Math.max(0,Math.min(window.innerWidth-el.offsetWidth, ox+(e.clientX-sx)));
+    const nt=Math.max(0,Math.min(window.innerHeight-el.offsetHeight, oy+(e.clientY-sy)));
+    el.style.left=nl+'px'; el.style.top=nt+'px';
+  });
+  document.addEventListener('mouseup',()=>{ drag=false; document.body.style.userSelect=''; });
+})();
+
+// Hook topbar button (it was already rendered in HTML with old function name)
+const _oldToggle = window.toggleFloat;
+document.getElementById('float-toggle-btn') && document.getElementById('float-toggle-btn').setAttribute('onclick','toggleFloat()');
+
+// ══════════════════════════════════════════
+// GAME TAB DATA + MODAL
+// ══════════════════════════════════════════
+const GAMES = {
+  MTG:{
+    label:'Magic: The Gathering', emoji:'🧙', color:'#4da6ff',
+    indices:[
+      {l:'MTG Market Index',v:'1,284',d:'+18.3 (+1.4%)',c:'up'},
+      {l:'Vintage Singles',v:'$94.2K avg',d:'+2.1% (7d)',c:'up'},
+      {l:'Modern Staples',v:'$42',d:'-1.8% (24h)',c:'dn'},
+      {l:'Sealed Box Avg',v:'$128',d:'+0.9%',c:'up'},
+    ],
+    cards:[
+      {n:'Black Lotus (Alpha)',s:'Alpha 1993',p:'$32,000',c:'+3.1%',d:'up'},
+      {n:'Mox Sapphire',s:'Alpha 1993',p:'$12,500',c:'+1.8%',d:'up'},
+      {n:'Underground Sea',s:'Revised 1994',p:'$2,800',c:'+5.2%',d:'up'},
+      {n:'Tarmogoyf',s:'Future Sight 2007',p:'$42',c:'-3.4%',d:'dn'},
+      {n:'Force of Will',s:'Alliances 1996',p:'$128',c:'+2.0%',d:'up'},
+      {n:'Ragavan Nimble (Foil)',s:'Modern Horizons 2',p:'$165',c:'+8.4%',d:'up'},
+      {n:'The One Ring',s:'Lord of the Rings',p:'$80',c:'-2.1%',d:'dn'},
+      {n:'Jeweled Lotus',s:'Commander Legends',p:'$105',c:'+1.5%',d:'up'},
+    ],
+    news:[
+      {src:'MTGGoldfish',h:'Modern staples holding after banlist update',t:'8m'},
+      {src:'EDHREC',h:'Commander spike: Kindred Dominance +340% after set reveal',t:'25m'},
+      {src:'TCGPlayer',h:'Vintage sealed sells out — restock unknown',t:'1h'},
+      {src:'r/mtgfinance',h:'Black Lotus PSA 9 sells $31,500 at Heritage Auctions',t:'2h'},
+    ]
+  },
+  'One Piece':{
+    label:'One Piece TCG', emoji:'☠️', color:'#fb923c',
+    indices:[
+      {l:'OP Market Index',v:'342',d:'+24.1 (+7.6%)',c:'up'},
+      {l:'OP01 Vintage',v:'$2,840',d:'+12.3% (7d)',c:'up'},
+      {l:'Modern Set Avg',v:'$22',d:'+3.1% (24h)',c:'up'},
+      {l:'Sealed Box Avg',v:'$68',d:'-2.4%',c:'dn'},
+    ],
+    cards:[
+      {n:'Monkey D. Luffy (OP01-120)',s:'Romance Dawn 2022',p:'$2,840',c:'+12.3%',d:'up'},
+      {n:'Shanks (OP01-118)',s:'Romance Dawn 2022',p:'$1,200',c:'+8.4%',d:'up'},
+      {n:'Boa Hancock (ST02-007)',s:'Starter Deck 02',p:'$380',c:'+6.1%',d:'up'},
+      {n:'Kaido (OP02-098)',s:'Paramount War',p:'$540',c:'+4.2%',d:'up'},
+      {n:'Nami Alt Art (OP06)',s:'Wings of the Captain',p:'$142',c:'+18.5%',d:'up'},
+      {n:'Nico Robin Alt (OP05)',s:'Awakening of the New Era',p:'$95',c:'+9.8%',d:'up'},
+      {n:'Zoro Leader (OP07)',s:'500 Years in the Future',p:'$210',c:'+28.0%',d:'up'},
+      {n:'Whitebeard SEC (OP02)',s:'Paramount War',p:'$320',c:'-2.1%',d:'dn'},
+    ],
+    news:[
+      {src:'One Piece Official',h:'OP09 announced — new Gear 5 Luffy alt art confirmed',t:'15m'},
+      {src:'TCGPlayer',h:'OP01 reprint rumors denied — prices surge immediately',t:'40m'},
+      {src:'r/OnePieceTCG',h:'Zoro OP07 banned from meta — format shift incoming',t:'1h'},
+      {src:'Cardmarket EU',h:'European OP market +45% driven by anime S2 hype',t:'2h'},
+    ]
+  },
+  Lorcana:{
+    label:'Disney Lorcana', emoji:'✨', color:'#b06aff',
+    indices:[
+      {l:'Lorcana Index',v:'218',d:'+9.4 (+4.5%)',c:'up'},
+      {l:'TFC Vintage',v:'$1,420',d:'+6.2% (7d)',c:'up'},
+      {l:'Modern Set Avg',v:'$18',d:'+1.4% (24h)',c:'up'},
+      {l:'Sealed Box Avg',v:'$82',d:'+3.1%',c:'up'},
+    ],
+    cards:[
+      {n:'Elsa — Spirit of Winter',s:'The First Chapter 2023',p:'$1,420',c:'+6.2%',d:'up'},
+      {n:'Moana of Motunui',s:'The First Chapter',p:'$840',c:'+4.8%',d:'up'},
+      {n:'Mickey Mouse — Brave',s:'The First Chapter',p:'$620',c:'+3.1%',d:'up'},
+      {n:'Maleficent — Dragon',s:'The First Chapter',p:'$480',c:'+7.2%',d:'up'},
+      {n:'Stitch — Carefree Surfer',s:'Into the Inklands',p:'$320',c:'+12.5%',d:'up'},
+      {n:'Hercules — Divine Hero',s:'Ursula Returns',p:'$145',c:'+9.0%',d:'up'},
+      {n:'Cruella De Vil',s:'Rise of the Floodborn',p:'$210',c:'-1.8%',d:'dn'},
+      {n:'Captain Hook',s:'Into the Inklands',p:'$88',c:'+5.5%',d:'up'},
+    ],
+    news:[
+      {src:'Lorcana Official',h:'Azurite Sea set announced — release date Q2 2025',t:'1h'},
+      {src:'TCGPlayer',h:'The First Chapter sealed boxes hit $300+ — critical supply',t:'2h'},
+      {src:'r/Lorcana',h:'Elsa PSA 10 sells $3,800 — new all-time record',t:'3h'},
+      {src:'Cardmarket EU',h:'European Lorcana +62% YTD — new collector wave',t:'4h'},
+    ]
+  }
+};
+
+function openGameModal(name){
+  const g = GAMES[name];
+  if(!g){ return; }
+  const col = g.color;
+  document.getElementById('gmod-name').textContent = g.emoji+' '+g.label;
+  document.getElementById('gmod-name').style.color = col;
+  document.getElementById('gmod-sub').textContent = name + ' — Market Intelligence Dashboard';
+  document.getElementById('gmod-body').innerHTML = `
+    <div class="gm-sec">
+      <div class="gm-stitle">📈 Market Indices</div>
+      <div class="gm-idx4">${g.indices.map(i=>`
+        <div class="gm-idxc" style="border-bottom:2px solid ${col}22;">
+          <div class="gm-idxc-l">${i.l}</div>
+          <div class="gm-idxc-v" style="color:${i.c==='up'?'var(--green)':i.c==='dn'?'var(--red)':'var(--text)'}">${i.v}</div>
+          <div class="gm-idxc-d" style="color:${i.c==='up'?'var(--green)':i.c==='dn'?'var(--red)':'var(--text3)'}">${i.c==='up'?'▲':'▼'} ${i.d}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="gm-sec">
+      <div class="gm-stitle">🔥 Top Cards Đang Hot</div>
+      <div class="gm-cards4">${g.cards.map(c=>`
+        <div class="gm-card">
+          <div class="gm-card-n">${c.n}</div>
+          <div class="gm-card-s">${c.s}</div>
+          <div class="gm-card-p" style="color:${col}">${c.p}</div>
+          <div class="gm-card-d" style="color:${c.d==='up'?'var(--green)':'var(--red)'}">${c.d==='up'?'▲ ':'▼ '}${c.c} (24h)</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="gm-sec">
+      <div class="gm-stitle">📡 Tin Tức Mới Nhất</div>
+      <div class="gm-newsl">${g.news.map(n=>`
+        <div class="gm-ni">
+          <div><div class="gm-ni-src">${n.src}</div><div class="gm-ni-t">${n.t} ago</div></div>
+          <div class="gm-ni-h">${n.h}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  document.getElementById('gmod').classList.add('show');
+}
+
+// Override setGame to open modal for non-Pokemon games
+function setGame(el){
+  const name = el.textContent.trim();
+  if(name === 'Pokémon'){
+    document.querySelectorAll('.gtab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    return;
+  }
+  // For other games, show modal but don't change active tab visually
+  openGameModal(name);
+}
+</script>
+</body>
+</html>
