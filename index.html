@@ -705,13 +705,10 @@ svg.sp{width:100%;height:100%;}
           <div class="aibr">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;">
               <span class="aibage">AI BRIEF</span>
-              <span style="font-size:11px;color:var(--t3)" id="ai-ts">3 phút trước</span>
+              <span style="font-size:11px;color:var(--t3)" id="ai-ts">LIVE</span>
+              <span style="font-size:10px;padding:1px 5px;background:rgba(57,217,138,.08);border:1px solid rgba(57,217,138,.18);color:var(--grn);font-weight:700;margin-left:auto;" id="ai-cntdown">↻ 60s</span>
             </div>
-            <div class="aitxt" id="ai-txt">
-              <strong>Thị trường tích lũy mạnh.</strong> Prismatic Evolutions tăng sau tin đồn <strong>reprint bị hủy</strong>.
-              Shadowless Charizard vượt <strong>$8,500</strong> PSA 9. Reddit spike <strong>+340%</strong> "151 reprint".
-              <strong>Blaine's Charizard</strong> Z-score 3.8σ bất thường. PSA backlog giảm 65 ngày.
-            </div>
+            <div class="aitxt" id="ai-txt">Đang phân tích...</div>
           </div>
           <div class="ph"><span>⚡ ANOMALY ALERTS</span><span class="rbadge">4 ACTIVE</span></div>
           <div id="al"></div>
@@ -1010,6 +1007,12 @@ function liveUpdate() {
   });
   // Rotate 1 news item
   newsRotateIdx = (newsRotateIdx+1) % NEWS_POOL.length;
+  // Rotate regional news timestamps to feel live
+  Object.values(REG_NEWS).forEach(arr => arr.forEach(n => {
+    const mins = parseInt(n.t);
+    if (!isNaN(mins) && n.t.includes('m')) n.t = Math.max(1, mins+1)+'m';
+  }));
+  renderRegionalNews();
 
   // Re-render all dynamic parts
   renderHotspots();
@@ -1362,17 +1365,88 @@ function renderEcon(){
 renderEcon();
 
 // ═════════════════════════════════
-// REGIONAL NEWS
+// REGIONAL NEWS — clickable, opens detail modal
 // ═════════════════════════════════
-(()=>{
-  const R={
-    '🇺🇸 US':[{s:'TCGPlayer',h:'PSA 65-day turnaround confirmed',t:'2m'},{s:'Pokebeach',h:"Reprint Blaine's Charizard Q2 rumor",t:'18m'},{s:'eBay',h:'Pokémon TCG volume +18% this week',t:'34m'}],
-    '🇯🇵 JP':[{s:'ポケモン公式',h:'新拡張パック収録カード公開',t:'5m'},{s:'Mercari JP',h:'旧裏面コイキング ¥3.2M 落札',t:'22m'},{s:'Yahoo Auctions',h:'イラストレーター PSA10 出品中',t:'1h'}],
-    '🇪🇺 EU':[{s:'Cardmarket',h:'151 prices diverging from US market',t:'8m'},{s:'TCGPlayer EU',h:'VAT changes affect JP imports',t:'45m'},{s:'Reddit EU',h:'UK collectors pay 20% WOTC premium',t:'1h'}],
-    '🇻🇳 VN':[{s:'Group TCG VN',h:'Charizard $8,240 — phản ứng thị trường VN',t:'10m'},{s:'Shopee TCG',h:'Hàng JP Mercari tăng 15% phí ship',t:'35m'},{s:'Discord VN',h:'Hướng dẫn gửi PSA từ VN 2025',t:'1h'}],
-  };
-  document.getElementById('reg-row').innerHTML=Object.entries(R).map(([flag,items])=>`<div class="reg-col"><div class="ph">${flag}</div>${items.map(i=>`<div class="rni"><div class="rni-s">${i.s}</div><div class="rni-h">${i.h}</div><div class="rni-t">${i.t} ago</div></div>`).join('')}</div>`).join('');
-})();
+const REG_NEWS = {
+  '🇺🇸 US': [
+    {s:'TCGPlayer',h:'PSA confirms 65-day turnaround — supply to increase Q2',t:'2m',body:'PSA đã xác nhận chính thức rằng thời gian xử lý grading đã giảm xuống còn 65 ngày cho tier Standard, xuống từ mức đỉnh 120 ngày. Điều này dự kiến sẽ tăng nguồn cung PSA 9/10 ra thị trường trong Q2 2025, có thể gây áp lực giảm nhẹ lên premium của graded cards.'},
+    {s:'Pokebeach',h:"Blaine's Charizard reprint rumor Q2 — unconfirmed",t:'18m',body:"Một nguồn tin ẩn danh trên Pokebeach tiết lộ Blaine's Charizard có thể xuất hiện trong set Anniversary sắp tới. Tin chưa được xác nhận nhưng đã khiến giá tăng 44% trong 24h. Cộng đồng đang chia rẽ giữa tin tức hợp lệ và FOMO pump."},
+    {s:'eBay Data',h:'Pokémon TCG GMV +18% this week vs prior week',t:'34m',body:'Dữ liệu eBay Terapeak cho thấy tổng GMV Pokémon TCG tăng 18% so với tuần trước. Driven by: Vintage WOTC +31%, Modern Alt Art +12%, Sealed Product +8%. Charizard Base Set ghi nhận 3 giao dịch $8,000+ trong 48h.'},
+    {s:'Heritage Auctions',h:'Pikachu Illustrator PSA 10 estimated $6.2M for March lot',t:'1h',body:'Heritage Auctions đã confirm Pikachu Illustrator PSA 10 (duy nhất tồn tại) sẽ được đấu giá tháng 3/2025, ước tính từ $5.8-6.5M. Đây sẽ là kỷ lục mới cho trading card nói chung, vượt qua mức $5.275M trước đó.'},
+    {s:'Reddit r/PokemonTCG',h:'Prismatic Evolutions supply update — stores restocking',t:'2h',body:'Nhiều cửa hàng Target và Walmart báo cáo đã nhận được thêm Prismatic Evolutions ETB. Tuy nhiên, supply vẫn còn khan hiếm ở khu vực East Coast. Giá eBay tuy hạ nhẹ nhưng vẫn còn premium 40% so với MSRP.'},
+    {s:'Pokebeach',h:'New Japanese set reveal scheduled March 15',t:'3h',body:'The Pokémon Company Japan xác nhận event reveal set mới vào ngày 15/3. Dự kiến sẽ có card Arceus ex và Giratina ex SA. Cộng đồng đang speculate về việc bộ này có ảnh hưởng đến giá EN version hay không.'},
+  ],
+  '🇯🇵 JP': [
+    {s:'ポケモン公式',h:'新拡張パック「ステラミラクル」追加カード公開',t:'5m',body:'ポケモンカードゲーム公式から新弾「ステラミラクル」の追加収録カードが公開されました。ピジョットex SAが予想より高いレアリティで収録されることが判明し、予約価格が急騰しています。予約サイトでは既に完売状態の店舗も出ています。'},
+    {s:'Mercari JP',h:'旧裏面コイキング ¥3,200,000で落札',t:'22m',body:'Mercari JPにて旧裏面コイキング PSA 10が¥3,200,000で落札されました。前回の取引価格から約15%の上昇。旧裏面カードの需要は2025年に入り継続して上昇傾向にあり、特にPSAグレード品の人気が顕著です。'},
+    {s:'Yahoo Auctions',h:'ピカチュウ イラストレーター PSA10 新規出品',t:'1h',body:'Yahoo!オークションにピカチュウ イラストレーター PSA 10が出品されました。現在の入札額は¥580,000,000（約$388万）。オークション終了は3日後。コレクター間での注目度は非常に高く、入札ペースが過去最速水準。'},
+    {s:'メルカリ相場',h:'ルカリオex SA: ¥38,000→¥52,000 急騰',t:'1h',body:'大会結果を受け、ルカリオex SAの相場がメルカリで急騰。先週の¥38,000から本日¥52,000台まで上昇しました。東京地区の大会で優勝デッキに4枚採用されたことがトリガーとなっています。'},
+    {s:'ポケモンカード投資グループ',h:'旧裏面相場：2025年上半期まとめ',t:'2h',body:'旧裏面カードの2025年上半期相場分析によると、全体的に前年比+35%の上昇。特にコイキング、ピカチュウ イラストレーター、ミュウツー（コロコロ）の3枚が牽引役。グレードなしの中程度コンディション品も人気上昇中。'},
+    {s:'Twitter JP TCG',h:'新弾BOXの転売問題 — 小売店が声明',t:'3h',body:'複数の大手カードショップが転売ヤーによるBOX買い占め問題に声明を発表。1人1BOX制限を強化し、会員登録必須の購入システムに移行する店舗が増加。公式もこの問題に対して取り組みを検討中とのこと。'},
+  ],
+  '🇪🇺 EU': [
+    {s:'Cardmarket',h:'151 EU prices 28% above US market average',t:'8m',body:'Cardmarket データによると、151 setのEU価格は米国市場平均より28%高い水準で推移しています。これはEUへの輸入コスト、VAT（20%）、および相対的に少ないリリース数が原因。特にCharizard ex SAは欧州で€380以上で取引されています。'},
+    {s:'TCGPlayer EU',h:'New VAT rules affect JP card imports from Jan 2025',t:'45m',body:'EU新VAT規制（2025年1月施行）により、日本からの個人輸入カードに対してもVATが適用されるようになりました。€150以上の商品は通関時に20%VAT + 手数料が発生。JP vintage cardの欧州での実質価格が10-15%上昇見込み。'},
+    {s:'Reddit r/pokemoncardscollectors',h:'UK collectors paying 20% premium on WOTC era cards',t:'1h',body:'英国のコレクター調査によると、WOTC時代のカードに対して平均20%のプレミアムを支払っていることが判明。Brexit後の輸入規制と関税が主な原因。Graded cardsの場合は更に高く、PSA 10のCharizard Base Setは英国で£7,200以上。'},
+    {s:'Cardmarket Blog',h:'German market leads EU growth — +45% YTD Pokémon',t:'2h',body:'Cardmarketsの年次レポートによると、ドイツ市場がEUのPokémon TCG成長を牽引し、YTD +45%を記録。フランス(+38%)、オランダ(+32%)が続く。特にヴィンテージカードの需要が高く、Base Set 1st Edition関連が最も人気。'},
+    {s:'PokeGoldfish EU',h:'European Championship impact on card prices',t:'3h',body:'欧州選手権の結果を受け、使用率の高いカードが軒並み価格上昇。Gardevoir ex関連カードが24h以内に15%上昇。トーナメントシーズン特有の価格変動で、大会終了後に調整が入る可能性もあります。'},
+  ],
+  '🇻🇳 VN': [
+    {s:'Group TCG Vietnam',h:'Charizard Base $8,240 — cộng đồng VN phân tích',t:'10m',body:'Cộng đồng TCG Việt Nam đang sôi nổi thảo luận về mức giá $8,240 của Charizard Base Set Shadowless. Theo các nhà đầu tư VN, đây vẫn còn undervalued so với tiềm năng 5 năm tới. Nhiều người đặt mục tiêu $15,000 vào 2027. Nhóm đang tổ chức buổi phân tích thị trường online vào thứ 7 tuần này.'},
+    {s:'Shopee TCG VN',h:'Hàng JP qua Mercari tăng 15% phí vận chuyển',t:'35m',body:'Các shop nhập hàng JP qua Mercari thông báo tăng phí vận chuyển 15% do Nhật tăng phí bưu điện từ tháng 3. Cụ thể: thẻ đơn tăng 200-400 JPY/thẻ, BOX tăng 800-1500 JPY. Khách hàng nên gom đơn để giảm tác động chi phí.'},
+    {s:'Discord TCG VN',h:'Hướng dẫn submit PSA từ Việt Nam — cập nhật 2025',t:'1h',body:'Thread hướng dẫn submit PSA từ VN được cập nhật: Hiện tại có 3 middleman uy tín nhận gửi hàng. Chi phí khoảng $25-35/thẻ cho tier Standard (65 ngày). Lưu ý: cần mua bảo hiểm tối thiểu $500 cho thẻ vintage. Thời gian về VN sau khi có kết quả thêm 7-14 ngày.'},
+    {s:'Facebook TCG VN',h:'Trading event Hà Nội tháng 3 — 200 người tham dự',t:'2h',body:'Sự kiện trading card lớn nhất Hà Nội năm 2025 dự kiến diễn ra ngày 22-23/3 tại GEM Center. Đã có 200 người đăng ký, bao gồm dealers từ TPHCM, Đà Nẵng. Có khu vực grading on-site, exhibition vintage cards, và mini tournament với prize pool 10 triệu VNĐ.'},
+    {s:'YouTube TCG VN',h:'Review set mới: Stellar Miracle — nên mua không?',t:'3h',body:'Video review mới nhất của kênh TCG Vietnam đánh giá set Stellar Miracle: Pull rate thực tế thấp hơn lý thuyết khoảng 20%. Pigeot ex SA (~¥19,000) là chính. Khuyến nghị: chỉ mua nếu bạn collect, không nên sealed investment vì supply JP rất cao.'},
+    {s:'Zalo TCG VN',h:'Cảnh báo: Thẻ fake grade đang lưu hành',t:'4h',body:'Cộng đồng phát hiện batch thẻ PSA fake đang được bán ở một số hội nhóm. Dấu hiệu nhận biết: logo PSA không sắc nét, số cert không khớp trên website PSA, hologram mờ. Khuyến cáo luôn verify số cert tại psacard.com trước khi mua graded cards.'},
+  ],
+};
+
+// News detail modal
+function showNewsModal(region, idx) {
+  const items = REG_NEWS[region];
+  if (!items || !items[idx]) return;
+  const n = items[idx];
+  let modal = document.getElementById('news-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'news-modal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9800;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);';
+    modal.innerHTML = `<div style="width:580px;max-height:80vh;background:var(--bg2);border:1px solid var(--b2);box-shadow:0 24px 80px rgba(0,0,0,.9);display:flex;flex-direction:column;overflow:hidden;">
+      <div style="padding:13px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;flex-shrink:0;">
+        <div id="nm-region" style="font-size:12px;padding:1px 7px;background:var(--ga);color:var(--gold);border:1px solid rgba(232,197,66,.25);font-weight:700;"></div>
+        <div id="nm-src" style="font-size:12px;color:var(--gold);font-weight:700;"></div>
+        <div id="nm-time" style="font-size:11px;color:var(--t3);margin-left:4px;"></div>
+        <div onclick="document.getElementById('news-modal').remove()" style="margin-left:auto;cursor:pointer;font-size:20px;color:var(--t3);width:30px;height:30px;display:flex;align-items:center;justify-content:center;">✕</div>
+      </div>
+      <div style="overflow-y:auto;padding:18px 16px;">
+        <div id="nm-h" style="font-size:18px;font-weight:800;line-height:1.4;margin-bottom:14px;"></div>
+        <div id="nm-body" style="font-size:14px;color:var(--t2);line-height:1.85;border-left:2px solid rgba(232,197,66,.3);padding-left:12px;"></div>
+      </div>
+    </div>`;
+    modal.onclick = e => { if (e.target === modal) modal.remove(); };
+    document.body.appendChild(modal);
+  }
+  document.getElementById('nm-region').textContent = region;
+  document.getElementById('nm-src').textContent = n.s;
+  document.getElementById('nm-time').textContent = n.t + ' ago';
+  document.getElementById('nm-h').textContent = n.h;
+  document.getElementById('nm-body').textContent = n.body;
+  modal.style.display = 'flex';
+}
+
+function renderRegionalNews() {
+  document.getElementById('reg-row').innerHTML = Object.entries(REG_NEWS).map(([flag, items]) =>
+    `<div class="reg-col">
+      <div class="ph">${flag}</div>
+      ${items.map((n, i) => `<div class="rni" onclick="showNewsModal('${flag.replace(/'/g,"\\'")}',${i})" style="cursor:pointer;" title="Click để đọc chi tiết">
+        <div class="rni-s">${n.s} <span style="color:var(--t3);font-weight:400">· ${n.t} ago</span></div>
+        <div class="rni-h">${n.h}</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:3px;display:flex;align-items:center;gap:3px;"><span style="color:var(--blu)">▸ Đọc thêm</span></div>
+      </div>`).join('')}
+    </div>`
+  ).join('');
+}
+renderRegionalNews();
 
 // ═════════════════════════════════
 // RIGHT PANEL
@@ -1432,52 +1506,142 @@ document.getElementById('sent').innerHTML=[{v:52,l:'BULLS',c:'var(--grn)',a:'var
 })();
 
 // ═════════════════════════════════
-// STREAMS
+// AI BRIEF — rotating dynamic analysis
+// ═════════════════════════════════
+const AI_BRIEFS = [
+  () => { const c=EN[0],b=EN[8],h=EN.reduce((a,x)=>x.c>a.c?x:a,EN[0]); return `<strong>Thị trường tích lũy mạnh.</strong> <strong>${c.n}</strong> đạt <strong>$${c.p.toLocaleString()}</strong>, tăng <strong>+${c.c.toFixed(1)}%</strong> 24h. <strong>${b.n}</strong> Z-score <strong>3.8σ</strong> bất thường — volume +840% vs baseline. Card tăng mạnh nhất: <strong>${h.n}</strong> +${h.c.toFixed(1)}%. PSA backlog giảm còn 65 ngày — supply graded sắp tăng.`; },
+  () => { const jp=JP[0],jp2=JP[5]; return `<strong>JP Market sôi động.</strong> <strong>${jp.n}</strong> đạt <strong>${jp.ps}</strong>, tăng +${jp.c.toFixed(1)}%. Mercari JP volume tăng 28% so với tuần trước. <strong>${jp2.n}</strong> spike +${jp2.c.toFixed(1)}% sau tournament. Tỷ giá USD/JPY: <strong>149.82</strong> — hàng JP đang cheaper 8% so với 3 tháng trước khi quy đổi.`; },
+  () => { const top3=EN.slice(0,3); return `<strong>WOTC Vintage breakout.</strong> ${top3.map(c=>`<strong>${c.n.split(' ').slice(0,2).join(' ')}</strong> $${c.p.toLocaleString()}`).join(', ')}. Reddit mentions tăng +340% cho "151 reprint". Cộng đồng consensus: <strong>BUY</strong> vintage trước Q3. Prismatic Evolutions sealed vẫn premium 40% MSRP — supply khan hiếm.`; },
+  () => { const dn=EN.filter(c=>c.c<0).slice(0,2); const up=EN.filter(c=>c.c>5).slice(0,2); return `<strong>Mixed signals.</strong> Giảm: ${dn.map(c=>`<strong>${c.n.split(' ')[0]}</strong> ${c.c.toFixed(1)}%`).join(', ')}. Tăng mạnh: ${up.map(c=>`<strong>${c.n.split(' ')[0]}</strong> +${c.c.toFixed(1)}%`).join(', ')}. PSA 10 premium đang <strong>expand</strong> — graded cards outperform raw 2.1× trong 30 ngày. eBay GMV +18% tuần này.`; },
+  () => { const hot=EN.find(c=>c.c>10)||EN[8]; return `<strong>Anomaly detected: ${hot.n.split(' ').slice(0,2).join(' ')}.</strong> Z-score <strong>${(2.5+hot.c*0.1).toFixed(1)}σ</strong>, vượt ngưỡng 2σ — signal bất thường. Volume tăng ${Math.round(hot.c*80)}% vs 30d MA. Khả năng: insider buying, news catalyst, hoặc short squeeze. Monitor chặt trong 24-48h tới.`; },
+  () => { return `<strong>Macro outlook tích cực.</strong> USD/JPY <strong>149.82</strong> — favorable cho buyers JP cards từ US. PSA confirm turnaround 65 ngày. Heritage auction Pikachu Illustrator PSA10 ước tính <strong>$6.2M</strong> tháng 3 — sẽ tạo media attention lớn cho toàn bộ Pokémon TCG market.`; },
+];
+let aiBriefIdx = 0, aiCountdown = 60;
+function rotateAiBrief() {
+  aiBriefIdx = (aiBriefIdx + 1) % AI_BRIEFS.length;
+  const el = document.getElementById('ai-txt');
+  if (el) { el.style.opacity = '0'; setTimeout(() => { el.innerHTML = AI_BRIEFS[aiBriefIdx](); el.style.opacity = '1'; el.style.transition = 'opacity .5s'; }, 300); }
+  const ts = document.getElementById('ai-ts');
+  if (ts) ts.textContent = 'Updated ' + new Date().toLocaleTimeString('vi-VN',{hour12:false,hour:'2-digit',minute:'2-digit'});
+  aiCountdown = 60;
+}
+// Init first brief
+document.getElementById('ai-txt').innerHTML = AI_BRIEFS[0]();
+// Countdown timer
+setInterval(() => {
+  aiCountdown--;
+  const cd = document.getElementById('ai-cntdown');
+  if (cd) cd.textContent = '↻ ' + aiCountdown + 's';
+  if (aiCountdown <= 0) rotateAiBrief();
+}, 1000);
+
+// ═════════════════════════════════
+// STREAMS — 30+ channels
 // ═════════════════════════════════
 const STREAMS=[
-  {n:'Leonhart',t:'Opening 10 cases Prismatic Evolutions LIVE!',v:'24,832',pl:'yt',url:'https://www.youtube.com/@Leonhart54',e:'🔥',live:true},
-  {n:'PokeRev',t:'Midnight case — 151 Set hunt',v:'18,241',pl:'yt',url:'https://www.youtube.com/@PokeRev',e:'📦',live:true},
-  {n:'Unlistedleaf',t:'Vintage WOTC holo hunt — Base Set',v:'11,509',pl:'yt',url:'https://www.youtube.com/@unlisted_leaf',e:'🃏',live:true},
-  {n:'TCA Gaming',t:'New set watch party + pulls',v:'9,122',pl:'twitch',url:'https://www.twitch.tv/tcagaming',e:'🎮',live:true},
-  {n:'PokéCard Explorer JP',t:'【生放送】黒炎の支配者 BOX開封',v:'7,845',pl:'yt',url:'https://www.youtube.com/@pokecardexplorer',e:'🇯🇵',live:true},
-  {n:'FlowstateCards',t:'Market analysis + live pulls',v:'5,301',pl:'yt',url:'https://www.youtube.com/@FlowstateCards',e:'💎',live:true},
-  {n:'TCGPull TikTok',t:'#pokemon #charizard live unboxing',v:'3,201',pl:'tiktok',url:'https://www.tiktok.com/live',e:'📱',live:true},
-  {n:'MaskedRoyale JP',t:'旧裏面ライブ開封',v:'—',pl:'yt',url:'https://www.youtube.com/@MaskedRoyale',e:'🀄',live:false},
+  // ── LIVE NOW (high priority)
+  {n:'Leonhart',t:'Opening 10 cases Prismatic Evolutions LIVE!',v:24832,pl:'yt',url:'https://www.youtube.com/@Leonhart54',e:'🔥',live:true,cat:'EN'},
+  {n:'PokeRev',t:'Midnight case — 151 Set hunt for Charizard ex',v:18241,pl:'yt',url:'https://www.youtube.com/@PokeRev',e:'📦',live:true,cat:'EN'},
+  {n:'Unlistedleaf',t:'Vintage WOTC holo hunt — Base Set packs',v:11509,pl:'yt',url:'https://www.youtube.com/@unlisted_leaf',e:'🃏',live:true,cat:'EN'},
+  {n:'TCA Gaming',t:'New set watch party + case opening',v:9122,pl:'twitch',url:'https://www.twitch.tv/tcagaming',e:'🎮',live:true,cat:'EN'},
+  {n:'PokéCard Explorer JP',t:'【生放送】黒炎の支配者 BOX開封',v:7845,pl:'yt',url:'https://www.youtube.com/@pokecardexplorer',e:'🇯🇵',live:true,cat:'JP'},
+  {n:'FlowstateCards',t:'Market analysis + live pulls — what to buy now',v:5301,pl:'yt',url:'https://www.youtube.com/@FlowstateCards',e:'💎',live:true,cat:'EN'},
+  {n:'TCGPull TikTok',t:'#pokemon #charizard live unboxing',v:3201,pl:'tiktok',url:'https://www.tiktok.com/live',e:'📱',live:true,cat:'EN'},
+  {n:'PokeSquad JP',t:'【LIVE】スターターデッキ開封 151枚集め',v:6200,pl:'yt',url:'https://www.youtube.com/@PokeSquadJP',e:'🎴',live:true,cat:'JP'},
+  {n:'RickyPTCG',t:'Paldea Evolved case + market talk',v:4800,pl:'twitch',url:'https://www.twitch.tv/ricky_ptcg',e:'⚡',live:true,cat:'EN'},
+  {n:'PokeCollector KR',t:'포켓몬 카드 박스 개봉 LIVE',v:3900,pl:'yt',url:'https://www.youtube.com/@pokecollectorkr',e:'🇰🇷',live:true,cat:'KR'},
+  {n:'Gravy PTCG',t:'Shining Legends case — vintage hunt',v:3500,pl:'twitch',url:'https://www.twitch.tv/gravyptcg',e:'🌟',live:true,cat:'EN'},
+  {n:'NateHasYou',t:'Prismatic Evolutions midnight release!',v:2900,pl:'yt',url:'https://www.youtube.com/@NateHasYou',e:'🎉',live:true,cat:'EN'},
+  {n:'PokeCardMaster JP',t:'旧裏面 レアカード開封 LIVE配信',v:5100,pl:'yt',url:'https://www.youtube.com/@pokecardmaster',e:'🏆',live:true,cat:'JP'},
+  {n:'TCG Collector AU',t:'Crown Zenith case opening — Aussie pulls',v:2100,pl:'twitch',url:'https://www.twitch.tv/tcgcollectorau',e:'🦘',live:true,cat:'EN'},
+  {n:'Pokemons Grail',t:'PSA unboxing + market update live',v:1800,pl:'yt',url:'https://www.youtube.com/@pokemonsgrail',e:'🏺',live:true,cat:'EN'},
+  // ── RECENT / WILL GO LIVE SOON
+  {n:'MaskedRoyale JP',t:'旧裏面ライブ開封 — Starting soon',v:0,pl:'yt',url:'https://www.youtube.com/@MaskedRoyale',e:'🀄',live:false,cat:'JP'},
+  {n:'Rarefinds TCG',t:'Vintage box opening — later today',v:0,pl:'yt',url:'https://www.youtube.com/@Rarefinds',e:'💼',live:false,cat:'EN'},
+  {n:'Pokemart AU',t:'New set sealed — Sunday stream',v:0,pl:'twitch',url:'https://www.twitch.tv/pokemartau',e:'🛒',live:false,cat:'EN'},
+  {n:'Rare Candy TCG',t:'Market Analysis stream — weekly',v:0,pl:'yt',url:'https://www.youtube.com/@RareCandyTCG',e:'📈',live:false,cat:'EN'},
+  {n:'PokeCards DE',t:'German market — Box Opening',v:0,pl:'yt',url:'https://www.youtube.com/@pokecardsde',e:'🇩🇪',live:false,cat:'EU'},
+  {n:'TCG Japan Live',t:'Stellar Miracle opening — tonight',v:0,pl:'yt',url:'https://www.youtube.com/@tcgjapanlive',e:'🌸',live:false,cat:'JP'},
+  {n:'CardBoarder AU',t:'151 Case Opening — Sunday',v:0,pl:'twitch',url:'https://www.twitch.tv/cardboarderau',e:'🎲',live:false,cat:'EN'},
+  {n:'PokeInvestor',t:'Deep dive: should you buy now?',v:0,pl:'yt',url:'https://www.youtube.com/@pokeinvestor',e:'💰',live:false,cat:'EN'},
+  {n:'ShroudedFable TCG',t:'Fable sealed opening — weekend',v:0,pl:'twitch',url:'https://www.twitch.tv/shroudedfable',e:'📖',live:false,cat:'EN'},
+  {n:'PokéCard VN',t:'Khai hộp Prismatic Evolutions VN',v:0,pl:'yt',url:'https://www.youtube.com/@pokecardvn',e:'🇻🇳',live:false,cat:'VN'},
+  {n:'TrueKorosensei',t:'Modern Sealed — Sunday night',v:0,pl:'twitch',url:'https://www.twitch.tv/truekorosensei',e:'🎯',live:false,cat:'EN'},
+  {n:'PTCGRadio',t:'Meta podcast live — Tuesday',v:0,pl:'yt',url:'https://www.youtube.com/@PTCGRadio',e:'🎙️',live:false,cat:'EN'},
+  {n:'DamageDeal JP',t:'ダメージディール 金曜夜ライブ',v:0,pl:'yt',url:'https://www.youtube.com/@damagedeal',e:'💥',live:false,cat:'JP'},
+  {n:'Pokémon EU Collector',t:'EU market stream — biweekly',v:0,pl:'twitch',url:'https://www.twitch.tv/pokemonEUcollector',e:'🇪🇺',live:false,cat:'EU'},
+  {n:'SealedTCG',t:'Evolving Skies master set completion',v:0,pl:'yt',url:'https://www.youtube.com/@sealedtcg',e:'🔒',live:false,cat:'EN'},
+  {n:'PokeShinBury JP',t:'旧裏面デッキ対戦 LIVE',v:0,pl:'yt',url:'https://www.youtube.com/@pokeshinbury',e:'⚔️',live:false,cat:'JP'},
+  {n:'WildCaseOpener',t:'Wild opening — Friday night',v:0,pl:'twitch',url:'https://www.twitch.tv/wildcaseopener',e:'🌀',live:false,cat:'EN'},
 ];
 let activeStream=0;
+const CAT_COLORS = {EN:'var(--blu)',JP:'var(--pur)',KR:'#fb923c',EU:'var(--grn)',VN:'var(--gold)',EN_twitch:'#9146ff'};
+function fmtV(v){ if(!v) return '—'; if(v>=1000) return (v/1000).toFixed(1)+'K'; return v+''; }
 function sliHTML(s,i,onclk){
-  return`<div class="sli" id="sli-${i}" onclick="${onclk}">
+  const vstr = s.live ? `<div class="sli-v">${fmtV(s.v)} viewers</div>` : `<div style="font-size:11px;color:var(--t3)">● Bắt đầu sau</div>`;
+  const catBadge = `<span style="font-size:9px;padding:1px 4px;background:rgba(255,255,255,.05);border:1px solid var(--b2);color:var(--t3);font-weight:700;">${s.cat}</span>`;
+  return`<div class="sli${s.live?'':' offline'}" id="sli-${i}" onclick="${onclk}" style="${s.live?'':'opacity:.6;'}">
     <div class="sli-em">${s.e}</div>
     <div class="sli-b">
-      <div><span class="sli-pl ${s.pl}">${s.pl==='yt'?'YT':s.pl==='twitch'?'Twitch':'TikTok'}</span><span class="sli-name">${s.n}</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
+        <span class="sli-pl ${s.pl}">${s.pl==='yt'?'YT':s.pl==='twitch'?'Twitch':'TikTok'}</span>
+        <span class="sli-name">${s.n}</span>
+        ${catBadge}
+      </div>
       <div class="sli-ttl">${s.t}</div>
-      ${s.live?`<div class="sli-v">${s.v} viewers</div>`:`<div style="font-size:11px;color:var(--t3)">● Offline</div>`}
+      ${vstr}
     </div>
   </div>`;
 }
+
 function selectStream(i){
   activeStream=i;
   const s=STREAMS[i];
   ['ls-name','lb-name'].forEach(id=>document.getElementById(id).textContent=s.e+' '+s.n);
   ['ls-title','lb-title'].forEach(id=>document.getElementById(id).textContent=s.t);
-  document.getElementById('ls-viewers').textContent=s.live?s.v+' đang xem':'Offline';
-  document.getElementById('lb-viewers').textContent=s.live?s.v+' viewers':'—';
+  document.getElementById('ls-viewers').textContent=s.live?fmtV(s.v)+' đang xem':'Sắp live...';
+  document.getElementById('lb-viewers').textContent=s.live?fmtV(s.v)+' viewers':'—';
   const plat=document.getElementById('lb-plat');
   plat.className='live-bar-plat '+(s.pl==='twitch'?'twitch':'yt');
   plat.textContent=s.pl==='yt'?'YouTube':s.pl==='twitch'?'Twitch':'TikTok';
   document.querySelectorAll('[id^="sli-"]').forEach((el,ii)=>el.classList.toggle('sli-active',ii===i));
-  // floating widget
-  if(document.getElementById('fw').classList.contains('show')) fwSwitch(i);
+  if(document.getElementById('fw').classList.contains('show')) fwSwitch(STREAMS.filter(s=>s.live).findIndex((_,ii)=>ii===i));
 }
 function lsOpen(){ window.open(STREAMS[activeStream].url,'_blank'); }
 
-document.getElementById('stream-full').innerHTML=STREAMS.map((s,i)=>sliHTML(s,i,`selectStream(${i})`)).join('');
-document.getElementById('stream-mini').innerHTML=STREAMS.map((s,i)=>sliHTML(s,i,`gotoPage('live');selectStream(${i})`)).join('');
+// Simulate viewer count fluctuation every 12s
+setInterval(() => {
+  STREAMS.forEach(s => {
+    if (s.live && s.v > 0) s.v = Math.max(500, Math.round(s.v * (1 + (Math.random()-0.48)*0.03)));
+  });
+  renderStreamMini();
+  fwRender();
+}, 12000);
+
+function renderStreamMini() {
+  const live = STREAMS.filter(s=>s.live).sort((a,b)=>b.v-a.v);
+  const offline = STREAMS.filter(s=>!s.live);
+  const all = [...live, ...offline];
+  document.getElementById('stream-mini').innerHTML = all.map((s,i)=>sliHTML(s,STREAMS.indexOf(s),`gotoPage('live');selectStream(${STREAMS.indexOf(s)})`)).join('');
+}
+function renderStreamFull() {
+  const live = STREAMS.filter(s=>s.live).sort((a,b)=>b.v-a.v);
+  const offline = STREAMS.filter(s=>!s.live);
+  let html = `<div class="ph" style="font-size:10px;background:rgba(255,77,106,.04);">🔴 ĐANG LIVE (${live.length})</div>`;
+  html += live.map(s=>sliHTML(s,STREAMS.indexOf(s),`selectStream(${STREAMS.indexOf(s)})`)).join('');
+  html += `<div class="ph" style="font-size:10px;">⏰ SẮP LIVE (${offline.length})</div>`;
+  html += offline.map(s=>sliHTML(s,STREAMS.indexOf(s),`selectStream(${STREAMS.indexOf(s)})`)).join('');
+  document.getElementById('stream-full').innerHTML = html;
+}
+renderStreamMini();
+renderStreamFull();
 
 // ═════════════════════════════════
-// FLOATING WIDGET
+// FLOATING WIDGET — live channels priority
 // ═════════════════════════════════
 let fwOpen=false,fwIdx=0;
+const fwLive = () => STREAMS.filter(s=>s.live).sort((a,b)=>b.v-a.v);
+
 function toggleFW(){
   fwOpen=!fwOpen;
   document.getElementById('fw').classList.toggle('show',fwOpen);
@@ -1487,14 +1651,23 @@ function toggleFW(){
   if(fwOpen) fwRender();
 }
 function fwRender(){
-  const s=STREAMS[fwIdx];
-  document.getElementById('fw-title').textContent=s.e+' '+s.n+' — Live';
-  document.getElementById('fw-viewers').textContent=s.live?s.v+' 👁':'Offline';
+  const live = fwLive();
+  if(!live.length) return;
+  const s = live[fwIdx] || live[0];
+  document.getElementById('fw-title').textContent=s.e+' '+s.n+' — 🔴 LIVE';
+  document.getElementById('fw-viewers').textContent=fmtV(s.v)+' 👁';
   document.getElementById('fw-sname').textContent=s.e+' '+s.n;
-  document.getElementById('fw-tabs').innerHTML=STREAMS.filter(s=>s.live).map((st,i)=>`<div class="fw-tab${i===fwIdx?' on':''}" onclick="fwSwitch(${i})"><span class="fw-ldot"></span>${st.e} ${st.n}</div>`).join('');
+  document.getElementById('fw-hint').textContent=s.t.substring(0,40)+(s.t.length>40?'...':'');
+  document.getElementById('fw-tabs').innerHTML=live.map((st,i)=>
+    `<div class="fw-tab${i===fwIdx?' on':''}" onclick="fwSwitch(${i})"><span class="fw-ldot"></span>${st.e} ${st.n} <span style="color:var(--t3);font-size:10px;">${fmtV(st.v)}</span></div>`
+  ).join('');
 }
-function fwSwitch(i){fwIdx=i;fwRender();}
-function fwOpenStream(){window.open(STREAMS[fwIdx].url,'_blank');}
+function fwSwitch(i){ fwIdx=i; fwRender(); }
+function fwOpenStream(){
+  const live=fwLive();
+  const s=live[fwIdx]||live[0];
+  if(s) window.open(s.url,'_blank');
+}
 
 // Drag widget
 (()=>{
