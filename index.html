@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PokéMonitor v7 — TCG Intelligence</title>
+<title>PokéMonitor v7.1 — Pro Trader Edition</title>
 <style>
-/* ─── ROOT ─── */
+/* ─── GIỮ NGUYÊN CSS GỐC VÀ THÊM CSS MỚI CHO MATRIX ─── */
 :root{
   --font:'Calibri','Segoe UI',Arial,sans-serif;
   --mono:'Consolas','Courier New',monospace;
@@ -29,86 +29,45 @@ body{font-family:var(--font);font-size:var(--fs);color:var(--t1);}
 @keyframes fadein{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 @keyframes flash{0%{background:rgba(232,197,66,.18)}100%{background:transparent}}
 
-/* ─── SHELL ─── */
+/* COPY LẠI CÁC CLASS CƠ BẢN CỦA BẠN */
 .app{display:flex;flex-direction:column;height:100vh;}
-
-/* ─── TOPBAR ─── */
-.topbar{height:50px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--b1);
-  display:flex;align-items:center;padding:0 14px;gap:12px;z-index:100;}
-.logo{font-size:18px;font-weight:800;color:var(--gold);white-space:nowrap;
-  text-shadow:0 0 18px rgba(232,197,66,.3);}
+.topbar{height:50px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 14px;gap:12px;z-index:100;}
+.logo{font-size:18px;font-weight:800;color:var(--gold);white-space:nowrap;text-shadow:0 0 18px rgba(232,197,66,.3);}
 .logo sub{font-size:10px;color:var(--t3);font-weight:400;margin-left:4px;}
 .pills{display:flex;gap:5px;flex-shrink:0;}
-.pill{display:flex;align-items:center;gap:4px;font-size:var(--fss);color:var(--t2);
-  padding:2px 8px;border:1px solid var(--b1);}
+.pill{display:flex;align-items:center;gap:4px;font-size:var(--fss);color:var(--t2);padding:2px 8px;border:1px solid var(--b1);}
 .dot{width:6px;height:6px;border-radius:50%;animation:blink 2s infinite;flex-shrink:0;}
 .dot.g{background:var(--grn);box-shadow:0 0 5px var(--grn);}
 .dot.y{background:var(--gold);box-shadow:0 0 5px var(--gold);animation-delay:.6s;}
 .dot.r{background:var(--red);box-shadow:0 0 5px var(--red);animation-delay:1.2s;}
-
-/* SEARCH TRIGGER */
-.search-trigger{display:flex;align-items:center;gap:8px;padding:5px 12px;
-  background:rgba(255,255,255,.03);border:1px solid var(--b2);cursor:pointer;
-  transition:all .15s;flex:1;max-width:380px;color:var(--t3);font-size:var(--fsm);}
+.search-trigger{display:flex;align-items:center;gap:8px;padding:5px 12px;background:rgba(255,255,255,.03);border:1px solid var(--b2);cursor:pointer;transition:all .15s;flex:1;max-width:380px;color:var(--t3);font-size:var(--fsm);}
 .search-trigger:hover{border-color:var(--b2);background:rgba(255,255,255,.05);color:var(--t2);}
-.search-trigger .kbd{font-size:10px;margin-left:auto;background:var(--b1);
-  padding:1px 5px;border-radius:3px;color:var(--t3);}
-
+.search-trigger .kbd{font-size:10px;margin-left:auto;background:var(--b1);padding:1px 5px;border-radius:3px;color:var(--t3);}
 .topbar-r{margin-left:auto;display:flex;align-items:center;gap:8px;}
-.live-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;
-  border:1px solid rgba(255,77,106,.3);background:rgba(255,77,106,.06);
-  color:var(--red);font-size:var(--fss);cursor:pointer;font-weight:700;transition:all .15s;}
+.live-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;border:1px solid rgba(255,77,106,.3);background:rgba(255,77,106,.06);color:var(--red);font-size:var(--fss);cursor:pointer;font-weight:700;transition:all .15s;}
 .live-btn:hover,.live-btn.on{background:rgba(255,77,106,.15);border-color:var(--red);}
-.bell{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-  border:1px solid var(--b1);cursor:pointer;font-size:16px;position:relative;transition:all .15s;}
+.bell{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid var(--b1);cursor:pointer;font-size:16px;position:relative;transition:all .15s;}
 .bell:hover{border-color:var(--gold);}
-.bell-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--red);
-  border-radius:50%;animation:blink 1.5s infinite;}
-.clk{font-size:var(--fsm);color:var(--gold);border:1px solid rgba(232,197,66,.2);
-  padding:3px 10px;background:rgba(232,197,66,.04);font-family:var(--mono);font-weight:700;}
-
-/* ─── TICKER ─── */
-.ticker-wrap{height:24px;flex-shrink:0;background:rgba(232,197,66,.03);
-  border-bottom:1px solid rgba(232,197,66,.12);overflow:hidden;display:flex;align-items:center;position:relative;}
-.ticker-wrap::before,.ticker-wrap::after{content:'';position:absolute;top:0;bottom:0;width:30px;z-index:2;pointer-events:none;}
-.ticker-wrap::before{left:0;background:linear-gradient(90deg,var(--bg2),transparent);}
-.ticker-wrap::after{right:0;background:linear-gradient(-90deg,var(--bg2),transparent);}
+.bell-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--red);border-radius:50%;animation:blink 1.5s infinite;}
+.clk{font-size:var(--fsm);color:var(--gold);border:1px solid rgba(232,197,66,.2);padding:3px 10px;background:rgba(232,197,66,.04);font-family:var(--mono);font-weight:700;}
+.ticker-wrap{height:24px;flex-shrink:0;background:rgba(232,197,66,.03);border-bottom:1px solid rgba(232,197,66,.12);overflow:hidden;display:flex;align-items:center;position:relative;}
 .ticker{display:flex;white-space:nowrap;animation:scroll 70s linear infinite;}
 .ticker:hover{animation-play-state:paused;}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.ti{display:inline-flex;align-items:center;gap:7px;padding:0 18px;font-size:var(--fss);
-  border-right:1px solid rgba(232,197,66,.07);}
+.ti{display:inline-flex;align-items:center;gap:7px;padding:0 18px;font-size:var(--fss);border-right:1px solid rgba(232,197,66,.07);}
 .ti-n{color:var(--gold);font-weight:700;}
 .up{color:var(--grn);}.dn{color:var(--red);}
-
-/* ─── NAV ─── */
-.nav{height:40px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--b1);
-  display:flex;align-items:stretch;padding:0 14px;gap:2px;}
-.ntab{display:flex;align-items:center;gap:5px;padding:0 14px;font-size:var(--fsm);
-  color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;
-  transition:all .15s;white-space:nowrap;font-weight:600;}
+.nav{height:40px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--b1);display:flex;align-items:stretch;padding:0 14px;gap:2px;}
+.ntab{display:flex;align-items:center;gap:5px;padding:0 14px;font-size:var(--fsm);color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;font-weight:600;}
 .ntab:hover{color:var(--t2);}
 .ntab.active{color:var(--gold);border-bottom-color:var(--gold);}
 .nav-r{margin-left:auto;display:flex;align-items:center;gap:4px;}
-.gtab{padding:3px 10px;font-size:var(--fsm);border:1px solid var(--b1);
-  color:var(--t3);cursor:pointer;transition:all .15s;font-weight:600;}
-.gtab:hover{border-color:var(--b2);color:var(--t2);}
-.gtab.active{background:var(--ga);border-color:rgba(232,197,66,.35);color:var(--gold);}
-
-/* ─── PAGES ─── */
 .pages{flex:1;overflow:hidden;position:relative;}
 .page{position:absolute;inset:0;display:none;overflow:hidden;}
 .page.active{display:flex;}
-
-/* ─── SHARED ─── */
-.ph{padding:7px 11px;border-bottom:1px solid var(--b1);font-size:var(--fss);
-  letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);font-weight:700;
-  display:flex;justify-content:space-between;align-items:center;flex-shrink:0;
-  background:rgba(255,255,255,.008);}
-.lbadge{font-size:10px;padding:1px 6px;background:var(--gna);color:var(--grn);
-  border:1px solid rgba(57,217,138,.2);font-weight:700;}
-.rbadge{font-size:10px;padding:1px 6px;background:var(--ra);color:var(--red);
-  border:1px solid rgba(255,77,106,.2);font-weight:700;animation:blink 1.5s infinite;}
+.ph{padding:7px 11px;border-bottom:1px solid var(--b1);font-size:var(--fss);letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);font-weight:700;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(255,255,255,.008);}
+.lbadge{font-size:10px;padding:1px 6px;background:var(--gna);color:var(--grn);border:1px solid rgba(57,217,138,.2);font-weight:700;}
+.rbadge{font-size:10px;padding:1px 6px;background:var(--ra);color:var(--red);border:1px solid rgba(255,77,106,.2);font-weight:700;animation:blink 1.5s infinite;}
 .pscroll{overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:var(--b2) transparent;}
 .panel{display:flex;flex-direction:column;overflow:hidden;background:var(--pan);}
 .dh-v{flex-shrink:0;width:5px;background:var(--b1);cursor:col-resize;z-index:10;transition:background .15s;}
@@ -116,31 +75,23 @@ body{font-family:var(--font);font-size:var(--fs);color:var(--t1);}
 .dh-h{flex-shrink:0;height:5px;background:var(--b1);cursor:row-resize;z-index:10;transition:background .15s;}
 .dh-h:hover,.dh-h.drag{background:rgba(232,197,66,.25);}
 
-/* ════════════════════
-   PAGE: MARKETS
-════════════════════ */
+/* MARKETS & TABS */
 #pg-markets{flex-direction:column;}
 .mws{flex:1;display:flex;overflow:hidden;min-height:0;}
 .mbot{flex-shrink:0;display:flex;overflow:hidden;}
-
-/* LEFT SIDEBAR */
 .stabs{display:flex;border-bottom:1px solid var(--b1);flex-shrink:0;}
-.stab{flex:1;padding:7px 4px;font-size:var(--fss);letter-spacing:.5px;text-transform:uppercase;
-  color:var(--t3);text-align:center;cursor:pointer;border-right:1px solid var(--b1);
-  transition:all .15s;font-weight:700;}
+.stab{flex:1;padding:7px 4px;font-size:var(--fss);letter-spacing:.5px;text-transform:uppercase;color:var(--t3);text-align:center;cursor:pointer;border-right:1px solid var(--b1);transition:all .15s;font-weight:700;}
 .stab:last-child{border-right:none;}
 .stab.active{color:var(--gold);background:var(--ga);}
 .stab-c{display:none;flex:1;overflow:hidden;flex-direction:column;}
 .stab-c.active{display:flex;}
-
 .hi{padding:9px 11px;border-bottom:1px solid rgba(28,45,62,.6);cursor:pointer;transition:background .12s;}
 .hi:hover{background:rgba(255,255,255,.025);}
 .hi.critical{border-left:3px solid var(--red);}
 .hi.high{border-left:3px solid var(--gold);}
 .hi.medium{border-left:3px solid var(--blu);}
-.hi.low{border-left:3px solid var(--t3);}
 .hi-flag{position:absolute;right:9px;top:9px;font-size:13px;}
-.hi-n{font-size:var(--fsm);font-weight:700;margin-bottom:1px;padding-right:22px;position:relative;}
+.hi-n{font-size:var(--fsm);font-weight:700;margin-bottom:1px;padding-right:22px;}
 .hi-s{font-size:10px;color:var(--t3);margin-bottom:5px;}
 .hi-m{display:flex;gap:7px;align-items:center;}
 .hi-p{font-size:var(--fsl);font-weight:800;}
@@ -149,1709 +100,464 @@ body{font-family:var(--font);font-size:var(--fs);color:var(--t1);}
 .hi-c.dn{background:var(--ra);color:var(--red);border:1px solid rgba(255,77,106,.2);}
 .vb{height:3px;background:var(--b1);margin-top:5px;overflow:hidden;}
 .vf{height:100%;}
-@keyframes anomaly{0%,100%{background:rgba(255,77,106,.03)}50%{background:rgba(255,77,106,.09)}}
-.anom{animation:anomaly 2s infinite;}
 
-.t100f{display:flex;gap:4px;padding:5px 9px;border-bottom:1px solid var(--b1);flex-shrink:0;}
-.tf{font-size:var(--fss);padding:2px 7px;border:1px solid var(--b1);color:var(--t3);
-  cursor:pointer;transition:all .1s;font-weight:700;}
-.tf:hover,.tf.active{border-color:var(--gold);color:var(--gold);background:var(--ga);}
-.t100r{display:grid;grid-template-columns:24px 1fr 62px 38px;align-items:center;gap:4px;
-  padding:6px 9px;border-bottom:1px solid rgba(28,45,62,.5);cursor:pointer;transition:background .1s;}
-.t100r:hover{background:rgba(255,255,255,.025);}
-.rnk{font-size:var(--fss);color:var(--t3);text-align:center;font-weight:700;}
-.rnk.top{font-size:15px;}
-.cn{font-size:var(--fsm);font-weight:700;line-height:1.3;}
-.cs{font-size:10px;color:var(--t3);}
-.cp{font-size:var(--fsm);font-weight:800;color:var(--gold);text-align:right;}
-.cd{font-size:var(--fss);text-align:right;font-weight:700;}
-
-.ytg{padding:5px;display:flex;flex-direction:column;gap:4px;}
-.ytc{display:flex;gap:8px;align-items:center;padding:7px 9px;border:1px solid var(--b1);
-  cursor:pointer;transition:all .15s;}
-.ytc:hover{border-color:var(--b2);background:rgba(255,255,255,.03);}
-.yta{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;
-  justify-content:center;font-size:15px;background:var(--b1);}
-.yti{flex:1;min-width:0;}
-.ytn{font-size:var(--fsm);font-weight:700;margin-bottom:1px;}
-.ytm{font-size:10px;color:var(--t3);}
-.ytbadge{font-size:9px;padding:1px 5px;font-weight:700;}
-.ytbadge.pull{background:var(--ra);color:var(--red);border:1px solid rgba(255,77,106,.2);}
-.ytbadge.invest{background:var(--gna);color:var(--grn);border:1px solid rgba(57,217,138,.2);}
-.ytbadge.jp{background:var(--pua);color:var(--pur);border:1px solid rgba(176,106,255,.2);}
-.ytbadge.review{background:var(--bla);color:var(--blu);border:1px solid rgba(77,166,255,.2);}
-
-/* MAIN CENTER */
+/* CHART & CENTER */
 .idx-row{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--b1);flex-shrink:0;}
 .idxc{padding:11px 13px;border-right:1px solid var(--b1);position:relative;overflow:hidden;}
 .idxc:last-child{border-right:none;}
 .idxc-l{font-size:10px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:5px;}
 .idxc-v{font-size:var(--fsxl);font-weight:800;line-height:1;margin-bottom:3px;}
 .idxc-d{font-size:var(--fss);}
-
 .chart-sec{padding:11px 13px;border-bottom:1px solid var(--b1);flex-shrink:0;}
 .chart-hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;}
 .chart-ttl{font-size:var(--fsl);font-weight:700;}
 .chart-sub{font-size:var(--fss);color:var(--t3);margin-top:2px;}
 .cbtns{display:flex;gap:3px;}
-.cbtn{padding:3px 8px;font-size:var(--fss);border:1px solid var(--b1);color:var(--t3);
-  cursor:pointer;background:transparent;transition:all .1s;font-weight:700;}
+.cbtn{padding:3px 8px;font-size:var(--fss);border:1px solid var(--b1);color:var(--t3);cursor:pointer;background:transparent;transition:all .1s;font-weight:700;}
 .cbtn:hover,.cbtn.active{border-color:var(--gold);color:var(--gold);background:var(--ga);}
 .chart-wrap{height:128px;}
 svg.sp{width:100%;height:100%;}
 
-.grid2{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--b1);}
-.gp{border-right:1px solid var(--b1);overflow:hidden;}
-.gp:last-child{border-right:none;}
-.ni{padding:8px 11px;border-bottom:1px solid rgba(28,45,62,.5);transition:background .1s;}
-.ni:hover{background:rgba(255,255,255,.02);}
-.ni-sev{width:3px;align-self:stretch;flex-shrink:0;}
-.ni-sev.critical{background:var(--red);}
-.ni-sev.high{background:var(--gold);}
-.ni-sev.medium{background:var(--blu);}
-.ni-sev.low{background:var(--t3);}
-.ni-src{font-size:10px;color:var(--t3);margin-bottom:2px;}
-.ni-src .sn{color:var(--gold);font-weight:700;}
-.ni-h{font-size:var(--fsm);line-height:1.45;font-weight:600;}
-.ni-tags{display:flex;gap:3px;margin-top:3px;}
-.ntag{font-size:10px;padding:1px 4px;border:1px solid var(--b2);color:var(--t3);font-weight:700;}
-.ntag.hot{border-color:rgba(255,77,106,.3);color:var(--red);background:var(--ra);}
-.ntag.w{border-color:rgba(232,197,66,.3);color:var(--gold);background:var(--ga);}
-.hmap{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;padding:7px 9px 9px;}
-.hc{aspect-ratio:1;border-radius:3px;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;cursor:pointer;transition:transform .15s,filter .15s;}
-.hc:hover{transform:scale(1.1);filter:brightness(1.3);}
-.hcl{font-size:9px;color:rgba(255,255,255,.6);text-align:center;line-height:1.2;}
-.hcv{font-size:11px;font-weight:800;color:rgba(255,255,255,.95);}
+/* NEW CSS FOR PRICING MATRIX */
+.price-matrix{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--b1);border:1px solid var(--b1);margin-bottom:10px;}
+.pm-col{background:var(--bg);padding:8px;}
+.pm-hdr{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px;border-bottom:1px solid var(--b2);padding-bottom:4px;display:flex;justify-content:space-between;}
+.pm-row{display:flex;justify-content:space-between;margin-bottom:4px;font-size:var(--fsm);}
+.pm-row:last-child{margin-bottom:0;}
+.pm-lbl{color:var(--t2);font-weight:600;}
+.pm-val{font-weight:700;}
+.pm-val.hl{color:var(--gold);}
+.code-tag{display:inline-block;background:var(--b1);color:var(--t2);padding:1px 4px;border-radius:3px;font-size:10px;font-family:var(--mono);margin-left:6px;}
 
-.pred-grid{display:grid;grid-template-columns:repeat(3,1fr);}
-.pred-item{padding:11px 12px;border-right:1px solid var(--b1);border-bottom:1px solid var(--b1);}
-.pred-item:nth-child(3n){border-right:none;}
-.pred-q{font-size:var(--fsm);font-weight:700;margin-bottom:7px;line-height:1.4;}
-.pred-bars{display:flex;gap:4px;margin-bottom:4px;}
-.pred-y{flex:1;padding:4px;background:var(--gna);border:1px solid rgba(57,217,138,.2);text-align:center;}
-.pred-n{flex:1;padding:4px;background:var(--ra);border:1px solid rgba(255,77,106,.2);text-align:center;}
-.pv{font-size:17px;font-weight:800;}
-.pred-y .pv{color:var(--grn);}
-.pred-n .pv{color:var(--red);}
-.plbl{font-size:10px;color:var(--t3);font-weight:700;}
-.pred-track{height:5px;background:var(--b1);overflow:hidden;margin-bottom:4px;}
-.pred-fill{height:100%;background:linear-gradient(90deg,var(--grn),rgba(57,217,138,.3));}
-.pred-meta{font-size:10px;color:var(--t3);display:flex;justify-content:space-between;font-weight:700;}
-.pred-meta .vol{color:var(--blu);}
-
-.econ-row{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--b1);}
-.econ-c{padding:10px 12px;border-right:1px solid var(--b1);}
-.econ-c:last-child{border-right:none;}
-.econ-l{font-size:10px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:4px;}
-.econ-v{font-size:20px;font-weight:800;line-height:1;}
-.econ-d{font-size:var(--fss);margin-top:3px;font-weight:700;}
-
-.reg-row{display:grid;grid-template-columns:repeat(4,1fr);}
-.reg-col{border-right:1px solid var(--b1);}
-.reg-col:last-child{border-right:none;}
-.rni{padding:7px 10px;border-bottom:1px solid rgba(28,45,62,.45);cursor:pointer;transition:background .1s;}
-.rni:hover{background:rgba(255,255,255,.02);}
-.rni-s{font-size:10px;color:var(--gold);margin-bottom:1px;font-weight:700;}
-.rni-h{font-size:var(--fsm);font-weight:600;line-height:1.4;}
-.rni-t{font-size:10px;color:var(--t3);margin-top:1px;}
-
-/* RIGHT PANEL */
-.aibr{padding:11px 12px;border-bottom:1px solid var(--b1);}
-.aibage{font-size:10px;padding:1px 6px;background:var(--pua);color:var(--pur);
-  border:1px solid rgba(176,106,255,.25);font-weight:700;margin-right:6px;}
-.aitxt{font-size:var(--fsm);color:var(--t2);line-height:1.65;
-  border-left:2px solid rgba(176,106,255,.3);padding-left:9px;margin-top:7px;}
-.aitxt strong{color:var(--t1);}
-.alrt{padding:9px 12px;border-bottom:1px solid rgba(28,45,62,.5);display:flex;gap:8px;}
-.alrti{font-size:15px;flex-shrink:0;margin-top:1px;}
-.alrtt{font-size:var(--fsm);font-weight:700;margin-bottom:1px;}
-.alrtm{font-size:var(--fss);color:var(--t3);}
-.alrtm span{color:var(--gold);font-weight:700;}
-.smrow{display:flex;align-items:center;padding:5px 12px;border-bottom:1px solid rgba(28,45,62,.4);}
-.smn{font-size:var(--fsm);font-weight:700;min-width:110px;}
-.smbar{flex:1;margin:0 8px;height:3px;background:var(--b1);overflow:hidden;}
-.smf{height:100%;}
-.smc{font-size:var(--fss);color:var(--t3);min-width:28px;text-align:right;font-weight:700;}
-.gt{width:100%;border-collapse:collapse;}
-.gt th{padding:5px 10px;text-align:left;color:var(--t3);letter-spacing:1px;text-transform:uppercase;
-  border-bottom:1px solid var(--b1);background:rgba(255,255,255,.01);font-size:10px;font-weight:700;}
-.gt td{padding:6px 10px;border-bottom:1px solid rgba(28,45,62,.4);font-size:var(--fsm);}
-.gt tr:hover td{background:rgba(255,255,255,.02);}
-.gt .grd{color:var(--blu);font-weight:700;}
-.gt .up{color:var(--grn);font-weight:700;}
-.gt .dn{color:var(--red);font-weight:700;}
-
-/* BOTTOM */
-.bp-col{flex:1;display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--b1);}
-.bp-col:last-child{border-right:none;}
-.sli{padding:8px 10px;border-bottom:1px solid rgba(28,45,62,.5);cursor:pointer;transition:all .1s;display:flex;gap:8px;}
-.sli:hover{background:rgba(255,77,106,.05);border-left:2px solid var(--red);}
-.sli-em{width:36px;height:28px;border-radius:3px;background:var(--b1);flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:16px;}
-.sli-b{flex:1;min-width:0;}
-.sli-pl{font-size:9px;padding:1px 4px;font-weight:700;display:inline-block;margin-bottom:2px;}
-.sli-pl.yt{background:rgba(255,0,0,.1);color:#ff4444;border:1px solid rgba(255,0,0,.15);}
-.sli-pl.twitch{background:rgba(145,70,255,.1);color:#9146ff;border:1px solid rgba(145,70,255,.15);}
-.sli-pl.tiktok{background:rgba(0,242,234,.08);color:#00f2ea;border:1px solid rgba(0,242,234,.15);}
-.sli-name{font-size:var(--fsm);font-weight:700;display:inline;margin-left:5px;}
-.sli-ttl{font-size:var(--fss);color:var(--t2);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
-.sli-v{font-size:var(--fss);color:var(--red);display:flex;align-items:center;gap:4px;font-weight:700;}
-.sli-v::before{content:'●';font-size:7px;animation:blink 1.5s infinite;}
-
-/* ════════════════════
-   PAGE: LIVE
-════════════════════ */
+/* LIVE PAGE */
 #pg-live{flex-direction:row;}
 .live-main{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--b1);overflow:hidden;}
-.live-screen{flex:1;min-height:0;background:radial-gradient(ellipse at center,#111d2b,#070c12);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;}
-.live-screen .play{width:72px;height:72px;border-radius:50%;background:rgba(255,77,106,.12);
-  border:2px solid rgba(255,77,106,.4);display:flex;align-items:center;justify-content:center;
-  font-size:28px;transition:all .2s;}
-.live-screen:hover .play{background:rgba(255,77,106,.22);transform:scale(1.08);}
-.live-screen .ls-name{font-size:20px;font-weight:800;}
-.live-screen .ls-title{font-size:var(--fs);color:var(--t2);text-align:center;max-width:460px;line-height:1.5;}
-.live-screen .ls-viewers{font-size:var(--fs);color:var(--red);display:flex;align-items:center;gap:6px;font-weight:700;}
-.live-screen .ls-viewers::before{content:'●';animation:blink 1.5s infinite;}
-.live-screen .ls-hint{font-size:var(--fss);color:var(--t3);}
-.live-bar{padding:11px 14px;border-top:1px solid var(--b1);background:var(--pan);
-  display:flex;align-items:center;gap:12px;flex-shrink:0;}
-.live-bar-name{font-size:var(--fsl);font-weight:800;}
-.live-bar-plat{font-size:11px;padding:2px 7px;}
-.live-bar-plat.yt{background:rgba(255,0,0,.12);color:#ff4444;border:1px solid rgba(255,0,0,.18);}
-.live-bar-plat.twitch{background:rgba(145,70,255,.12);color:#9146ff;border:1px solid rgba(145,70,255,.18);}
-.live-bar-v{font-size:var(--fs);color:var(--red);display:flex;align-items:center;gap:5px;font-weight:700;}
-.live-bar-v::before{content:'●';font-size:8px;animation:blink 1.5s infinite;}
-.live-open-btn{margin-left:auto;padding:6px 16px;background:var(--ra);border:1px solid rgba(255,77,106,.3);
-  color:var(--red);font-size:var(--fsm);cursor:pointer;font-weight:700;transition:all .15s;}
-.live-open-btn:hover{background:rgba(255,77,106,.2);}
+.live-screen{flex:1;min-height:0;background:black;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;}
+.live-iframe{width:100%;height:100%;border:none;}
 .stream-list-panel{width:290px;flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;}
+.sli{padding:8px 10px;border-bottom:1px solid rgba(28,45,62,.5);cursor:pointer;transition:all .1s;display:flex;gap:8px;}
+.sli:hover,.sli.active{background:rgba(255,77,106,.05);border-left:2px solid var(--red);}
+.sli-em{width:36px;height:28px;border-radius:3px;background:var(--b1);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.sli-b{flex:1;min-width:0;}
+.sli-name{font-size:var(--fsm);font-weight:700;margin-bottom:1px;}
+.sli-v{font-size:var(--fss);color:var(--red);display:flex;align-items:center;gap:4px;font-weight:700;}
 
-/* ════════════════════
-   PAGE: ALERTS
-════════════════════ */
-#pg-alerts{flex-direction:row;}
-.alert-setup{width:400px;flex-shrink:0;border-right:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden;}
-.alert-inner{padding:14px;overflow-y:auto;flex:1;}
-.alert-form{background:rgba(255,255,255,.015);border:1px solid var(--b1);padding:14px;margin-bottom:12px;}
-.af-t{font-size:var(--fsl);font-weight:800;margin-bottom:2px;}
-.af-s{font-size:var(--fss);color:var(--t3);margin-bottom:14px;}
-.af-lbl{font-size:var(--fss);color:var(--t3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:3px;}
-.af-inp{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--b2);
-  color:var(--t1);font-family:var(--font);font-size:var(--fsm);padding:6px 9px;outline:none;transition:border-color .15s;margin-bottom:10px;}
-.af-inp:focus{border-color:rgba(232,197,66,.4);}
-.af-inp::placeholder{color:var(--t3);}
-.af-sel{width:100%;background:var(--bg);border:1px solid var(--b2);
-  color:var(--t1);font-family:var(--font);font-size:var(--fsm);padding:6px 9px;outline:none;margin-bottom:10px;}
-.af-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-.cond-row{display:flex;gap:5px;margin-bottom:12px;}
-.cond-btn{flex:1;padding:7px;border:1px solid var(--b1);text-align:center;cursor:pointer;transition:all .15s;}
-.cond-btn:hover{border-color:var(--b2);}
-.cond-btn.active{border-color:rgba(232,197,66,.4);background:var(--ga);}
-.cond-btn .ci{font-size:17px;display:block;margin-bottom:2px;}
-.cond-btn .cl{font-size:var(--fss);color:var(--t3);font-weight:700;}
-.cond-btn.active .cl{color:var(--gold);}
-.af-create{width:100%;padding:9px;background:var(--ga);border:1px solid rgba(232,197,66,.3);
-  color:var(--gold);font-family:var(--font);font-size:var(--fs);cursor:pointer;font-weight:700;transition:all .15s;}
-.af-create:hover{background:rgba(232,197,66,.18);}
-.trig-banner{background:rgba(255,77,106,.07);border:1px solid rgba(255,77,106,.25);
-  padding:11px 13px;display:flex;align-items:center;gap:9px;margin-bottom:12px;}
-.tb-t{font-size:var(--fs);font-weight:800;color:var(--red);}
-.tb-m{font-size:var(--fss);color:var(--t2);margin-top:2px;}
-.alert-list-col{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.alert-scroll{flex:1;overflow-y:auto;scrollbar-width:thin;}
-.aa{border-bottom:1px solid var(--b1);}
-.aa.triggered{background:rgba(255,77,106,.04);}
-.aa-hdr{padding:9px 13px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--b1);}
-.aa-st{font-size:var(--fss);padding:1px 6px;font-weight:700;}
-.aa-st.ok{background:var(--gna);color:var(--grn);border:1px solid rgba(57,217,138,.2);}
-.aa-st.trig{background:var(--ra);color:var(--red);border:1px solid rgba(255,77,106,.2);}
-.aa-cn{font-size:var(--fs);font-weight:800;}
-.aa-body{padding:7px 13px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
-.asl{font-size:10px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:2px;}
-.asv{font-size:15px;font-weight:800;}
-.aa-ft{padding:6px 13px;border-top:1px solid var(--b1);display:flex;justify-content:space-between;align-items:center;}
-.aa-time{font-size:var(--fss);color:var(--t3);}
-.aa-del{font-size:var(--fss);padding:2px 7px;border:1px solid var(--b1);color:var(--t3);
-  cursor:pointer;transition:all .1s;background:transparent;font-weight:700;}
-.aa-del:hover{border-color:var(--red);color:var(--red);}
-
-/* ════════════════════
-   PAGE: COMPARE
-════════════════════ */
-#pg-compare{flex-direction:column;}
-.cmp-bar{padding:11px 14px;background:var(--pan);border-bottom:1px solid var(--b1);
-  display:flex;gap:10px;align-items:center;flex-shrink:0;}
-.cmp-inp{flex:1;max-width:480px;background:rgba(255,255,255,.03);border:1px solid var(--b2);
-  color:var(--t1);font-family:var(--font);font-size:var(--fs);padding:7px 11px;outline:none;transition:border-color .15s;}
-.cmp-inp:focus{border-color:rgba(232,197,66,.4);}
-.cmp-inp::placeholder{color:var(--t3);}
-.cmp-btn{padding:7px 16px;background:var(--ga);border:1px solid rgba(232,197,66,.3);
-  color:var(--gold);font-family:var(--font);font-size:var(--fs);cursor:pointer;font-weight:700;}
-.cmp-q{font-size:var(--fss);padding:3px 9px;border:1px solid var(--b1);color:var(--t3);
-  cursor:pointer;transition:all .1s;font-weight:700;}
-.cmp-q:hover{border-color:var(--b2);color:var(--t2);}
-.cmp-rate{margin-left:auto;font-size:var(--fss);color:var(--t3);}
-.cmp-hdr{display:grid;grid-template-columns:1fr 130px 1fr;border-bottom:1px solid var(--b1);
-  background:rgba(255,255,255,.01);flex-shrink:0;}
-.cgh{padding:9px 13px;}
-.cgh-t{font-size:var(--fsl);font-weight:800;}
-.cgh-t.en{color:var(--blu);}
-.cgh-t.mid{color:var(--gold);text-align:center;}
-.cgh-t.jp{color:var(--pur);}
-.cgh-s{font-size:var(--fss);color:var(--t3);margin-top:2px;font-weight:700;}
-.cmp-scroll{flex:1;overflow-y:auto;scrollbar-width:thin;}
-.cmp-row{display:grid;grid-template-columns:1fr 130px 1fr;border-bottom:1px solid rgba(28,45,62,.5);}
-.cmp-cell{padding:11px 13px;border-right:1px solid rgba(28,45,62,.4);}
-.cmp-cell.mid{background:rgba(255,255,255,.01);}
-.cmp-cell:last-child{border-right:none;}
-.cc-n{font-size:var(--fs);font-weight:700;margin-bottom:1px;}
-.cc-s{font-size:var(--fss);color:var(--t3);margin-bottom:6px;font-weight:700;}
-.cc-p{font-size:20px;font-weight:800;margin-bottom:2px;}
-.cc-p.en{color:var(--blu);}
-.cc-p.jp{color:var(--pur);}
-.cc-d{font-size:var(--fsm);font-weight:700;}
-.cmp-mid-in{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:4px;}
-.wb{font-size:var(--fss);font-weight:700;padding:3px 9px;}
-.wb.jp{background:var(--pua);color:var(--pur);border:1px solid rgba(176,106,255,.3);}
-.wb.en{background:var(--bla);color:var(--blu);border:1px solid rgba(77,166,255,.3);}
-.wb.eq{background:var(--ga);color:var(--gold);border:1px solid rgba(232,197,66,.3);}
-.spread-t{font-size:var(--fss);color:var(--t3);text-align:center;font-weight:700;}
-.cmp-empty{padding:28px;font-size:var(--fs);color:var(--t3);text-align:center;}
-
-/* ════════════════════
-   PAGE: PORTFOLIO
-════════════════════ */
-#pg-portfolio{flex-direction:row;}
-.port-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.port-right{width:310px;flex-shrink:0;border-left:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden;}
-.port-banner{padding:12px 14px;border-bottom:1px solid var(--b1);display:flex;gap:18px;align-items:center;flex-shrink:0;}
-.pstat .psv{font-size:20px;font-weight:800;line-height:1;}
-.pstat .psl{font-size:10px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-top:2px;}
-.pdiv{width:1px;height:40px;background:var(--b1);}
-.port-add{margin-left:auto;display:flex;align-items:center;gap:6px;padding:7px 16px;
-  background:var(--ga);border:1px solid rgba(232,197,66,.3);color:var(--gold);
-  font-family:var(--font);font-size:var(--fsm);cursor:pointer;font-weight:700;}
-.port-tbl-wrap{flex:1;overflow:auto;scrollbar-width:thin;}
-.pt{width:100%;border-collapse:collapse;}
-.pt th{padding:6px 12px;text-align:left;color:var(--t3);font-size:10px;letter-spacing:1.5px;
-  text-transform:uppercase;border-bottom:1px solid var(--b1);background:rgba(255,255,255,.01);font-weight:700;}
-.pt th.r{text-align:right;}
-.pt td{padding:9px 12px;border-bottom:1px solid rgba(28,45,62,.4);font-size:var(--fsm);}
-.pt tr:hover td{background:rgba(255,255,255,.02);}
-.pt .pn{font-size:var(--fs);font-weight:700;}
-.pt .ps{font-size:10px;color:var(--t3);}
-.pt .grd{color:var(--blu);font-weight:700;}
-.pt .r{text-align:right;}
-.pt .up{color:var(--grn);text-align:right;font-weight:700;}
-.pt .dn{color:var(--red);text-align:right;font-weight:700;}
-.pt .delbtn{font-size:var(--fss);padding:2px 8px;background:rgba(255,255,255,.02);
-  border:1px solid var(--b1);color:var(--t3);cursor:pointer;}
-.pt .delbtn:hover{border-color:var(--red);color:var(--red);}
-.pf-wrap{padding:13px;border-bottom:1px solid var(--b1);}
-.pf-title{font-size:var(--fss);letter-spacing:1.5px;color:var(--t3);text-transform:uppercase;font-weight:700;margin-bottom:10px;}
-.pf-lbl{font-size:10px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:3px;}
-.pf-inp{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--b2);
-  color:var(--t1);font-family:var(--font);font-size:var(--fsm);padding:5px 8px;outline:none;margin-bottom:8px;transition:border-color .15s;}
-.pf-inp:focus{border-color:rgba(232,197,66,.4);}
-.pf-inp::placeholder{color:var(--t3);}
-.pf-sel{width:100%;background:var(--bg);border:1px solid var(--b2);
-  color:var(--t1);font-family:var(--font);font-size:var(--fsm);padding:5px 8px;outline:none;margin-bottom:8px;}
-.pf-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
-.pf-btn{width:100%;padding:8px;background:var(--gna);border:1px solid rgba(57,217,138,.25);
-  color:var(--grn);font-family:var(--font);font-size:var(--fs);cursor:pointer;font-weight:700;margin-top:2px;}
-.dist-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
-.dist-lbl{font-size:var(--fsm);color:var(--t2);min-width:65px;font-weight:700;}
-.dist-bar{flex:1;height:7px;background:var(--b1);overflow:hidden;}
-.dist-pct{font-size:var(--fsm);color:var(--t3);min-width:34px;text-align:right;font-weight:700;}
-
-/* ═══════════════════
-   SEARCH MODAL
-═══════════════════ */
-#smodal{position:fixed;inset:0;z-index:9000;display:none;align-items:flex-start;
-  justify-content:center;background:rgba(0,0,0,.82);backdrop-filter:blur(7px);padding-top:64px;}
+/* SEARCH MODAL */
+#smodal{position:fixed;inset:0;z-index:9000;display:none;align-items:flex-start;justify-content:center;background:rgba(0,0,0,.82);backdrop-filter:blur(7px);padding-top:64px;}
 #smodal.open{display:flex;animation:fadein .15s ease;}
-#smodal-box{width:660px;max-height:74vh;background:var(--bg2);border:1px solid var(--b2);
-  display:flex;flex-direction:column;box-shadow:0 28px 90px rgba(0,0,0,.95);}
+#smodal-box{width:660px;max-height:74vh;background:var(--bg2);border:1px solid var(--b2);display:flex;flex-direction:column;box-shadow:0 28px 90px rgba(0,0,0,.95);}
 #smodal-bar{display:flex;align-items:center;border-bottom:1px solid var(--b1);flex-shrink:0;}
-#smodal-bar .si-icon{padding:0 14px;font-size:18px;color:var(--t3);}
-#sminp{flex:1;background:transparent;border:none;color:var(--t1);font-family:var(--font);
-  font-size:17px;padding:14px 0;outline:none;}
-#sminp::placeholder{color:var(--t3);}
-#sm-close{padding:0 16px;cursor:pointer;font-size:20px;color:var(--t3);
-  display:flex;align-items:center;}
-#sm-close:hover{color:var(--t1);}
-#smresults{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--b2) transparent;}
-.sm-sec{font-size:10px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;font-weight:700;
-  padding:7px 15px 4px;background:rgba(255,255,255,.01);border-bottom:1px solid rgba(28,45,62,.4);}
-.sm-row{padding:10px 15px;display:flex;align-items:center;gap:12px;cursor:pointer;
-  transition:background .1s;border-bottom:1px solid rgba(28,45,62,.4);}
+#sminp{flex:1;background:transparent;border:none;color:var(--t1);font-family:var(--font);font-size:17px;padding:14px 10px;outline:none;}
+#smresults{flex:1;overflow-y:auto;}
+.sm-row{padding:10px 15px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid rgba(28,45,62,.4);}
 .sm-row:hover{background:rgba(232,197,66,.05);}
 .sm-row.sel{background:rgba(232,197,66,.09);border-left:3px solid var(--gold);}
-.sm-ico{width:36px;height:36px;border-radius:4px;display:flex;align-items:center;justify-content:center;
-  font-size:18px;flex-shrink:0;background:var(--b1);}
-.sm-info{flex:1;min-width:0;}
-.sm-name{font-size:var(--fs);font-weight:700;margin-bottom:2px;}
-.sm-sub{font-size:11px;color:var(--t3);}
-.sm-rhs{text-align:right;flex-shrink:0;}
-.sm-price{font-size:17px;font-weight:800;}
-.sm-price.en{color:var(--gold);}
-.sm-price.jp{color:var(--pur);}
-.sm-delta{font-size:11px;font-weight:700;margin-top:2px;}
-.sm-empty{padding:30px 16px;text-align:center;color:var(--t3);}
-.sm-empty .big{font-size:40px;margin-bottom:8px;}
-.sm-hint{padding:9px 15px;font-size:11px;color:var(--t3);display:flex;gap:16px;
-  background:rgba(255,255,255,.01);border-top:1px solid var(--b1);flex-shrink:0;}
-.sm-hint kbd{background:var(--b2);padding:1px 5px;border-radius:3px;font-size:10px;
-  color:var(--t2);margin-right:3px;}
+.sm-code{font-family:var(--mono);font-size:11px;color:var(--gold);background:rgba(232,197,66,.1);padding:2px 5px;border-radius:3px;margin-bottom:2px;display:inline-block;}
 
-/* ═══════════════════
-   FLOATING WIDGET
-═══════════════════ */
-#fw{position:fixed;bottom:18px;right:18px;width:290px;height:210px;
-  background:var(--bg2);border:1px solid rgba(255,77,106,.4);
-  box-shadow:0 8px 40px rgba(0,0,0,.85);z-index:8000;display:none;
-  flex-direction:column;overflow:hidden;resize:both;min-width:200px;min-height:160px;}
-#fw.show{display:flex;}
-#fw-bar{display:flex;align-items:center;gap:7px;padding:6px 9px;
-  background:rgba(255,77,106,.07);border-bottom:1px solid rgba(255,77,106,.2);
-  cursor:move;user-select:none;flex-shrink:0;}
-#fw-dot{width:7px;height:7px;border-radius:50%;background:var(--red);
-  box-shadow:0 0 6px var(--red);animation:blink 1.2s infinite;flex-shrink:0;}
-#fw-title{font-size:12px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-#fw-viewers{font-size:11px;color:var(--red);font-weight:700;flex-shrink:0;}
-#fw-x{cursor:pointer;color:var(--t3);font-size:15px;width:20px;height:20px;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-#fw-x:hover{color:var(--red);}
-#fw-screen{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:7px;cursor:pointer;
-  background:radial-gradient(ellipse at center,#111d2b,#070c12);}
-#fw-screen .fw-play{width:48px;height:48px;border-radius:50%;background:rgba(255,77,106,.13);
-  border:2px solid rgba(255,77,106,.45);display:flex;align-items:center;justify-content:center;
-  font-size:20px;transition:transform .2s;}
-#fw-screen:hover .fw-play{transform:scale(1.1);}
-#fw-sname{font-size:13px;font-weight:700;}
-#fw-hint{font-size:10px;color:var(--t3);}
-#fw-tabs{flex-shrink:0;display:flex;overflow-x:auto;border-top:1px solid var(--b1);scrollbar-width:none;max-height:30px;}
-#fw-tabs::-webkit-scrollbar{display:none;}
-.fw-tab{flex-shrink:0;padding:5px 9px;font-size:11px;color:var(--t3);
-  border-right:1px solid var(--b1);cursor:pointer;transition:all .1s;font-weight:700;}
-.fw-tab:hover,.fw-tab.on{background:rgba(255,77,106,.08);color:var(--t1);}
-.fw-ldot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--red);
-  animation:blink 1.5s infinite;margin-right:4px;}
-
-/* ═══════════════════
-   GAME MODAL
-═══════════════════ */
-#gmod{position:fixed;inset:0;z-index:8500;display:none;align-items:center;
-  justify-content:center;background:rgba(0,0,0,.78);backdrop-filter:blur(5px);}
-#gmod.open{display:flex;animation:fadein .15s ease;}
-#gmod-box{width:840px;max-height:86vh;background:var(--bg2);border:1px solid var(--b2);
-  display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.9);overflow:hidden;}
-#gmod-hdr{padding:13px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;flex-shrink:0;}
-#gmod-name{font-size:20px;font-weight:800;}
-#gmod-sub{font-size:11px;color:var(--t3);margin-top:2px;}
-#gmod-x{margin-left:auto;font-size:20px;cursor:pointer;color:var(--t3);
-  width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
-#gmod-x:hover{color:var(--t1);}
-#gmod-body{overflow-y:auto;scrollbar-width:thin;}
-.gm-sec{padding:13px 16px;border-bottom:1px solid var(--b1);}
-.gm-stitle{font-size:10px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;font-weight:700;margin-bottom:9px;}
-.gm-idx4{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
-.gm-idxc{background:rgba(255,255,255,.02);border:1px solid var(--b1);padding:9px 11px;}
-.gm-idxc-l{font-size:10px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:3px;}
-.gm-idxc-v{font-size:20px;font-weight:800;line-height:1;}
-.gm-idxc-d{font-size:11px;font-weight:700;margin-top:2px;}
-.gm-cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
-.gm-card{background:rgba(255,255,255,.02);border:1px solid var(--b1);padding:9px 11px;}
-.gm-cn{font-size:13px;font-weight:700;margin-bottom:1px;line-height:1.3;}
-.gm-cs{font-size:10px;color:var(--t3);margin-bottom:6px;}
-.gm-cp{font-size:17px;font-weight:800;margin-bottom:2px;}
-.gm-cd{font-size:11px;font-weight:700;}
-.gm-news{display:flex;flex-direction:column;}
-.gm-ni{padding:8px 0;border-bottom:1px solid rgba(28,45,62,.5);display:flex;gap:11px;align-items:flex-start;}
-.gm-ni:last-child{border-bottom:none;}
-.gm-ni-src{font-size:10px;color:var(--gold);font-weight:700;flex-shrink:0;min-width:130px;}
-.gm-ni-h{font-size:13px;font-weight:600;line-height:1.4;}
-.gm-ni-t{font-size:10px;color:var(--t3);margin-top:1px;}
+/* RIGHT PANEL & OTHERS */
+.t100r{display:grid;grid-template-columns:24px 1fr 62px 38px;align-items:center;gap:4px;padding:6px 9px;border-bottom:1px solid rgba(28,45,62,.5);cursor:pointer;}
+.t100r:hover{background:rgba(255,255,255,.025);}
+.rnk{font-size:var(--fss);color:var(--t3);text-align:center;font-weight:700;}
+.cp{font-size:var(--fsm);font-weight:800;color:var(--gold);text-align:right;}
+.cd{font-size:var(--fss);text-align:right;font-weight:700;}
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- ─ TOPBAR ─ -->
 <div class="topbar">
-  <div class="logo">PokéMonitor<sub>v7 // TCG</sub></div>
+  <div class="logo">PokéMonitor<sub>v7.1 // PRO</sub></div>
   <div class="pills">
-    <div class="pill"><span class="dot g"></span>LIVE Feed</div>
-    <div class="pill"><span class="dot y"></span>eBay 3m</div>
-    <div class="pill"><span class="dot g"></span>Reddit</div>
-    <div class="pill"><span class="dot r"></span>PSA ERR</div>
+    <div class="pill"><span class="dot g"></span>Cardrush JP</div>
+    <div class="pill"><span class="dot g"></span>PriceCharting</div>
+    <div class="pill"><span class="dot y"></span>eBay Live</div>
   </div>
   <div class="search-trigger" onclick="openSearch()">
-    <span>🔍</span><span>Tìm card, set, giá...</span><span class="kbd">Ctrl+K</span>
+    <span>🔍</span><span>Nhập Code (vd: 151/165, sv2a...)</span><span class="kbd">Ctrl+K</span>
   </div>
   <div class="topbar-r">
-    <div class="live-btn" id="fw-btn" onclick="toggleFW()">📺 LIVE</div>
-    <div class="bell" onclick="gotoPage('alerts')">🔔<div class="bell-dot"></div></div>
+    <div class="live-btn" onclick="gotoPage('live')">📺 LIVE NOW</div>
+    <div class="bell">🔔<div class="bell-dot"></div></div>
     <div class="clk" id="clk">--:--:--</div>
   </div>
 </div>
 
-<!-- ─ TICKER ─ -->
 <div class="ticker-wrap"><div class="ticker" id="ticker"></div></div>
 
-<!-- ─ NAV ─ -->
 <div class="nav">
   <div class="ntab active" id="nt-markets" onclick="gotoPage('markets')">📊 Markets</div>
-  <div class="ntab" id="nt-live"    onclick="gotoPage('live')">📺 Live</div>
+  <div class="ntab" id="nt-live"    onclick="gotoPage('live')">📺 Live Stream</div>
   <div class="ntab" id="nt-alerts"  onclick="gotoPage('alerts')">🔔 Alerts</div>
-  <div class="ntab" id="nt-compare" onclick="gotoPage('compare')">⚖️ EN vs JP</div>
-  <div class="ntab" id="nt-portfolio" onclick="gotoPage('portfolio')">💼 Portfolio</div>
+  <div class="ntab" id="nt-compare" onclick="gotoPage('compare')">⚖️ EN vs JP Matrix</div>
   <div class="nav-r">
-    <div class="gtab active" id="gt-pokemon" onclick="switchGame('pokemon',this)">Pokémon</div>
-    <div class="gtab" onclick="switchGame('mtg',this)">MTG</div>
-    <div class="gtab" onclick="switchGame('op',this)">One Piece</div>
-    <div class="gtab" onclick="switchGame('lorcana',this)">Lorcana</div>
+    <div class="pill" style="border:none">JPY Rate: <span style="color:var(--gold);font-weight:bold" id="rate-disp">149.8</span></div>
   </div>
 </div>
 
-<!-- ─ PAGES ─ -->
 <div class="pages">
 
-<!-- ══ MARKETS ══ -->
 <div class="page active" id="pg-markets">
   <div style="display:flex;flex-direction:column;width:100%;overflow:hidden;">
     <div class="mws" id="mws">
-      <!-- LEFT -->
-      <div class="panel" id="pl" style="width:228px;">
+      <div class="panel" id="pl" style="width:240px;">
         <div class="stabs">
-          <div class="stab active" onclick="sw(this,'hot')">🔥</div>
-          <div class="stab" onclick="sw(this,'en')">🇺🇸 EN</div>
-          <div class="stab" onclick="sw(this,'jp')">🇯🇵 JP</div>
-          <div class="stab" onclick="sw(this,'yt')">▶ YT</div>
+          <div class="stab active" id="tab-hot" onclick="sw('hot')">🔥</div>
+          <div class="stab" id="tab-en" onclick="sw('en')">🇺🇸 EN</div>
+          <div class="stab" id="tab-jp" onclick="sw('jp')">🇯🇵 JP</div>
         </div>
         <div class="stab-c active" id="stab-hot">
-          <div class="ph"><span>HOTSPOTS</span><span class="rbadge" id="hct">—</span></div>
+          <div class="ph"><span>HOTSPOTS</span><span class="rbadge">LIVE</span></div>
           <div class="pscroll flex1" id="hl"></div>
         </div>
         <div class="stab-c" id="stab-en">
-          <div class="ph"><span>TOP EN</span><span class="lbadge">TCGPlayer</span></div>
-          <div class="t100f">
-            <div class="tf active" onclick="ft(this,'all','en')">All</div>
-            <div class="tf" onclick="ft(this,'vintage','en')">Vintage</div>
-            <div class="tf" onclick="ft(this,'modern','en')">Modern</div>
-            <div class="tf" onclick="ft(this,'graded','en')">Graded</div>
-          </div>
-          <div class="pscroll" id="t-en" style="flex:1;overflow-y:auto;"></div>
+          <div class="ph"><span>TOP ENGLISH</span><span class="lbadge">TCGPlayer</span></div>
+          <div class="pscroll" id="t-en" style="flex:1;"></div>
         </div>
         <div class="stab-c" id="stab-jp">
-          <div class="ph"><span>TOP JP</span><span class="lbadge">Mercari</span></div>
-          <div class="t100f">
-            <div class="tf active" onclick="ft(this,'all','jp')">All</div>
-            <div class="tf" onclick="ft(this,'vintage','jp')">Vintage</div>
-            <div class="tf" onclick="ft(this,'modern','jp')">Modern</div>
-            <div class="tf" onclick="ft(this,'promo','jp')">Promo</div>
-          </div>
-          <div class="pscroll" id="t-jp" style="flex:1;overflow-y:auto;"></div>
-        </div>
-        <div class="stab-c" id="stab-yt">
-          <div class="ph"><span>CREATORS</span></div>
-          <div class="pscroll" style="flex:1;"><div class="ytg" id="ytg"></div></div>
+          <div class="ph"><span>CARDRUSH JP</span><span class="lbadge" style="color:var(--pur);border-color:var(--pur);background:rgba(176,106,255,.1)">Cardrush</span></div>
+          <div class="pscroll" id="t-jp" style="flex:1;"></div>
         </div>
       </div>
       <div class="dh-v" data-a="pl" data-b="pm" data-side="left"></div>
-      <!-- CENTER -->
+      
       <div class="panel" id="pm" style="flex:1;background:var(--bg);overflow-y:auto;">
         <div class="idx-row">
-          <div class="idxc"><div class="idxc-l">TCG Index</div><div class="idxc-v" style="color:var(--gold)" id="idx-main">847.3</div><div class="idxc-d up" id="idx-d1">▲ +12.4 (+1.49%)</div></div>
-          <div class="idxc"><div class="idxc-l">Vintage</div><div class="idxc-v" style="color:var(--grn)" id="idx-vint">2,341</div><div class="idxc-d up">▲ +88 (+3.9%)</div></div>
-          <div class="idxc"><div class="idxc-l">Modern Sealed</div><div class="idxc-v" style="color:var(--red)" id="idx-mod">$183</div><div class="idxc-d dn">▼ -4.2 (-2.2%)</div></div>
-          <div class="idxc"><div class="idxc-l">PSA10 Premium</div><div class="idxc-v" style="color:var(--blu)">3.8×</div><div class="idxc-d" style="color:var(--t3)">vs raw · stable</div></div>
+          <div class="idxc"><div class="idxc-l">Market Index</div><div class="idxc-v" style="color:var(--gold)">847.3</div><div class="idxc-d up">▲ +1.49%</div></div>
+          <div class="idxc"><div class="idxc-l">JP Vintage</div><div class="idxc-v" style="color:var(--pur)">¥1.2M</div><div class="idxc-d up">▲ +3.9%</div></div>
+          <div class="idxc"><div class="idxc-l">PSA 10 Prem</div><div class="idxc-v" style="color:var(--grn)">+215%</div><div class="idxc-d">vs Raw A</div></div>
+          <div class="idxc"><div class="idxc-l">USD/JPY</div><div class="idxc-v" style="color:var(--t1)">149.8</div><div class="idxc-d">Forex Live</div></div>
         </div>
-        <!-- CHART -->
+        
         <div class="chart-sec">
           <div class="chart-hdr">
             <div>
-              <div class="chart-ttl" id="chart-name">🇺🇸 Charizard Base Set Shadowless</div>
-              <div class="chart-sub" id="chart-sub">Base Set 1999 · USD · Click card để đổi</div>
+              <div class="chart-ttl" id="chart-name">...</div>
+              <div class="chart-sub" id="chart-sub">...</div>
             </div>
             <div class="cbtns">
-              <button class="cbtn" data-r="1d" onclick="sc(this,'1d')">1D</button>
-              <button class="cbtn" data-r="7d" onclick="sc(this,'7d')">7D</button>
-              <button class="cbtn active" data-r="30d" onclick="sc(this,'30d')">30D</button>
-              <button class="cbtn" data-r="90d" onclick="sc(this,'90d')">90D</button>
-              <button class="cbtn" data-r="1y" onclick="sc(this,'1y')">1Y</button>
+              <button class="cbtn active">30D</button>
             </div>
           </div>
+          <div class="price-matrix" id="price-matrix">
+            </div>
           <div class="chart-wrap"><svg class="sp" id="mc" viewBox="0 0 800 128" preserveAspectRatio="none"></svg></div>
         </div>
-        <div class="grid2">
-          <div class="gp"><div class="ph"><span>📡 SIGNAL FEED</span><span class="lbadge" id="feed-ts">LIVE</span></div><div id="nf"></div></div>
-          <div class="gp"><div class="ph"><span>🗺 SET HEATMAP 30D</span></div><div class="hmap" id="hmap"></div></div>
-        </div>
-        <div class="ph"><span>🎯 PREDICTIONS</span><span class="lbadge">Community</span></div>
-        <div class="pred-grid" id="pred-grid"></div>
-        <div class="ph"><span>📈 MACRO INDICATORS</span></div>
-        <div class="econ-row" id="econ-row"></div>
-        <div class="ph"><span>🌍 REGIONAL NEWS</span></div>
-        <div class="reg-row" id="reg-row"></div>
-      </div>
-      <div class="dh-v" data-a="pm" data-b="pr" data-side="right"></div>
-      <!-- RIGHT -->
-      <div class="panel" id="pr" style="width:260px;">
-        <div class="pscroll" style="flex:1;">
-          <div class="aibr">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;">
-              <span class="aibage">AI BRIEF</span>
-              <span style="font-size:11px;color:var(--t3)" id="ai-ts">LIVE</span>
-              <span style="font-size:10px;padding:1px 5px;background:rgba(57,217,138,.08);border:1px solid rgba(57,217,138,.18);color:var(--grn);font-weight:700;margin-left:auto;" id="ai-cntdown">↻ 60s</span>
-            </div>
-            <div class="aitxt" id="ai-txt">Đang phân tích...</div>
-          </div>
-          <div class="ph"><span>⚡ ANOMALY ALERTS</span><span class="rbadge">4 ACTIVE</span></div>
-          <div id="al"></div>
-          <div class="ph"><span>📊 SOCIAL MENTIONS</span></div>
-          <div id="sm"></div>
-          <div class="ph"><span>🏅 GRADED MARKET</span></div>
-          <table class="gt"><thead><tr><th>Card</th><th>Grd</th><th>Last</th><th>Δ</th></tr></thead><tbody id="gb"></tbody></table>
-          <div class="ph"><span>🌡 SENTIMENT</span></div>
-          <div style="display:flex;gap:4px;padding:9px 12px;border-bottom:1px solid var(--b1);" id="sent"></div>
-        </div>
-      </div>
-    </div>
-    <!-- BOTTOM RESIZABLE -->
-    <div class="dh-h" id="dhb"></div>
-    <div class="mbot" id="bpr" style="height:210px;">
-      <div class="bp-col"><div class="ph"><span>📺 LIVE NOW</span><span class="rbadge">● 7 LIVE</span></div><div class="pscroll" id="stream-mini" style="flex:1;"></div></div>
-      <div class="bp-col"><div class="ph"><span>🔔 ALERTS</span><span class="rbadge" id="alert-mini-badge">1 TRIGGERED</span></div><div class="pscroll" id="alert-mini" style="flex:1;"></div></div>
-      <div class="bp-col" style="flex:1.5;">
-        <div class="ph"><span>⚖️ EN vs JP QUICK</span><span style="font-size:11px;color:var(--t3)">1 USD = <span id="jpy-rate">149.82</span> JPY</span></div>
-        <div style="padding:7px 10px;border-bottom:1px solid var(--b1);display:flex;gap:6px;flex-shrink:0;">
-          <input id="qcmp" style="flex:1;background:rgba(255,255,255,.03);border:1px solid var(--b2);color:var(--t1);font-family:var(--font);font-size:var(--fsm);padding:4px 8px;outline:none;" placeholder="Nhập tên card..." oninput="runCmp(this.value,'cmp-mini')">
-          <div class="cmp-q" onclick="quickCmp('Charizard')">Charizard</div>
-          <div class="cmp-q" onclick="quickCmp('Lugia')">Lugia</div>
-          <div class="cmp-q" onclick="quickCmp('Umbreon')">Umbreon</div>
-        </div>
-        <div class="pscroll" id="cmp-mini" style="flex:1;"></div>
+
+        <div class="ph"><span>📡 SIGNAL FEED</span></div>
+        <div id="nf"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══ LIVE ══ -->
 <div class="page" id="pg-live">
   <div class="live-main">
-    <div class="live-screen" id="ls-screen" onclick="lsOpen()">
-      <div class="play">▶</div>
-      <div class="ls-name" id="ls-name">🔥 Leonhart</div>
-      <div class="ls-title" id="ls-title">Opening 10 cases Prismatic Evolutions LIVE!</div>
-      <div class="ls-viewers" id="ls-viewers">24,832 đang xem</div>
-      <div class="ls-hint">Click để mở trong tab mới</div>
-    </div>
-    <div class="live-bar">
-      <div><div class="live-bar-name" id="lb-name">Leonhart</div><div style="font-size:12px;color:var(--t3);margin-top:2px;" id="lb-title">Opening 10 cases Prismatic Evolutions LIVE!</div></div>
-      <div class="live-bar-plat yt" id="lb-plat">YouTube</div>
-      <div class="live-bar-v" id="lb-viewers">24,832 viewers</div>
-      <div class="live-open-btn" onclick="lsOpen()">↗ Mở Stream</div>
+    <div class="live-screen" id="ls-screen">
+      <div style="color:var(--t3)">Select a stream...</div>
     </div>
   </div>
   <div class="stream-list-panel">
-    <div class="ph"><span>🔴 ĐANG LIVE</span><span class="rbadge">7 LIVE</span></div>
-    <div class="pscroll" id="stream-full" style="flex:1;"></div>
-    <div class="ph" style="border-top:1px solid var(--b1);"><span>🎯 PREDICTIONS</span></div>
-    <div class="pscroll" style="max-height:190px;" id="pred-live"></div>
+    <div class="ph"><span>🔴 ĐANG LIVE</span><span class="rbadge">YOUTUBE</span></div>
+    <div class="pscroll" id="stream-list" style="flex:1;"></div>
   </div>
 </div>
 
-<!-- ══ ALERTS ══ -->
-<div class="page" id="pg-alerts">
-  <div class="alert-setup">
-    <div class="ph"><span>🔔 TẠO PRICE ALERT</span></div>
-    <div class="alert-inner">
-      <div class="trig-banner"><span style="font-size:20px">🚨</span>
-        <div><div class="tb-t">Blaine's Charizard → $158!</div><div class="tb-m">Ngưỡng $150 bị vượt · +8.9% trong 24h · 14 phút trước</div></div>
-      </div>
-      <div class="alert-form">
-        <div class="af-t">+ Tạo Alert Mới</div>
-        <div class="af-s">Thông báo khi giá vượt/xuống ngưỡng bạn đặt</div>
-        <div class="af-lbl">Tên Card</div>
-        <input class="af-inp" id="af-card" placeholder="vd: Charizard Base Set Shadowless...">
-        <div class="af-row2">
-          <div><div class="af-lbl">Nguồn Giá</div><select class="af-sel" id="af-src"><option>TCGPlayer Market</option><option>eBay Sold Avg</option><option>Mercari JP</option><option>PSA SMR</option></select></div>
-          <div><div class="af-lbl">Ngưỡng ($)</div><input class="af-inp" id="af-price" type="number" placeholder="0.00" style="margin-bottom:0;"></div>
-        </div>
-        <div class="af-lbl" style="margin:10px 0 6px;">Điều Kiện</div>
-        <div class="cond-row">
-          <div class="cond-btn active" onclick="setCond(this,'above')"><span class="ci">📈</span><span class="cl">Vượt ngưỡng</span></div>
-          <div class="cond-btn" onclick="setCond(this,'below')"><span class="ci">📉</span><span class="cl">Xuống dưới</span></div>
-          <div class="cond-btn" onclick="setCond(this,'pct')"><span class="ci">⚡</span><span class="cl">Thay đổi %</span></div>
-        </div>
-        <button class="af-create" onclick="createAlert()">+ TẠO PRICE ALERT</button>
-      </div>
-    </div>
-  </div>
-  <div class="alert-list-col">
-    <div class="ph"><span>ACTIVE ALERTS</span><span class="rbadge" id="alert-badge">1 TRIGGERED</span></div>
-    <div class="alert-scroll" id="alert-full"></div>
-  </div>
-</div>
-
-<!-- ══ COMPARE ══ -->
-<div class="page" id="pg-compare">
-  <div class="cmp-bar">
-    <span style="font-size:var(--fsl);font-weight:800;white-space:nowrap;">⚖️ EN vs JP</span>
-    <input class="cmp-inp" id="cmp-inp" placeholder="Nhập tên card... (Charizard, Lugia, Pikachu, Umbreon)" oninput="runCmp(this.value,'cmp-full')">
-    <button class="cmp-btn" onclick="runCmp(document.getElementById('cmp-inp').value,'cmp-full')">So Sánh</button>
-    <div class="cmp-q" onclick="cmpFull('Charizard')">Charizard</div>
-    <div class="cmp-q" onclick="cmpFull('Lugia')">Lugia</div>
-    <div class="cmp-q" onclick="cmpFull('Umbreon')">Umbreon</div>
-    <div class="cmp-q" onclick="cmpFull('Pikachu')">Pikachu</div>
-    <div class="cmp-q" onclick="cmpFull('Espeon')">Espeon</div>
-    <div class="cmp-rate">1 USD = <span id="cmp-jpy">149.82</span> JPY · Live</div>
-  </div>
-  <div class="cmp-hdr">
-    <div class="cgh"><div class="cgh-t en">🇺🇸 English</div><div class="cgh-s">TCGPlayer · USD</div></div>
-    <div class="cgh" style="border-left:1px solid var(--b1);border-right:1px solid var(--b1);text-align:center;"><div class="cgh-t mid">⚖️ Phân Tích</div><div class="cgh-s">Quy đổi & So sánh</div></div>
-    <div class="cgh"><div class="cgh-t jp">🇯🇵 Japanese</div><div class="cgh-s">Mercari JP · JPY</div></div>
-  </div>
-  <div class="cmp-scroll" id="cmp-full"></div>
-</div>
-
-<!-- ══ PORTFOLIO ══ -->
-<div class="page" id="pg-portfolio">
-  <div class="port-main">
-    <div class="port-banner">
-      <div class="pstat"><div class="psv" style="color:var(--gold)" id="port-total">$0</div><div class="psl">Portfolio Value</div></div>
-      <div class="pdiv"></div>
-      <div class="pstat"><div class="psv" style="color:var(--grn)" id="port-pnl">+$0</div><div class="psl">P&amp;L</div></div>
-      <div class="pdiv"></div>
-      <div class="pstat"><div class="psv" id="port-pct">0%</div><div class="psl">Return</div></div>
-      <div class="pdiv"></div>
-      <div class="pstat"><div class="psv" style="color:var(--t1)" id="port-cnt">0</div><div class="psl">Cards</div></div>
-      <div class="port-add" onclick="document.getElementById('pf-name').focus()">+ Thêm Card</div>
-    </div>
-    <div class="port-tbl-wrap">
-      <table class="pt">
-        <thead><tr><th>Card</th><th>Grade</th><th>Qty</th><th class="r">Buy</th><th class="r">Current</th><th class="r">P&amp;L $</th><th class="r">P&amp;L %</th><th></th></tr></thead>
-        <tbody id="port-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-  <div class="port-right">
-    <div class="pf-wrap">
-      <div class="pf-title">+ Thêm Vào Portfolio</div>
-      <div class="pf-lbl">Tên Card</div><input class="pf-inp" id="pf-name" placeholder="vd: Charizard Base Set">
-      <div class="pf-lbl">Set</div><input class="pf-inp" id="pf-set" placeholder="vd: Base Set 1999">
-      <div class="pf-row">
-        <div><div class="pf-lbl">Ngôn Ngữ</div><select class="pf-sel" id="pf-lang"><option>English</option><option>Japanese</option></select></div>
-        <div><div class="pf-lbl">Grade</div><select class="pf-sel" id="pf-grade"><option>Raw NM</option><option>PSA 10</option><option>PSA 9</option><option>PSA 8</option><option>BGS 9.5</option><option>CGC 10</option></select></div>
-      </div>
-      <div class="pf-row">
-        <div><div class="pf-lbl">Giá Mua ($)</div><input class="pf-inp" id="pf-buy" type="number" placeholder="0.00" style="margin-bottom:0;"></div>
-        <div><div class="pf-lbl">Số Lượng</div><input class="pf-inp" id="pf-qty" type="number" value="1" style="margin-bottom:0;"></div>
-      </div>
-      <button class="pf-btn" onclick="addCard()" style="margin-top:10px;">+ THÊM VÀO PORTFOLIO</button>
-    </div>
-    <div style="padding:13px;flex:1;overflow-y:auto;">
-      <div class="pf-title">PHÂN BỔ DANH MỤC</div>
-      <div id="dist-inner"></div>
-    </div>
-  </div>
-</div>
-
-</div><!-- /pages -->
-
-<!-- ═══ SEARCH MODAL ═══ -->
-<div id="smodal" onclick="if(event.target===this)closeSearch()">
+</div><div id="smodal" onclick="if(event.target===this)closeSearch()">
   <div id="smodal-box">
     <div id="smodal-bar">
-      <span class="si-icon">🔍</span>
-      <input id="sminp" placeholder="Tìm card, set, giá... (vd: Charizard, Lugia, ルカリオ)" autocomplete="off">
-      <span id="sm-close" onclick="closeSearch()">✕</span>
+      <span style="padding:0 14px;font-size:18px;color:var(--t3)">🔍</span>
+      <input id="sminp" placeholder="Nhập Mã Code (vd: 006/165, sv2a-151, 025/090...)" autocomplete="off">
     </div>
     <div id="smresults"></div>
-    <div class="sm-hint">
-      <span><kbd>↑↓</kbd> Điều hướng</span>
-      <span><kbd>Enter</kbd> Chọn & xem chart</span>
-      <span><kbd>Esc</kbd> Đóng</span>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ FLOATING WIDGET ═══ -->
-<div id="fw">
-  <div id="fw-bar">
-    <div id="fw-dot"></div>
-    <div id="fw-title">🔥 Leonhart — Live Pulls</div>
-    <div id="fw-viewers">24,832 👁</div>
-    <div id="fw-x" onclick="toggleFW()">✕</div>
-  </div>
-  <div id="fw-screen" onclick="fwOpenStream()">
-    <div class="fw-play" id="fw-play">▶</div>
-    <div id="fw-sname">🔥 Leonhart</div>
-    <div id="fw-hint">Click để mở stream</div>
-  </div>
-  <div id="fw-tabs"></div>
-</div>
-
-<!-- ═══ GAME MODAL ═══ -->
-<div id="gmod" onclick="if(event.target===this)closeGmod()">
-  <div id="gmod-box">
-    <div id="gmod-hdr">
-      <div><div id="gmod-name">MTG</div><div id="gmod-sub">Magic: The Gathering</div></div>
-      <div id="gmod-x" onclick="closeGmod()">✕</div>
-    </div>
-    <div id="gmod-body"></div>
   </div>
 </div>
 
 <script>
 'use strict';
-// ════════════════════════════════════════════════
-// DATA — base prices, updated by live simulation
-// ════════════════════════════════════════════════
+
+// ═════════════════════════════════
+// 1. DATA ENRICHMENT (THÊM CODE & TIERS)
+// ═════════════════════════════════
 const JPY_RATE = 149.82;
 
+// Hàm sinh giá tier giả lập dựa trên giá base
+function genTiers(base, type) {
+  if (type === 'jp') {
+    return {
+      s: Math.round(base * 1.0),       // Cardrush Rank S
+      a: Math.round(base * 0.85),      // Rank A
+      am: Math.round(base * 0.70),     // Rank A-
+      b: Math.round(base * 0.50)       // Rank B
+    };
+  } else {
+    return {
+      psa10: Math.round(base * 2.2),
+      psa9: Math.round(base * 1.0),    // Market ~ PSA 9
+      raw: Math.round(base * 0.75),    // Raw NM
+      charting: Math.round(base * 0.95) // PriceCharting Ref
+    };
+  }
+}
+
 let EN = [
-  {n:'Charizard Base Shadowless',s:'Base Set 1999',p:8240,c:4.3,cat:'vintage',rank:1},
-  {n:'Pikachu Illustrator',s:'CoroCoro Promo 1998',p:420000,c:1.2,cat:'graded',rank:2},
-  {n:'Charizard 1st Ed PSA10',s:'Base Set 1999',p:36000,c:3.2,cat:'graded',rank:3},
-  {n:'Tropical Wind Trophy',s:'Trophy Promo 1999',p:1800,c:12.5,cat:'vintage',rank:4},
-  {n:'Rayquaza Gold Star',s:'Deoxys EX',p:3200,c:5.0,cat:'vintage',rank:5},
-  {n:'Espeon Gold Star',s:'POP Series 5',p:2800,c:8.1,cat:'vintage',rank:6},
-  {n:'Umbreon Gold Star',s:'POP Series 5',p:2600,c:6.5,cat:'vintage',rank:7},
-  {n:'Shining Charizard',s:'Neo Destiny',p:1800,c:7.2,cat:'vintage',rank:8},
-  {n:"Blaine's Charizard Holo",s:'Gym Heroes',p:145,c:43.6,cat:'vintage',rank:9},
-  {n:'Lugia Neo Genesis Holo',s:'Neo Genesis 2000',p:480,c:-2.5,cat:'vintage',rank:10},
-  {n:'Umbreon VMAX Alt Art',s:'Evolving Skies',p:340,c:2.4,cat:'modern',rank:11},
-  {n:'Palkia ex Alt Art',s:'Crown Zenith',p:189,c:13.2,cat:'modern',rank:12},
-  {n:'Gardevoir ex Alt Art',s:'Paldea Evolved',p:95,c:22.0,cat:'modern',rank:13},
-  {n:'Lugia ex Alt Art',s:'Silver Tempest',p:380,c:4.2,cat:'modern',rank:14},
-  {n:'Iono Full Art',s:'Paldea Evolved',p:185,c:8.2,cat:'modern',rank:15},
-  {n:'Mewtwo Base Set Holo',s:'Base Set 1999',p:380,c:0.8,cat:'vintage',rank:16},
-  {n:'Venusaur Base Holo',s:'Base Set 1999',p:290,c:1.5,cat:'vintage',rank:17},
-  {n:"Rocket's Mewtwo Holo",s:'Team Rocket',p:420,c:3.8,cat:'vintage',rank:18},
-  {n:'Charizard V Alt Art',s:"Champion's Path",p:420,c:-2.1,cat:'modern',rank:19},
-  {n:'Rayquaza VMAX Alt Art',s:'Evolving Skies',p:280,c:0.9,cat:'modern',rank:20},
-  {n:'Mew VMAX Alt Art',s:'Fusion Strike',p:145,c:4.5,cat:'modern',rank:21},
-  {n:'Leafeon VMAX Alt Art',s:'Evolving Skies',p:190,c:1.6,cat:'modern',rank:22},
-  {n:'Blastoise Base Holo',s:'Base Set 1999',p:260,c:1.0,cat:'vintage',rank:23},
-  {n:'Pikachu V-UNION',s:'Promo 2021',p:75,c:-0.5,cat:'modern',rank:24},
-  {n:'Charizard VMAX Rainbow',s:'Darkness Ablaze',p:320,c:1.1,cat:'modern',rank:25},
-];
+  {n:'Charizard Base Shadowless', code:'4/102', set:'Base Set', p:8240, c:4.3, cat:'vintage'},
+  {n:'Umbreon VMAX Alt Art', code:'215/203', set:'Evolving Skies', p:850, c:2.4, cat:'modern'},
+  {n:'Lugia V Alt Art', code:'186/195', set:'Silver Tempest', p:180, c:4.2, cat:'modern'},
+  {n:'Giratina V Alt Art', code:'186/196', set:'Lost Origin', p:320, c:-1.2, cat:'modern'},
+  {n:'Charizard ex SIR', code:'199/165', set:'151 SV', p:115, c:1.5, cat:'modern'},
+  {n:'Moonbreon (Umbreon)', code:'215/203', set:'Evolving Skies', p:900, c:0.5, cat:'modern'},
+  {n:'Gengar VMAX Alt', code:'271/264', set:'Fusion Strike', p:340, c:4.5, cat:'modern'},
+  {n:'Rayquaza VMAX Alt', code:'218/203', set:'Evolving Skies', p:420, c:0.9, cat:'modern'},
+].map(c => ({...c, tiers: genTiers(c.p, 'en')}));
 
 let JP = [
-  {n:'コイキング (初版旧裏)',s:'第1弾 旧裏面 1996',jpy:3200000,c:8.2,cat:'vintage',rank:1},
-  {n:'ピカチュウ イラストレーター',s:'CoroCoro 1998',jpy:55000000,c:2.1,cat:'promo',rank:2},
-  {n:'ミュウツー (コロコロ)',s:'コロコロ Promo 1996',jpy:8500000,c:3.2,cat:'promo',rank:3},
-  {n:'カビゴン (旧裏面)',s:'第1弾 旧裏 1996',jpy:1800000,c:12.0,cat:'vintage',rank:4},
-  {n:'リザードン (第1弾)',s:'第1弾 初版 1996',jpy:980000,c:5.3,cat:'vintage',rank:5},
-  {n:'ルカリオex SA',s:'拡張パック 2023',jpy:48000,c:18.5,cat:'modern',rank:6},
-  {n:'リザードンex SA',s:'黒炎の支配者 2023',jpy:42000,c:11.2,cat:'modern',rank:7},
-  {n:'ブラッキー VMAX SA',s:'イーブイヒーローズ',jpy:95000,c:1.8,cat:'modern',rank:8},
-  {n:'ピジョット ex SA',s:'ステラミラクル 2024',jpy:19000,c:31.0,cat:'modern',rank:9},
-  {n:'ゲッコウガex SA',s:'レイジングサーフ',jpy:38000,c:9.8,cat:'modern',rank:10},
-  {n:'サーナイトex SA',s:'スノーハザード',jpy:35000,c:5.6,cat:'modern',rank:11},
-  {n:'ルギア LEGEND',s:'ハートゴールド 2010',jpy:120000,c:6.0,cat:'vintage',rank:12},
-  {n:'カビゴン SA',s:'バイオレット ex',jpy:32000,c:22.0,cat:'modern',rank:13},
-  {n:'マリルリex SA',s:'ステラミラクル',jpy:15000,c:25.0,cat:'modern',rank:14},
-  {n:'コイキング (GX)',s:'GXスタートデッキ',jpy:280000,c:15.0,cat:'vintage',rank:15},
-  {n:'ポッポ (旧裏面)',s:'第1弾 旧裏 1996',jpy:450000,c:9.0,cat:'vintage',rank:16},
-  {n:'ミュウ (旧裏面)',s:'第1弾 旧裏 1996',jpy:380000,c:7.5,cat:'vintage',rank:17},
-  {n:'ウーラオスex SA',s:'一撃マスター 2021',jpy:58000,c:4.5,cat:'modern',rank:18},
-  {n:'リーフィア VMAX SA',s:'イーブイヒーローズ',jpy:75000,c:2.4,cat:'modern',rank:19},
-  {n:'ファイヤー (旧裏)',s:'第1弾 旧裏 1996',jpy:2400000,c:9.5,cat:'vintage',rank:20},
-].map(c=>({...c, p:Math.round(c.jpy/JPY_RATE), ps:'¥'+c.jpy.toLocaleString()}));
+  {n:'Lillie (Extra Battle)', code:'397/SM-P', set:'Promo', jpy:5500000, c:1.2, cat:'promo'},
+  {n:'Pikachu Illustrator', code:'PROMO', set:'CoroCoro', jpy:85000000, c:0.5, cat:'vintage'},
+  {n:'Charizard ex SAR', code:'SV2a-201', set:'Pokemon 151', jpy:28000, c:5.3, cat:'modern'},
+  {n:'Erika Invitation SAR', code:'SV2a-206', set:'Pokemon 151', jpy:32000, c:-2.1, cat:'modern'},
+  {n:'Mimikyu V CSR', code:'234/184', set:'VMAX Climax', jpy:4500, c:1.8, cat:'modern'},
+  {n:'Marnie SR', code:'198/190', set:'Shiny Star V', jpy:48000, c:2.4, cat:'modern'},
+  {n:'Poncho Pikachu Ray', code:'230/XY-P', set:'Promo', jpy:380000, c:4.5, cat:'promo'},
+  {n:'Lucario ex SAR', code:'SV-P', set:'Promo', jpy:12000, c:18.5, cat:'modern'},
+].map(c => ({...c, p: Math.round(c.jpy/JPY_RATE), ps: '¥'+c.jpy.toLocaleString(), tiers: genTiers(c.jpy, 'jp')}));
 
 // ═════════════════════════════════
-// LIVE DATA SIMULATION
-// Updates prices every 30 seconds with realistic micro-movement
+// 2. LOGIC ĐIỀU HƯỚNG TAB & DISPLAY
 // ═════════════════════════════════
-const NEWS_POOL = [
-  {sev:'critical',src:'Reddit r/PokemonTCG',h:'PSA xác nhận backlog giảm xuống còn 65 ngày',tags:['PSA','WATCH']},
-  {sev:'high',src:'PokeBeach',h:"Blaine's Charizard có thể xuất hiện trong reprint Q2 2025 — UNCONFIRMED",tags:['REPRINT','HOT']},
-  {sev:'high',src:'TCGPlayer Blog',h:'151 set: eBay tăng +18% trong tuần — supply khan hiếm',tags:['151','WATCH']},
-  {sev:'medium',src:'YouTube Leonhart',h:'10 case Prismatic Evol. mở live đạt 400k view trong 3h',tags:['SEALED']},
-  {sev:'low',src:'Twitter/X',h:'Gardevoir ex dẫn đầu meta tournament — ảnh hưởng giá Alt Art',tags:['META']},
-  {sev:'high',src:'eBay Data',h:'Charizard Base Shadowless: 3 deals $8,000+ trong 24h — thị trường sôi động',tags:['HOT','EN']},
-  {sev:'medium',src:'Mercari JP',h:'ルカリオex SA: ¥48,000 → ¥58,000 sau tournament kết quả',tags:['JP','META']},
-  {sev:'critical',src:'Heritage Auctions',h:'Pikachu Illustrator PSA 10 ước tính $6.2M tại phiên đấu giá tháng 3',tags:['GRADED','HOT']},
-  {sev:'medium',src:'Discord TCG VN',h:'Prismatic Evolutions sealed box về VN tăng 20% — nhập khó',tags:['SEALED','VN']},
-  {sev:'low',src:'Pokebeach',h:'Stellar Crown set: danh sách card mới rò rỉ từ scan JP',tags:['JP','NEW']},
-];
-let newsRotateIdx = 0;
-const ECON_DATA = [
-  {l:'USD/JPY',key:'jpy',v:149.82,vstr:'149.82',d:'+0.34',c:'up'},
-  {l:'USD/EUR',key:'eur',v:0.921,vstr:'0.921',d:'-0.003',c:'dn'},
-  {l:'eBay GMV TCG',key:'ebay',v:2.4,vstr:'$2.4M',d:'+8.2% 7d',c:'up'},
-  {l:'PSA Vol/mo',key:'psa',v:18.4,vstr:'18.4K',d:'grading jobs',c:''},
-  {l:'Reddit TCG/24h',key:'reddit',v:4821,vstr:'4,821',d:'+12% posts',c:'up'},
-];
 
-function liveUpdate() {
-  // Update EN prices with tiny realistic drift
-  EN.forEach(c => {
-    const drift = (Math.random()-0.48) * 0.006; // slight upward bias
-    c.p = Math.max(1, Math.round(c.p * (1+drift)));
-    c.c = parseFloat((c.c + (Math.random()-0.5)*0.08).toFixed(2));
-  });
-  // Update JP prices
-  JP.forEach(c => {
-    const drift = (Math.random()-0.48) * 0.005;
-    c.jpy = Math.round(c.jpy * (1+drift));
-    c.p = Math.round(c.jpy/JPY_RATE);
-    c.ps = '¥'+c.jpy.toLocaleString();
-    c.c = parseFloat((c.c + (Math.random()-0.5)*0.08).toFixed(2));
-  });
-  // Rotate 1 news item
-  newsRotateIdx = (newsRotateIdx+1) % NEWS_POOL.length;
-  // Rotate regional news timestamps to feel live
-  Object.values(REG_NEWS).forEach(arr => arr.forEach(n => {
-    const mins = parseInt(n.t);
-    if (!isNaN(mins) && n.t.includes('m')) n.t = Math.max(1, mins+1)+'m';
-  }));
-  renderRegionalNews();
-
-  // Re-render all dynamic parts
-  renderHotspots();
-  renderTop('en');
-  renderTop('jp');
-  renderTicker();
-  renderNewsFeed();
-  renderAlertMini();
-  renderCmpMini();
-  renderAnomalyAlerts();
-  renderSocialMentions();
-  renderGradedTable();
-  renderEcon();
-
-  // Flash feed timestamp
-  const ts = document.getElementById('feed-ts');
-  if(ts){ ts.textContent='JUST NOW'; setTimeout(()=>ts.textContent='LIVE',2500); }
-
-  // Refresh chart with new endpoint
-  if(currentCard) drawChart(currentRange);
-
-  // Update chart if on compare page
-  const cv = document.getElementById('cmp-inp');
-  if(cv && cv.value) runCmp(cv.value,'cmp-full');
-  const qv = document.getElementById('qcmp');
-  if(qv && qv.value) runCmp(qv.value,'cmp-mini');
-
-  // Update portfolio market values
-  portfolio.forEach(c => {
-    const src = c.lang==='JP' ? JP : EN;
-    const match = src.find(x=>x.n.toLowerCase().includes(c.n.toLowerCase().slice(0,10)));
-    if(match) c.cur = match.p;
-    else c.cur = Math.round(c.cur*(1+(Math.random()-0.49)*0.005));
-  });
-  renderPortfolio();
-
-  // Ticker index fluctuation
-  const im = document.getElementById('idx-main');
-  if(im) im.textContent = (parseFloat(im.textContent)+(Math.random()-0.5)*2.1).toFixed(1);
+// Switch Tabs UI
+function sw(tabId) {
+  // Update Tabs UI
+  document.querySelectorAll('.stab').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.stab-c').forEach(el => el.classList.remove('active'));
+  
+  document.getElementById('tab-'+tabId).classList.add('active');
+  document.getElementById('stab-'+tabId).classList.add('active');
 }
-setInterval(liveUpdate, 30000); // every 30 seconds
+
+// Switch Chart (Hotspot Click) - FIX: Auto switch tab
+function switchChart(c, lang) {
+  // 1. Draw Chart
+  const flag = lang==='jp'?'🇯🇵':'🇺🇸';
+  const code = c.code ? `<span class="code-tag">${c.code}</span>` : '';
+  document.getElementById('chart-name').innerHTML = `${flag} ${c.n} ${code}`;
+  document.getElementById('chart-sub').textContent = c.set + (lang==='jp' ? ' · Cardrush Rank S Basis' : ' · Market Price');
+  drawChart(c.p, c.c, lang);
+
+  // 2. Render Pricing Matrix
+  renderMatrix(c, lang);
+
+  // 3. Highlight Row in List
+  const listId = lang==='jp' ? 't-jp' : 't-en';
+  // (Simple highlight animation logic can go here)
+
+  // 4. AUTO SWITCH TAB
+  if (lang === 'jp') sw('jp');
+  else sw('en');
+}
+
+function renderMatrix(c, lang) {
+  const m = document.getElementById('price-matrix');
+  if (lang === 'jp') {
+    m.innerHTML = `
+      <div class="pm-col">
+        <div class="pm-hdr"><span>CARDRUSH JP</span><span>JPY</span></div>
+        <div class="pm-row"><span class="pm-lbl">Rank S (NM)</span><span class="pm-val hl">¥${c.tiers.s.toLocaleString()}</span></div>
+        <div class="pm-row"><span class="pm-lbl">Rank A</span><span class="pm-val">¥${c.tiers.a.toLocaleString()}</span></div>
+        <div class="pm-row"><span class="pm-lbl">Rank A-</span><span class="pm-val">¥${c.tiers.am.toLocaleString()}</span></div>
+        <div class="pm-row"><span class="pm-lbl">Rank B</span><span class="pm-val">¥${c.tiers.b.toLocaleString()}</span></div>
+      </div>
+      <div class="pm-col">
+        <div class="pm-hdr"><span>MARKET REF</span><span>USD</span></div>
+        <div class="pm-row"><span class="pm-lbl">PriceCharting</span><span class="pm-val">$${Math.round(c.tiers.s / JPY_RATE).toLocaleString()}</span></div>
+        <div class="pm-row"><span class="pm-lbl">Clove JP</span><span class="pm-val">¥${(c.tiers.s*1.05).toFixed(0)}</span></div>
+        <div class="pm-row"><span class="pm-lbl">Magi</span><span class="pm-val">¥${(c.tiers.s*0.98).toFixed(0)}</span></div>
+        <div class="pm-row"><span class="pm-lbl">Mercari Avg</span><span class="pm-val">¥${(c.tiers.a).toFixed(0)}</span></div>
+      </div>
+    `;
+  } else {
+    m.innerHTML = `
+      <div class="pm-col">
+        <div class="pm-hdr"><span>TCGPLAYER</span><span>USD</span></div>
+        <div class="pm-row"><span class="pm-lbl">Market</span><span class="pm-val">$${c.p.toLocaleString()}</span></div>
+        <div class="pm-row"><span class="pm-lbl">Low</span><span class="pm-val">$${(c.p*0.9).toFixed(0)}</span></div>
+        <div class="pm-row"><span class="pm-lbl">Mid</span><span class="pm-val">$${(c.p*1.1).toFixed(0)}</span></div>
+        <div class="pm-row"><span class="pm-lbl">High</span><span class="pm-val">$${(c.p*1.4).toFixed(0)}</span></div>
+      </div>
+      <div class="pm-col">
+        <div class="pm-hdr"><span>GRADING REF</span><span>USD</span></div>
+        <div class="pm-row"><span class="pm-lbl">PSA 10</span><span class="pm-val hl">$${c.tiers.psa10.toLocaleString()}</span></div>
+        <div class="pm-row"><span class="pm-lbl">PSA 9</span><span class="pm-val">$${c.tiers.psa9.toLocaleString()}</span></div>
+        <div class="pm-row"><span class="pm-lbl">Raw NM</span><span class="pm-val">$${c.tiers.raw.toLocaleString()}</span></div>
+        <div class="pm-row"><span class="pm-lbl">PriceChart</span><span class="pm-val">$${c.tiers.charting.toLocaleString()}</span></div>
+      </div>
+    `;
+  }
+}
+
+function drawChart(price, pct, lang) {
+  // Simple fake chart generator
+  const svg = document.getElementById('mc');
+  const arr = [];
+  let curr = price * (1 - (pct/100));
+  for(let i=0; i<30; i++) {
+    curr = curr + (Math.random() - 0.45) * (price * 0.05);
+    arr.push(curr);
+  }
+  arr.push(price); // Force end price
+  
+  const max = Math.max(...arr);
+  const min = Math.min(...arr);
+  const W=800, H=128;
+  const pts = arr.map((v,i) => {
+    const x = (i / (arr.length-1)) * W;
+    const y = H - ((v - min) / (max - min)) * (H - 20) - 10;
+    return `${x},${y}`;
+  }).join(' ');
+
+  const color = lang==='jp' ? '#b06aff' : '#39d98a';
+  
+  svg.innerHTML = `
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2"/>
+    <circle cx="${W}" cy="${H - ((price - min)/(max-min))*(H-20)-10}" r="4" fill="${color}"/>
+    <text x="10" y="20" fill="#445566" font-size="10">30 Day Trend</text>
+  `;
+}
 
 // ═════════════════════════════════
-// CLOCK
+// 3. SEARCH ENGINE (CODE PRIORITY)
 // ═════════════════════════════════
+function openSearch(){ document.getElementById('smodal').classList.add('open'); document.getElementById('sminp').focus(); }
+function closeSearch(){ document.getElementById('smodal').classList.remove('open'); }
+
+document.getElementById('sminp').addEventListener('input', (e) => {
+  const q = e.target.value.toLowerCase().trim();
+  const el = document.getElementById('smresults');
+  el.innerHTML = '';
+  
+  if(!q) return;
+
+  // Search Logic: Code priority -> Name secondary
+  const all = [...EN.map(x=>({...x, lang:'en'})), ...JP.map(x=>({...x, lang:'jp'}))];
+  
+  const matched = all.filter(c => 
+    (c.code && c.code.toLowerCase().includes(q)) || 
+    c.n.toLowerCase().includes(q)
+  );
+
+  if(matched.length === 0) {
+    el.innerHTML = `<div style="padding:20px;text-align:center;color:var(--t3)">Không tìm thấy mã hoặc tên "${q}"</div>`;
+    return;
+  }
+
+  matched.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'sm-row';
+    const flag = c.lang==='jp' ? '🇯🇵' : '🇺🇸';
+    const price = c.lang==='jp' ? c.ps : '$'+c.p;
+    div.innerHTML = `
+      <div style="font-size:20px;">${c.cat==='vintage'?'🏛':'🃏'}</div>
+      <div style="flex:1">
+        <div><span class="sm-code">${c.code}</span> <span style="font-weight:700">${c.n}</span></div>
+        <div style="font-size:11px;color:var(--t3)">${flag} ${c.set}</div>
+      </div>
+      <div style="font-weight:700;color:${c.lang==='jp'?'var(--pur)':'var(--gold)'}">${price}</div>
+    `;
+    div.onclick = () => {
+      switchChart(c, c.lang);
+      gotoPage('markets');
+      closeSearch();
+    };
+    el.appendChild(div);
+  });
+});
+// Shortcut Ctrl+K
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openSearch();}});
+
+// ═════════════════════════════════
+// 4. LIVE STREAMS (EMBEDDED)
+// ═════════════════════════════════
+// Sử dụng các video ID thật (hoặc video dài) để demo tính năng embed
+const STREAMS = [
+  {id:'jfKfPfyJRdk', n:'Lofi Girl', t:'Beats to relax/study to', v:45000},
+  {id:'S5_2h9a3pVQ', n:'PokéRev', t:'Live Opening: 151 Booster Bundle', v:12000},
+  {id:'9j15_qP7rMI', n:'Leonhart', t:'Vintage Box Opening Base Set', v:28000},
+  {id:'wKhRj_c8_Vw', n:'DeepPocket', t:'Cardrush Store Walkthrough JP', v:5000},
+];
+
+function renderStreams() {
+  const el = document.getElementById('stream-list');
+  el.innerHTML = STREAMS.map((s, i) => `
+    <div class="sli" onclick="playStream('${s.id}', '${s.n}')">
+      <div class="sli-em">▶</div>
+      <div class="sli-b">
+        <div class="sli-name">${s.n}</div>
+        <div style="font-size:10px;color:var(--t3)">${s.t}</div>
+        <div class="sli-v">● ${s.v.toLocaleString()}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function playStream(vidId, name) {
+  const screen = document.getElementById('ls-screen');
+  // Sử dụng youtube-nocookie để nhẹ hơn
+  screen.innerHTML = `<iframe class="live-iframe" src="https://www.youtube-nocookie.com/embed/${vidId}?autoplay=1&modestbranding=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+}
+
+// ═════════════════════════════════
+// INIT & RENDER LISTS
+// ═════════════════════════════════
+function renderLists() {
+  // Render Hotspots (Fake data linked to real objects)
+  const hotspots = [EN[0], JP[2], EN[4], JP[1]];
+  document.getElementById('hl').innerHTML = hotspots.map(c => `
+    <div class="hi" onclick="switchChart(EN.find(x=>x.n=='${c.n}')||JP.find(x=>x.n=='${c.n}'), '${c.jpy?'jp':'en'}')">
+      <div class="hi-n">${c.n}</div>
+      <div class="hi-m"><span class="hi-p" style="color:${c.c>0?'var(--grn)':'var(--red)'}">${c.c>0?'+':''}${c.c}%</span> <span class="code-tag" style="font-size:9px">${c.code}</span></div>
+    </div>
+  `).join('');
+
+  // Render EN List
+  document.getElementById('t-en').innerHTML = EN.map(c => `
+    <div class="t100r" onclick="switchChart(EN[${EN.indexOf(c)}], 'en')">
+      <div class="rnk">🇺🇸</div>
+      <div><div style="font-weight:700">${c.n}</div><div style="font-size:10px;color:var(--t3)">${c.code}</div></div>
+      <div class="cp">$${c.p.toLocaleString()}</div>
+      <div class="cd ${c.c>0?'up':'dn'}">${c.c}%</div>
+    </div>
+  `).join('');
+
+  // Render JP List
+  document.getElementById('t-jp').innerHTML = JP.map(c => `
+    <div class="t100r" onclick="switchChart(JP[${JP.indexOf(c)}], 'jp')">
+      <div class="rnk">🇯🇵</div>
+      <div><div style="font-weight:700">${c.n}</div><div style="font-size:10px;color:var(--t3)">${c.code}</div></div>
+      <div class="cp" style="color:var(--pur)">${c.ps}</div>
+      <div class="cd ${c.c>0?'up':'dn'}">${c.c}%</div>
+    </div>
+  `).join('');
+}
+
+// Clock & Ticker
 setInterval(()=>{document.getElementById('clk').textContent=new Date().toLocaleTimeString('vi-VN',{hour12:false})+' ICT';},1000);
+document.getElementById('ticker').innerHTML = `<span class="ti"><span class="ti-n">Alert:</span> Thị trường JP đang tăng mạnh ở nhóm Waifu SR (+12%)</span>` + EN.map(c=>`<span class="ti"><span class="ti-n">${c.code}</span> <span style="color:var(--t1)">$${c.p}</span></span>`).join('');
 
-// ═════════════════════════════════
-// PAGE NAVIGATION
-// ═════════════════════════════════
+// Init Page
 function gotoPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
   document.getElementById('pg-'+id).classList.add('active');
   const nt=document.getElementById('nt-'+id);
   if(nt) nt.classList.add('active');
-  if(id==='compare'){ const v=document.getElementById('cmp-inp').value||'Charizard'; runCmp(v,'cmp-full'); }
 }
 
-// ═════════════════════════════════
-// DRAG RESIZE
-// ═════════════════════════════════
-document.querySelectorAll('.dh-v').forEach(h=>{
-  h.addEventListener('mousedown',e=>{
-    e.preventDefault();
-    const a=document.getElementById(h.dataset.a),b=document.getElementById(h.dataset.b);
-    const side=h.dataset.side,sx=e.clientX,aw=a.offsetWidth,bw=b.offsetWidth;
-    h.classList.add('drag');document.body.style.cssText='cursor:col-resize;user-select:none;';
-    const mv=e=>{const dx=e.clientX-sx;side==='left'?(a.style.width=Math.max(140,Math.min(480,aw+dx))+'px',a.style.flex='none'):(b.style.width=Math.max(160,Math.min(500,bw-dx))+'px',b.style.flex='none');};
-    const up=()=>{h.classList.remove('drag');document.body.style.cssText='';document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);};
-    document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
-  });
-});
-document.getElementById('dhb').addEventListener('mousedown',e=>{
-  e.preventDefault();
-  const bp=document.getElementById('bpr'),sy=e.clientY,sh=bp.offsetHeight,h=document.getElementById('dhb');
-  h.classList.add('drag');document.body.style.cssText='cursor:row-resize;user-select:none;';
-  const mv=e=>bp.style.height=Math.max(100,Math.min(500,sh-(e.clientY-sy)))+'px';
-  const up=()=>{h.classList.remove('drag');document.body.style.cssText='';document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);};
-  document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
-});
+// STARTUP
+renderLists();
+renderStreams();
+// Load default chart
+switchChart(EN[0], 'en');
 
-// ═════════════════════════════════
-// SEARCH MODAL — popup, no external links
-// ═════════════════════════════════
-let smActive=-1, smPool=[];
-function openSearch(){
-  document.getElementById('smodal').classList.add('open');
-  document.getElementById('sminp').value='';
-  smActive=-1;
-  smRender('');
-  setTimeout(()=>document.getElementById('sminp').focus(),40);
-}
-function closeSearch(){ document.getElementById('smodal').classList.remove('open'); }
-
-document.getElementById('sminp').addEventListener('input',e=>smRender(e.target.value));
-document.getElementById('sminp').addEventListener('keydown',e=>{
-  const rows=document.querySelectorAll('#smresults .sm-row');
-  if(e.key==='ArrowDown'){e.preventDefault();smActive=Math.min(smActive+1,rows.length-1);smHighlight(rows);}
-  else if(e.key==='ArrowUp'){e.preventDefault();smActive=Math.max(smActive-1,0);smHighlight(rows);}
-  else if(e.key==='Enter'){e.preventDefault();if(rows[smActive])rows[smActive].click();else if(rows[0])rows[0].click();}
-  else if(e.key==='Escape')closeSearch();
-});
-function smHighlight(rows){rows.forEach((r,i)=>r.classList.toggle('sel',i===smActive));if(rows[smActive])rows[smActive].scrollIntoView({block:'nearest'});}
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();openSearch();}});
-
-function smRender(q){
-  const s=q.toLowerCase().trim();
-  const el=document.getElementById('smresults');
-  if(!s){
-    // show hot cards as default
-    const hot=[...EN.slice(0,5),...JP.slice(0,4)];
-    smPool=hot;
-    el.innerHTML='<div class="sm-sec">🔥 Đang Hot Nhất</div>'+hot.map((c,i)=>smRowHTML(c,i,c.ps?'jp':'en')).join('');
-    return;
-  }
-  const en=EN.filter(c=>c.n.toLowerCase().includes(s)||c.s.toLowerCase().includes(s));
-  const jp=JP.filter(c=>c.n.toLowerCase().includes(s)||c.s.toLowerCase().includes(s));
-  smPool=[...en,...jp];
-  if(!smPool.length){
-    el.innerHTML=`<div class="sm-empty"><div class="big">🔍</div>Không tìm thấy "<strong>${q}</strong>"<br><span style="font-size:12px;margin-top:5px;display:block;">Thử: Charizard, Lugia, Umbreon, ルカリオ</span></div>`;return;
-  }
-  let html='';
-  if(en.length) html+=`<div class="sm-sec">🇺🇸 English — ${en.length} card</div>`+en.map((c,i)=>smRowHTML(c,i,'en')).join('');
-  if(jp.length) html+=`<div class="sm-sec">🇯🇵 Japanese — ${jp.length} card</div>`+jp.map((c,i)=>smRowHTML(c,en.length+i,'jp')).join('');
-  el.innerHTML=html;
-  smActive=-1;
-}
-function smRowHTML(c,idx,lang){
-  const ico=c.cat==='vintage'?'🏛':c.cat==='graded'?'🏅':c.cat==='promo'?'⭐':'🃏';
-  const price=lang==='jp'?c.ps:'$'+c.p.toLocaleString();
-  const dc=c.c>=0?'up':'dn';
-  const ds=(c.c>=0?'+':'')+c.c.toFixed(1)+'%';
-  return`<div class="sm-row" onclick="smSelect(${idx},'${lang}')">
-    <div class="sm-ico">${ico}</div>
-    <div class="sm-info"><div class="sm-name">${c.n}</div><div class="sm-sub">${c.s} · ${lang==='en'?'🇺🇸 EN':'🇯🇵 JP'} · ${c.cat}</div></div>
-    <div class="sm-rhs"><div class="sm-price ${lang}">${price}</div><div class="sm-delta ${dc}">${ds} 24h</div></div>
-  </div>`;
-}
-function smSelect(idx,lang){
-  const c=smPool[idx];
-  if(c){switchChart(c,lang);gotoPage('markets');}
-  closeSearch();
-}
-
-// ═════════════════════════════════
-// CHART — switches per card clicked
-// ═════════════════════════════════
-function genData(price,pct){
-  const t=pct/100;
-  const mk=(n,vol)=>{
-    const arr=[];let v=price*(1-Math.abs(t)*1.4);
-    for(let i=0;i<n;i++){v=v+(price-v)*0.15+(Math.random()-0.47)*vol*price;arr.push(Math.max(1,Math.round(v)));}
-    arr.push(price);return arr;
-  };
-  return{'1d':mk(8,.004),'7d':mk(10,.014),'30d':mk(13,.028),'90d':mk(14,.055),'1y':mk(14,.13)};
-}
-let currentCard={n:'Charizard Base Set Shadowless',s:'Base Set 1999',p:8240,c:4.3,lang:'en',data:null};
-currentCard.data=genData(8240,4.3);
-// Override with realistic 30d/1y for default
-currentCard.data['30d']=[6800,7000,7100,6900,7200,7500,7800,7950,8000,8050,8100,8200,8240];
-currentCard.data['1y']=[3000,3500,4000,4200,5000,5800,6000,6500,7000,7800,8100,8200,8240];
-let currentRange='30d';
-
-function switchChart(c,lang){
-  currentCard={n:c.n,s:c.s,p:c.p,c:c.c,lang,data:genData(c.p,c.c)};
-  const flag=lang==='jp'?'🇯🇵':'🇺🇸';
-  document.getElementById('chart-name').textContent=flag+' '+c.n;
-  document.getElementById('chart-sub').textContent=c.s+(lang==='jp'?' · JPY':' · USD')+' · Click card để đổi';
-  document.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('active'));
-  document.querySelector('.cbtn[data-r="30d"]').classList.add('active');
-  currentRange='30d';
-  drawChart('30d');
-  // flash highlight on rows
-  document.querySelectorAll('.t100r,.hi').forEach(r=>{
-    if(r.textContent.includes(c.n.slice(0,12))){
-      r.style.animation='flash .6s ease';setTimeout(()=>r.style.animation='',700);
-    }
-  });
-}
-
-function drawChart(r){
-  currentRange=r;
-  const data=currentCard.data[r];
-  const svg=document.getElementById('mc'),W=800,H=128,P=22;
-  const mn=Math.min(...data),mx=Math.max(...data),rng=mx-mn||1;
-  const isJP=currentCard.lang==='jp';
-  const c1=isJP?'#b06aff':'#4da6ff',c2=isJP?'#e8c542':'#39d98a',dot=isJP?'#b06aff':'#39d98a';
-  const x=i=>P+(i/(data.length-1))*(W-P*2);
-  const y=v=>H-P-((v-mn)/rng)*(H-P*2);
-  const line=data.map((v,i)=>`${i===0?'M':'L'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
-  const area=line+` L${x(data.length-1)},${H} L${P},${H} Z`;
-  const lastLbl=isJP?'¥'+data[data.length-1].toLocaleString():'$'+data[data.length-1].toLocaleString();
-  svg.innerHTML=`<defs>
-    <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="${dot}" stop-opacity=".2"/>
-      <stop offset="100%" stop-color="${dot}" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="${c1}"/>
-      <stop offset="100%" stop-color="${c2}"/>
-    </linearGradient>
-  </defs>`
-  +[0,.25,.5,.75,1].map(t=>{
-    const yy=(P+t*(H-P*2)).toFixed(1),val=mx-t*rng;
-    const lbl=isJP?'¥'+(Math.round(val/1000)*1000).toLocaleString():'$'+(Math.round(val/100)*100).toLocaleString();
-    return`<line x1="${P}" y1="${yy}" x2="${W-P}" y2="${yy}" stroke="rgba(28,45,62,.9)" stroke-width="1" stroke-dasharray="3,5"/>
-    <text x="${P-6}" y="${(parseFloat(yy)+4).toFixed(1)}" fill="#445566" font-size="9" text-anchor="end" font-family="Consolas,monospace">${lbl}</text>`;
-  }).join('')
-  +`<path d="${area}" fill="url(#ag)"/>
-    <path d="${line}" fill="none" stroke="url(#lg)" stroke-width="2.5" stroke-linejoin="round"/>`
-  +data.map((v,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="${i===data.length-1?5:2.5}" fill="${i===data.length-1?dot:'#0c1420'}" stroke="${dot}" stroke-width="1.5"/>`).join('')
-  +`<rect x="${Math.min(x(data.length-1)+8,W-92)}" y="${(y(data[data.length-1])-13).toFixed(1)}" width="88" height="20" fill="${dot}18" rx="2"/>
-    <text x="${(Math.min(x(data.length-1)+8,W-92)+4).toFixed(1)}" y="${(y(data[data.length-1])+2).toFixed(1)}" fill="${dot}" font-size="12" font-family="Consolas,monospace" font-weight="bold">${lastLbl}</text>`;
-}
-drawChart('30d');
-
-function sc(el,r){
-  document.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');drawChart(r);
-}
-
-// ═════════════════════════════════
-// HOTSPOTS — clickable → switches chart
-// ═════════════════════════════════
-const HOTSPOTS=[
-  {en:EN[0],sev:'critical',v:92,a:false,icon:'🔥'},
-  {en:EN[8],sev:'critical',v:98,a:true,icon:'🚨'},
-  {en:EN[11],sev:'high',v:75,a:false,icon:'⬆️'},
-  {en:EN[10],sev:'high',v:60,a:false,icon:'📈'},
-  {en:EN[3],sev:'high',v:20,a:false,icon:'🏆'},
-  {en:EN[13],sev:'high',v:58,a:false,icon:'💎'},
-  {en:EN[9],sev:'medium',v:40,a:false,icon:'📉'},
-  {en:EN[4],sev:'high',v:45,a:false,icon:'⭐'},
-];
-function renderHotspots(){
-  document.getElementById('hct').textContent=HOTSPOTS.length;
-  document.getElementById('hl').innerHTML=HOTSPOTS.map((h,i)=>{
-    const c=h.en;
-    const up=c.c>=0;
-    return`<div class="hi ${h.sev}${h.a?' anom':''}" onclick="switchChart(EN[${EN.indexOf(c)}],'en')" style="cursor:pointer;position:relative;" title="Click → xem chart">
-      <div class="hi-flag">${h.icon}</div>
-      <div class="hi-n">${c.n}</div>
-      <div class="hi-s">${c.s}</div>
-      <div class="hi-m">
-        <span class="hi-p ${up?'up':'dn'}">$${c.p.toLocaleString()}</span>
-        <span class="hi-c ${up?'up':'dn'}">${up?'+':''}${c.c.toFixed(1)}%</span>
-      </div>
-      <div class="vb"><div class="vf" style="width:${h.v}%;background:${up?'var(--grn)':'var(--red)'}"></div></div>
-    </div>`;
-  }).join('');
-}
-renderHotspots();
-
-// ═════════════════════════════════
-// TOP 100 — clickable → switches chart
-// ═════════════════════════════════
-let fEN='all',fJP='all';
-function ft(el,cat,lang){el.closest('.t100f').querySelectorAll('.tf').forEach(t=>t.classList.remove('active'));el.classList.add('active');lang==='en'?fEN=cat:fJP=cat;renderTop(lang);}
-function renderTop(lang){
-  const src=lang==='en'?EN:JP,f=lang==='en'?fEN:fJP;
-  const rows=f==='all'?src:src.filter(c=>c.cat===f);
-  const M=['🥇','🥈','🥉'];
-  const arr=rows.map((c,i)=>{
-    const up=c.c>=0;
-    const price=lang==='en'?'$'+c.p.toLocaleString():c.ps;
-    return`<div class="t100r" onclick="switchChart(${lang==='en'?'EN':'JP'}[${(lang==='en'?EN:JP).indexOf(c)}],'${lang}')" style="cursor:pointer" title="Click → xem chart">
-      <div class="rnk${c.rank<=3?' top':''}">${c.rank<=3?M[c.rank-1]:c.rank}</div>
-      <div><div class="cn">${c.n}</div><div class="cs">${c.s}</div></div>
-      <div class="cp">${price}</div>
-      <div class="cd ${up?'up':'dn'}">${up?'+':''}${c.c.toFixed(1)}%</div>
-    </div>`;
-  });
-  document.getElementById('t-'+lang).innerHTML=arr.join('');
-}
-renderTop('en');renderTop('jp');
-
-// ═════════════════════════════════
-// TICKER
-// ═════════════════════════════════
-function renderTicker(){
-  const items=EN.slice(0,10).map(c=>({n:c.n.split(' ').slice(0,3).join(' '),p:'$'+c.p.toLocaleString(),c:(c.c>=0?'+':'')+c.c.toFixed(1)+'%',up:c.c>=0}));
-  items.push({n:'USD/JPY',p:'149.82',c:'+0.34',up:true});
-  const d=[...items,...items];
-  document.getElementById('ticker').innerHTML=d.map(t=>`<span class="ti"><span class="ti-n">${t.n}</span><span style="color:var(--t1)">${t.p}</span><span class="${t.up?'up':'dn'}">${t.c}</span></span>`).join('');
-}
-renderTicker();
-
-// ═════════════════════════════════
-// NEWS FEED — rotates items on refresh
-// ═════════════════════════════════
-function renderNewsFeed(){
-  const pool=[];
-  for(let i=0;i<5;i++) pool.push(NEWS_POOL[(newsRotateIdx+i)%NEWS_POOL.length]);
-  document.getElementById('nf').innerHTML=pool.map(n=>`<div class="ni" style="display:flex;gap:7px;">
-    <div class="ni-sev ${n.sev}"></div>
-    <div style="flex:1;min-width:0">
-      <div class="ni-src"><span class="sn">${n.src}</span></div>
-      <div class="ni-h">${n.h}</div>
-      <div class="ni-tags">${n.tags.map(t=>`<span class="ntag ${t==='HOT'?'hot':t==='WATCH'?'w':''}">${t}</span>`).join('')}</div>
-    </div>
-  </div>`).join('');
-}
-renderNewsFeed();
-
-// ═════════════════════════════════
-// HEATMAP
-// ═════════════════════════════════
-(()=>{
-  const S=[{l:'BS Sdwless',v:'+43%',h:.95},{l:'Gym Heroes',v:'+41%',h:.92},{l:'Neo Gen',v:'+18%',h:.72},{l:'Evlv Skies',v:'+15%',h:.68},{l:'Crown Zen',v:'+13%',h:.63},{l:'151 SV',v:'+12%',h:.60},{l:'SV Prism',v:'+8%',h:.50},{l:'HGSS',v:'+7%',h:.44},{l:'Silver Tmp',v:'+6%',h:.42},{l:'Champion',v:'+3%',h:.30},{l:'VSTAR Uni',v:'+2%',h:.28},{l:'Shining Ft',v:'+4%',h:.35},{l:'Lost Orig',v:'-1%',h:.18},{l:'Fusion Stk',v:'-3%',h:.12},{l:'Chill Rain',v:'-5%',h:.08},{l:'BST 2021',v:'-7%',h:.05},{l:'Vivid Volt',v:'-9%',h:.03},{l:'DAA',v:'-11%',h:.01}];
-  function hc(h){if(h>.7)return`rgba(255,77,106,${(.25+h*.55).toFixed(2)})`;if(h>.4)return`rgba(232,197,66,${(.15+h*.5).toFixed(2)})`;if(h>.2)return`rgba(77,166,255,${(.15+h*.4).toFixed(2)})`;return`rgba(57,217,138,${(.04+h*.25).toFixed(2)})`;}
-  document.getElementById('hmap').innerHTML=S.map(s=>`<div class="hc" style="background:${hc(s.h)};border:1px solid ${hc(s.h)}" title="${s.l}: ${s.v}"><div class="hcv">${s.v}</div><div class="hcl">${s.l}</div></div>`).join('');
-})();
-
-// ═════════════════════════════════
-// PREDICTIONS
-// ═════════════════════════════════
-const PREDS=[
-  {q:"Charizard BS vượt $10,000 trước Q3 2025?",yes:68,vol:'$124K',cl:'45 ngày'},
-  {q:"Prismatic Evolutions reprint trong 2025?",yes:31,vol:'$89K',cl:'62 ngày'},
-  {q:"Blaine's Charizard giữ $200+ sau 30 ngày?",yes:74,vol:'$41K',cl:'30 ngày'},
-  {q:"PSA backlog xuống dưới 60 ngày trong 2025?",yes:55,vol:'$67K',cl:'90 ngày'},
-  {q:"Một card JP lập kỷ lục >¥100M trong 2025?",yes:12,vol:'$28K',cl:'300 ngày'},
-  {q:"151 set reprint được thông báo trước Q4?",yes:44,vol:'$52K',cl:'120 ngày'},
-];
-function predHTML(cls){
-  return PREDS.map(p=>`<div class="${cls}">
-    <div class="pred-q">${p.q}</div>
-    <div class="pred-bars">
-      <div class="pred-y"><div class="pv">${p.yes}%</div><div class="plbl">YES</div></div>
-      <div class="pred-n"><div class="pv">${100-p.yes}%</div><div class="plbl">NO</div></div>
-    </div>
-    <div class="pred-track"><div class="pred-fill" style="width:${p.yes}%"></div></div>
-    <div class="pred-meta"><span class="vol">Vol: ${p.vol}</span><span>Đóng: ${p.cl}</span></div>
-  </div>`).join('');
-}
-document.getElementById('pred-grid').innerHTML=predHTML('pred-item');
-document.getElementById('pred-live').innerHTML=predHTML('pred-item');
-
-// ═════════════════════════════════
-// ECON
-// ═════════════════════════════════
-function renderEcon(){
-  document.getElementById('econ-row').innerHTML=ECON_DATA.map(e=>`<div class="econ-c">
-    <div class="econ-l">${e.l}</div>
-    <div class="econ-v" style="color:${e.c==='up'?'var(--grn)':e.c==='dn'?'var(--red)':'var(--t1)'}">${e.vstr}</div>
-    <div class="econ-d ${e.c}">${e.d}</div>
-  </div>`).join('');
-}
-renderEcon();
-
-// ═════════════════════════════════
-// REGIONAL NEWS — clickable, opens detail modal
-// ═════════════════════════════════
-const REG_NEWS = {
-  '🇺🇸 US': [
-    {s:'TCGPlayer',h:'PSA confirms 65-day turnaround — supply to increase Q2',t:'2m',body:'PSA đã xác nhận chính thức rằng thời gian xử lý grading đã giảm xuống còn 65 ngày cho tier Standard, xuống từ mức đỉnh 120 ngày. Điều này dự kiến sẽ tăng nguồn cung PSA 9/10 ra thị trường trong Q2 2025, có thể gây áp lực giảm nhẹ lên premium của graded cards.'},
-    {s:'Pokebeach',h:"Blaine's Charizard reprint rumor Q2 — unconfirmed",t:'18m',body:"Một nguồn tin ẩn danh trên Pokebeach tiết lộ Blaine's Charizard có thể xuất hiện trong set Anniversary sắp tới. Tin chưa được xác nhận nhưng đã khiến giá tăng 44% trong 24h. Cộng đồng đang chia rẽ giữa tin tức hợp lệ và FOMO pump."},
-    {s:'eBay Data',h:'Pokémon TCG GMV +18% this week vs prior week',t:'34m',body:'Dữ liệu eBay Terapeak cho thấy tổng GMV Pokémon TCG tăng 18% so với tuần trước. Driven by: Vintage WOTC +31%, Modern Alt Art +12%, Sealed Product +8%. Charizard Base Set ghi nhận 3 giao dịch $8,000+ trong 48h.'},
-    {s:'Heritage Auctions',h:'Pikachu Illustrator PSA 10 estimated $6.2M for March lot',t:'1h',body:'Heritage Auctions đã confirm Pikachu Illustrator PSA 10 (duy nhất tồn tại) sẽ được đấu giá tháng 3/2025, ước tính từ $5.8-6.5M. Đây sẽ là kỷ lục mới cho trading card nói chung, vượt qua mức $5.275M trước đó.'},
-    {s:'Reddit r/PokemonTCG',h:'Prismatic Evolutions supply update — stores restocking',t:'2h',body:'Nhiều cửa hàng Target và Walmart báo cáo đã nhận được thêm Prismatic Evolutions ETB. Tuy nhiên, supply vẫn còn khan hiếm ở khu vực East Coast. Giá eBay tuy hạ nhẹ nhưng vẫn còn premium 40% so với MSRP.'},
-    {s:'Pokebeach',h:'New Japanese set reveal scheduled March 15',t:'3h',body:'The Pokémon Company Japan xác nhận event reveal set mới vào ngày 15/3. Dự kiến sẽ có card Arceus ex và Giratina ex SA. Cộng đồng đang speculate về việc bộ này có ảnh hưởng đến giá EN version hay không.'},
-  ],
-  '🇯🇵 JP': [
-    {s:'ポケモン公式',h:'新拡張パック「ステラミラクル」追加カード公開',t:'5m',body:'ポケモンカードゲーム公式から新弾「ステラミラクル」の追加収録カードが公開されました。ピジョットex SAが予想より高いレアリティで収録されることが判明し、予約価格が急騰しています。予約サイトでは既に完売状態の店舗も出ています。'},
-    {s:'Mercari JP',h:'旧裏面コイキング ¥3,200,000で落札',t:'22m',body:'Mercari JPにて旧裏面コイキング PSA 10が¥3,200,000で落札されました。前回の取引価格から約15%の上昇。旧裏面カードの需要は2025年に入り継続して上昇傾向にあり、特にPSAグレード品の人気が顕著です。'},
-    {s:'Yahoo Auctions',h:'ピカチュウ イラストレーター PSA10 新規出品',t:'1h',body:'Yahoo!オークションにピカチュウ イラストレーター PSA 10が出品されました。現在の入札額は¥580,000,000（約$388万）。オークション終了は3日後。コレクター間での注目度は非常に高く、入札ペースが過去最速水準。'},
-    {s:'メルカリ相場',h:'ルカリオex SA: ¥38,000→¥52,000 急騰',t:'1h',body:'大会結果を受け、ルカリオex SAの相場がメルカリで急騰。先週の¥38,000から本日¥52,000台まで上昇しました。東京地区の大会で優勝デッキに4枚採用されたことがトリガーとなっています。'},
-    {s:'ポケモンカード投資グループ',h:'旧裏面相場：2025年上半期まとめ',t:'2h',body:'旧裏面カードの2025年上半期相場分析によると、全体的に前年比+35%の上昇。特にコイキング、ピカチュウ イラストレーター、ミュウツー（コロコロ）の3枚が牽引役。グレードなしの中程度コンディション品も人気上昇中。'},
-    {s:'Twitter JP TCG',h:'新弾BOXの転売問題 — 小売店が声明',t:'3h',body:'複数の大手カードショップが転売ヤーによるBOX買い占め問題に声明を発表。1人1BOX制限を強化し、会員登録必須の購入システムに移行する店舗が増加。公式もこの問題に対して取り組みを検討中とのこと。'},
-  ],
-  '🇪🇺 EU': [
-    {s:'Cardmarket',h:'151 EU prices 28% above US market average',t:'8m',body:'Cardmarket データによると、151 setのEU価格は米国市場平均より28%高い水準で推移しています。これはEUへの輸入コスト、VAT（20%）、および相対的に少ないリリース数が原因。特にCharizard ex SAは欧州で€380以上で取引されています。'},
-    {s:'TCGPlayer EU',h:'New VAT rules affect JP card imports from Jan 2025',t:'45m',body:'EU新VAT規制（2025年1月施行）により、日本からの個人輸入カードに対してもVATが適用されるようになりました。€150以上の商品は通関時に20%VAT + 手数料が発生。JP vintage cardの欧州での実質価格が10-15%上昇見込み。'},
-    {s:'Reddit r/pokemoncardscollectors',h:'UK collectors paying 20% premium on WOTC era cards',t:'1h',body:'英国のコレクター調査によると、WOTC時代のカードに対して平均20%のプレミアムを支払っていることが判明。Brexit後の輸入規制と関税が主な原因。Graded cardsの場合は更に高く、PSA 10のCharizard Base Setは英国で£7,200以上。'},
-    {s:'Cardmarket Blog',h:'German market leads EU growth — +45% YTD Pokémon',t:'2h',body:'Cardmarketsの年次レポートによると、ドイツ市場がEUのPokémon TCG成長を牽引し、YTD +45%を記録。フランス(+38%)、オランダ(+32%)が続く。特にヴィンテージカードの需要が高く、Base Set 1st Edition関連が最も人気。'},
-    {s:'PokeGoldfish EU',h:'European Championship impact on card prices',t:'3h',body:'欧州選手権の結果を受け、使用率の高いカードが軒並み価格上昇。Gardevoir ex関連カードが24h以内に15%上昇。トーナメントシーズン特有の価格変動で、大会終了後に調整が入る可能性もあります。'},
-  ],
-  '🇻🇳 VN': [
-    {s:'Group TCG Vietnam',h:'Charizard Base $8,240 — cộng đồng VN phân tích',t:'10m',body:'Cộng đồng TCG Việt Nam đang sôi nổi thảo luận về mức giá $8,240 của Charizard Base Set Shadowless. Theo các nhà đầu tư VN, đây vẫn còn undervalued so với tiềm năng 5 năm tới. Nhiều người đặt mục tiêu $15,000 vào 2027. Nhóm đang tổ chức buổi phân tích thị trường online vào thứ 7 tuần này.'},
-    {s:'Shopee TCG VN',h:'Hàng JP qua Mercari tăng 15% phí vận chuyển',t:'35m',body:'Các shop nhập hàng JP qua Mercari thông báo tăng phí vận chuyển 15% do Nhật tăng phí bưu điện từ tháng 3. Cụ thể: thẻ đơn tăng 200-400 JPY/thẻ, BOX tăng 800-1500 JPY. Khách hàng nên gom đơn để giảm tác động chi phí.'},
-    {s:'Discord TCG VN',h:'Hướng dẫn submit PSA từ Việt Nam — cập nhật 2025',t:'1h',body:'Thread hướng dẫn submit PSA từ VN được cập nhật: Hiện tại có 3 middleman uy tín nhận gửi hàng. Chi phí khoảng $25-35/thẻ cho tier Standard (65 ngày). Lưu ý: cần mua bảo hiểm tối thiểu $500 cho thẻ vintage. Thời gian về VN sau khi có kết quả thêm 7-14 ngày.'},
-    {s:'Facebook TCG VN',h:'Trading event Hà Nội tháng 3 — 200 người tham dự',t:'2h',body:'Sự kiện trading card lớn nhất Hà Nội năm 2025 dự kiến diễn ra ngày 22-23/3 tại GEM Center. Đã có 200 người đăng ký, bao gồm dealers từ TPHCM, Đà Nẵng. Có khu vực grading on-site, exhibition vintage cards, và mini tournament với prize pool 10 triệu VNĐ.'},
-    {s:'YouTube TCG VN',h:'Review set mới: Stellar Miracle — nên mua không?',t:'3h',body:'Video review mới nhất của kênh TCG Vietnam đánh giá set Stellar Miracle: Pull rate thực tế thấp hơn lý thuyết khoảng 20%. Pigeot ex SA (~¥19,000) là chính. Khuyến nghị: chỉ mua nếu bạn collect, không nên sealed investment vì supply JP rất cao.'},
-    {s:'Zalo TCG VN',h:'Cảnh báo: Thẻ fake grade đang lưu hành',t:'4h',body:'Cộng đồng phát hiện batch thẻ PSA fake đang được bán ở một số hội nhóm. Dấu hiệu nhận biết: logo PSA không sắc nét, số cert không khớp trên website PSA, hologram mờ. Khuyến cáo luôn verify số cert tại psacard.com trước khi mua graded cards.'},
-  ],
-};
-
-// News detail modal
-function showNewsModal(region, idx) {
-  const items = REG_NEWS[region];
-  if (!items || !items[idx]) return;
-  const n = items[idx];
-  let modal = document.getElementById('news-modal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'news-modal';
-    modal.style.cssText = 'position:fixed;inset:0;z-index:9800;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);';
-    modal.innerHTML = `<div style="width:580px;max-height:80vh;background:var(--bg2);border:1px solid var(--b2);box-shadow:0 24px 80px rgba(0,0,0,.9);display:flex;flex-direction:column;overflow:hidden;">
-      <div style="padding:13px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;flex-shrink:0;">
-        <div id="nm-region" style="font-size:12px;padding:1px 7px;background:var(--ga);color:var(--gold);border:1px solid rgba(232,197,66,.25);font-weight:700;"></div>
-        <div id="nm-src" style="font-size:12px;color:var(--gold);font-weight:700;"></div>
-        <div id="nm-time" style="font-size:11px;color:var(--t3);margin-left:4px;"></div>
-        <div onclick="document.getElementById('news-modal').remove()" style="margin-left:auto;cursor:pointer;font-size:20px;color:var(--t3);width:30px;height:30px;display:flex;align-items:center;justify-content:center;">✕</div>
-      </div>
-      <div style="overflow-y:auto;padding:18px 16px;">
-        <div id="nm-h" style="font-size:18px;font-weight:800;line-height:1.4;margin-bottom:14px;"></div>
-        <div id="nm-body" style="font-size:14px;color:var(--t2);line-height:1.85;border-left:2px solid rgba(232,197,66,.3);padding-left:12px;"></div>
-      </div>
-    </div>`;
-    modal.onclick = e => { if (e.target === modal) modal.remove(); };
-    document.body.appendChild(modal);
-  }
-  document.getElementById('nm-region').textContent = region;
-  document.getElementById('nm-src').textContent = n.s;
-  document.getElementById('nm-time').textContent = n.t + ' ago';
-  document.getElementById('nm-h').textContent = n.h;
-  document.getElementById('nm-body').textContent = n.body;
-  modal.style.display = 'flex';
-}
-
-function renderRegionalNews() {
-  document.getElementById('reg-row').innerHTML = Object.entries(REG_NEWS).map(([flag, items]) =>
-    `<div class="reg-col">
-      <div class="ph">${flag}</div>
-      ${items.map((n, i) => `<div class="rni" onclick="showNewsModal('${flag.replace(/'/g,"\\'")}',${i})" style="cursor:pointer;" title="Click để đọc chi tiết">
-        <div class="rni-s">${n.s} <span style="color:var(--t3);font-weight:400">· ${n.t} ago</span></div>
-        <div class="rni-h">${n.h}</div>
-        <div style="font-size:10px;color:var(--t3);margin-top:3px;display:flex;align-items:center;gap:3px;"><span style="color:var(--blu)">▸ Đọc thêm</span></div>
-      </div>`).join('')}
-    </div>`
-  ).join('');
-}
-renderRegionalNews();
-
-// ═════════════════════════════════
-// RIGHT PANEL
-// ═════════════════════════════════
-function renderAnomalyAlerts(){
-  document.getElementById('al').innerHTML=[
-    {i:'🚨',t:"Blaine's Charizard — Z-score 3.8σ",m:'Volume <span>+840%</span> vs 30d baseline'},
-    {i:'⚡',t:'Tropical Wind — Z-score 2.9σ',m:'Giá vượt <span>$1,800</span> ngưỡng kháng cự'},
-    {i:'📦',t:'Prismatic Evol. Box — Sealed drop',m:'eBay avg giảm <span>-4.7%</span> trong 48h'},
-    {i:'🔍',t:'PSA Data Gap — 2h+',m:'Pop report <span>không cập nhật</span>'},
-  ].map(a=>`<div class="alrt"><div class="alrti">${a.i}</div><div><div class="alrtt">${a.t}</div><div class="alrtm">${a.m}</div></div></div>`).join('');
-}
-renderAnomalyAlerts();
-
-function renderSocialMentions(){
-  const top5=EN.slice(0,5).map(c=>({n:c.n.split(' ').slice(0,2).join(' '),p:Math.round(50+c.c*2.5),col:'var(--red)'}));
-  document.getElementById('sm').innerHTML=top5.map(m=>`<div class="smrow" style="display:flex;align-items:center;padding:5px 12px;border-bottom:1px solid rgba(28,45,62,.4);">
-    <div class="smn" style="font-size:var(--fsm);font-weight:700;min-width:110px;">${m.n}</div>
-    <div class="smbar" style="flex:1;margin:0 8px;height:3px;background:var(--b1);overflow:hidden;"><div class="smf" style="height:100%;width:${Math.min(100,m.p)}%;background:var(--red);opacity:.75;"></div></div>
-    <div class="smc" style="font-size:var(--fss);color:var(--t3);min-width:28px;text-align:right;font-weight:700;">${Math.min(100,m.p)}k</div>
-  </div>`).join('');
-}
-renderSocialMentions();
-
-function renderGradedTable(){
-  const rows=[
-    {c:'Charizard Base',g:'PSA 10',p:EN[2].p,d:EN[2].c},
-    {c:'Charizard Base',g:'PSA 9',p:EN[0].p,d:EN[0].c},
-    {c:"Blaine's Charz",g:'PSA 10',p:EN[8].p*4,d:EN[8].c},
-    {c:'Lugia Neo Gen',g:'PSA 9',p:EN[9].p*2.5,d:EN[9].c},
-  ];
-  document.getElementById('gb').innerHTML=rows.map(r=>`<tr>
-    <td>${r.c}</td><td class="grd">${r.g}</td>
-    <td>$${Math.round(r.p).toLocaleString()}</td>
-    <td class="${r.d>=0?'up':'dn'}">${r.d>=0?'+':''}${r.d.toFixed(1)}%</td>
-  </tr>`).join('');
-}
-renderGradedTable();
-
-document.getElementById('sent').innerHTML=[{v:52,l:'BULLS',c:'var(--grn)',a:'var(--gna)'},{v:18,l:'NEUTRAL',c:'var(--t2)',a:'var(--b1)'},{v:30,l:'BEARS',c:'var(--red)',a:'var(--ra)'}].map(s=>`<div style="flex:${s.v};background:${s.a};border:1px solid ${s.c}22;padding:8px;text-align:center;"><div style="font-size:18px;font-weight:800;color:${s.c}">${s.v}%</div><div style="font-size:10px;color:var(--t3);font-weight:700">${s.l}</div></div>`).join('');
-
-// ═════════════════════════════════
-// YT CREATORS
-// ═════════════════════════════════
-(()=>{
-  const Y=[
-    {n:'Leonhart',sub:'3.2M',badge:'pull',v:'12M/mo',e:'🔥',f:'🇺🇸',d:'Case Busting'},
-    {n:'PokeRev',sub:'2.1M',badge:'pull',v:'9M/mo',e:'📦',f:'🇺🇸',d:'Case Busting'},
-    {n:'Unlistedleaf',sub:'2.8M',badge:'pull',v:'8M/mo',e:'🃏',f:'🇦🇺',d:'Vintage & Modern'},
-    {n:'TCA Gaming',sub:'1.4M',badge:'pull',v:'6M/mo',e:'🎮',f:'🇺🇸',d:'Case Busting'},
-    {n:'FlowstateCards',sub:'1.1M',badge:'invest',v:'5M/mo',e:'💎',f:'🇺🇸',d:'Market Analysis'},
-    {n:'PokeGuardian',sub:'520K',badge:'jp',v:'2.2M/mo',e:'📰',f:'🇯🇵',d:'JP Set Reveals'},
-    {n:'Rare Candy TCG',sub:'450K',badge:'invest',v:'2M/mo',e:'📈',f:'🇬🇧',d:'TCG Investing'},
-    {n:'PTCGRadio',sub:'195K',badge:'review',v:'800K/mo',e:'🎯',f:'🇺🇸',d:'Meta Analysis'},
-  ];
-  document.getElementById('ytg').innerHTML=Y.map(c=>`<div class="ytc"><div class="yta">${c.e}</div><div class="yti"><div class="ytn">${c.f} ${c.n}</div><div class="ytm"><span style="color:var(--t2)">${c.sub}</span> · ${c.d}</div></div><div style="text-align:right"><div class="ytbadge ${c.badge}">${c.badge.toUpperCase()}</div><div style="font-size:10px;color:var(--t3);margin-top:2px;">${c.v}</div></div></div>`).join('');
-})();
-
-// ═════════════════════════════════
-// AI BRIEF — rotating dynamic analysis
-// ═════════════════════════════════
-const AI_BRIEFS = [
-  () => { const c=EN[0],b=EN[8],h=EN.reduce((a,x)=>x.c>a.c?x:a,EN[0]); return `<strong>Thị trường tích lũy mạnh.</strong> <strong>${c.n}</strong> đạt <strong>$${c.p.toLocaleString()}</strong>, tăng <strong>+${c.c.toFixed(1)}%</strong> 24h. <strong>${b.n}</strong> Z-score <strong>3.8σ</strong> bất thường — volume +840% vs baseline. Card tăng mạnh nhất: <strong>${h.n}</strong> +${h.c.toFixed(1)}%. PSA backlog giảm còn 65 ngày — supply graded sắp tăng.`; },
-  () => { const jp=JP[0],jp2=JP[5]; return `<strong>JP Market sôi động.</strong> <strong>${jp.n}</strong> đạt <strong>${jp.ps}</strong>, tăng +${jp.c.toFixed(1)}%. Mercari JP volume tăng 28% so với tuần trước. <strong>${jp2.n}</strong> spike +${jp2.c.toFixed(1)}% sau tournament. Tỷ giá USD/JPY: <strong>149.82</strong> — hàng JP đang cheaper 8% so với 3 tháng trước khi quy đổi.`; },
-  () => { const top3=EN.slice(0,3); return `<strong>WOTC Vintage breakout.</strong> ${top3.map(c=>`<strong>${c.n.split(' ').slice(0,2).join(' ')}</strong> $${c.p.toLocaleString()}`).join(', ')}. Reddit mentions tăng +340% cho "151 reprint". Cộng đồng consensus: <strong>BUY</strong> vintage trước Q3. Prismatic Evolutions sealed vẫn premium 40% MSRP — supply khan hiếm.`; },
-  () => { const dn=EN.filter(c=>c.c<0).slice(0,2); const up=EN.filter(c=>c.c>5).slice(0,2); return `<strong>Mixed signals.</strong> Giảm: ${dn.map(c=>`<strong>${c.n.split(' ')[0]}</strong> ${c.c.toFixed(1)}%`).join(', ')}. Tăng mạnh: ${up.map(c=>`<strong>${c.n.split(' ')[0]}</strong> +${c.c.toFixed(1)}%`).join(', ')}. PSA 10 premium đang <strong>expand</strong> — graded cards outperform raw 2.1× trong 30 ngày. eBay GMV +18% tuần này.`; },
-  () => { const hot=EN.find(c=>c.c>10)||EN[8]; return `<strong>Anomaly detected: ${hot.n.split(' ').slice(0,2).join(' ')}.</strong> Z-score <strong>${(2.5+hot.c*0.1).toFixed(1)}σ</strong>, vượt ngưỡng 2σ — signal bất thường. Volume tăng ${Math.round(hot.c*80)}% vs 30d MA. Khả năng: insider buying, news catalyst, hoặc short squeeze. Monitor chặt trong 24-48h tới.`; },
-  () => { return `<strong>Macro outlook tích cực.</strong> USD/JPY <strong>149.82</strong> — favorable cho buyers JP cards từ US. PSA confirm turnaround 65 ngày. Heritage auction Pikachu Illustrator PSA10 ước tính <strong>$6.2M</strong> tháng 3 — sẽ tạo media attention lớn cho toàn bộ Pokémon TCG market.`; },
-];
-let aiBriefIdx = 0, aiCountdown = 60;
-function rotateAiBrief() {
-  aiBriefIdx = (aiBriefIdx + 1) % AI_BRIEFS.length;
-  const el = document.getElementById('ai-txt');
-  if (el) { el.style.opacity = '0'; setTimeout(() => { el.innerHTML = AI_BRIEFS[aiBriefIdx](); el.style.opacity = '1'; el.style.transition = 'opacity .5s'; }, 300); }
-  const ts = document.getElementById('ai-ts');
-  if (ts) ts.textContent = 'Updated ' + new Date().toLocaleTimeString('vi-VN',{hour12:false,hour:'2-digit',minute:'2-digit'});
-  aiCountdown = 60;
-}
-// Init first brief
-document.getElementById('ai-txt').innerHTML = AI_BRIEFS[0]();
-// Countdown timer
-setInterval(() => {
-  aiCountdown--;
-  const cd = document.getElementById('ai-cntdown');
-  if (cd) cd.textContent = '↻ ' + aiCountdown + 's';
-  if (aiCountdown <= 0) rotateAiBrief();
-}, 1000);
-
-// ═════════════════════════════════
-// STREAMS — 30+ channels
-// ═════════════════════════════════
-const STREAMS=[
-  // ── LIVE NOW (high priority)
-  {n:'Leonhart',t:'Opening 10 cases Prismatic Evolutions LIVE!',v:24832,pl:'yt',url:'https://www.youtube.com/@Leonhart54',e:'🔥',live:true,cat:'EN'},
-  {n:'PokeRev',t:'Midnight case — 151 Set hunt for Charizard ex',v:18241,pl:'yt',url:'https://www.youtube.com/@PokeRev',e:'📦',live:true,cat:'EN'},
-  {n:'Unlistedleaf',t:'Vintage WOTC holo hunt — Base Set packs',v:11509,pl:'yt',url:'https://www.youtube.com/@unlisted_leaf',e:'🃏',live:true,cat:'EN'},
-  {n:'TCA Gaming',t:'New set watch party + case opening',v:9122,pl:'twitch',url:'https://www.twitch.tv/tcagaming',e:'🎮',live:true,cat:'EN'},
-  {n:'PokéCard Explorer JP',t:'【生放送】黒炎の支配者 BOX開封',v:7845,pl:'yt',url:'https://www.youtube.com/@pokecardexplorer',e:'🇯🇵',live:true,cat:'JP'},
-  {n:'FlowstateCards',t:'Market analysis + live pulls — what to buy now',v:5301,pl:'yt',url:'https://www.youtube.com/@FlowstateCards',e:'💎',live:true,cat:'EN'},
-  {n:'TCGPull TikTok',t:'#pokemon #charizard live unboxing',v:3201,pl:'tiktok',url:'https://www.tiktok.com/live',e:'📱',live:true,cat:'EN'},
-  {n:'PokeSquad JP',t:'【LIVE】スターターデッキ開封 151枚集め',v:6200,pl:'yt',url:'https://www.youtube.com/@PokeSquadJP',e:'🎴',live:true,cat:'JP'},
-  {n:'RickyPTCG',t:'Paldea Evolved case + market talk',v:4800,pl:'twitch',url:'https://www.twitch.tv/ricky_ptcg',e:'⚡',live:true,cat:'EN'},
-  {n:'PokeCollector KR',t:'포켓몬 카드 박스 개봉 LIVE',v:3900,pl:'yt',url:'https://www.youtube.com/@pokecollectorkr',e:'🇰🇷',live:true,cat:'KR'},
-  {n:'Gravy PTCG',t:'Shining Legends case — vintage hunt',v:3500,pl:'twitch',url:'https://www.twitch.tv/gravyptcg',e:'🌟',live:true,cat:'EN'},
-  {n:'NateHasYou',t:'Prismatic Evolutions midnight release!',v:2900,pl:'yt',url:'https://www.youtube.com/@NateHasYou',e:'🎉',live:true,cat:'EN'},
-  {n:'PokeCardMaster JP',t:'旧裏面 レアカード開封 LIVE配信',v:5100,pl:'yt',url:'https://www.youtube.com/@pokecardmaster',e:'🏆',live:true,cat:'JP'},
-  {n:'TCG Collector AU',t:'Crown Zenith case opening — Aussie pulls',v:2100,pl:'twitch',url:'https://www.twitch.tv/tcgcollectorau',e:'🦘',live:true,cat:'EN'},
-  {n:'Pokemons Grail',t:'PSA unboxing + market update live',v:1800,pl:'yt',url:'https://www.youtube.com/@pokemonsgrail',e:'🏺',live:true,cat:'EN'},
-  // ── RECENT / WILL GO LIVE SOON
-  {n:'MaskedRoyale JP',t:'旧裏面ライブ開封 — Starting soon',v:0,pl:'yt',url:'https://www.youtube.com/@MaskedRoyale',e:'🀄',live:false,cat:'JP'},
-  {n:'Rarefinds TCG',t:'Vintage box opening — later today',v:0,pl:'yt',url:'https://www.youtube.com/@Rarefinds',e:'💼',live:false,cat:'EN'},
-  {n:'Pokemart AU',t:'New set sealed — Sunday stream',v:0,pl:'twitch',url:'https://www.twitch.tv/pokemartau',e:'🛒',live:false,cat:'EN'},
-  {n:'Rare Candy TCG',t:'Market Analysis stream — weekly',v:0,pl:'yt',url:'https://www.youtube.com/@RareCandyTCG',e:'📈',live:false,cat:'EN'},
-  {n:'PokeCards DE',t:'German market — Box Opening',v:0,pl:'yt',url:'https://www.youtube.com/@pokecardsde',e:'🇩🇪',live:false,cat:'EU'},
-  {n:'TCG Japan Live',t:'Stellar Miracle opening — tonight',v:0,pl:'yt',url:'https://www.youtube.com/@tcgjapanlive',e:'🌸',live:false,cat:'JP'},
-  {n:'CardBoarder AU',t:'151 Case Opening — Sunday',v:0,pl:'twitch',url:'https://www.twitch.tv/cardboarderau',e:'🎲',live:false,cat:'EN'},
-  {n:'PokeInvestor',t:'Deep dive: should you buy now?',v:0,pl:'yt',url:'https://www.youtube.com/@pokeinvestor',e:'💰',live:false,cat:'EN'},
-  {n:'ShroudedFable TCG',t:'Fable sealed opening — weekend',v:0,pl:'twitch',url:'https://www.twitch.tv/shroudedfable',e:'📖',live:false,cat:'EN'},
-  {n:'PokéCard VN',t:'Khai hộp Prismatic Evolutions VN',v:0,pl:'yt',url:'https://www.youtube.com/@pokecardvn',e:'🇻🇳',live:false,cat:'VN'},
-  {n:'TrueKorosensei',t:'Modern Sealed — Sunday night',v:0,pl:'twitch',url:'https://www.twitch.tv/truekorosensei',e:'🎯',live:false,cat:'EN'},
-  {n:'PTCGRadio',t:'Meta podcast live — Tuesday',v:0,pl:'yt',url:'https://www.youtube.com/@PTCGRadio',e:'🎙️',live:false,cat:'EN'},
-  {n:'DamageDeal JP',t:'ダメージディール 金曜夜ライブ',v:0,pl:'yt',url:'https://www.youtube.com/@damagedeal',e:'💥',live:false,cat:'JP'},
-  {n:'Pokémon EU Collector',t:'EU market stream — biweekly',v:0,pl:'twitch',url:'https://www.twitch.tv/pokemonEUcollector',e:'🇪🇺',live:false,cat:'EU'},
-  {n:'SealedTCG',t:'Evolving Skies master set completion',v:0,pl:'yt',url:'https://www.youtube.com/@sealedtcg',e:'🔒',live:false,cat:'EN'},
-  {n:'PokeShinBury JP',t:'旧裏面デッキ対戦 LIVE',v:0,pl:'yt',url:'https://www.youtube.com/@pokeshinbury',e:'⚔️',live:false,cat:'JP'},
-  {n:'WildCaseOpener',t:'Wild opening — Friday night',v:0,pl:'twitch',url:'https://www.twitch.tv/wildcaseopener',e:'🌀',live:false,cat:'EN'},
-];
-let activeStream=0;
-const CAT_COLORS = {EN:'var(--blu)',JP:'var(--pur)',KR:'#fb923c',EU:'var(--grn)',VN:'var(--gold)',EN_twitch:'#9146ff'};
-function fmtV(v){ if(!v) return '—'; if(v>=1000) return (v/1000).toFixed(1)+'K'; return v+''; }
-function sliHTML(s,i,onclk){
-  const vstr = s.live ? `<div class="sli-v">${fmtV(s.v)} viewers</div>` : `<div style="font-size:11px;color:var(--t3)">● Bắt đầu sau</div>`;
-  const catBadge = `<span style="font-size:9px;padding:1px 4px;background:rgba(255,255,255,.05);border:1px solid var(--b2);color:var(--t3);font-weight:700;">${s.cat}</span>`;
-  return`<div class="sli${s.live?'':' offline'}" id="sli-${i}" onclick="${onclk}" style="${s.live?'':'opacity:.6;'}">
-    <div class="sli-em">${s.e}</div>
-    <div class="sli-b">
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px;">
-        <span class="sli-pl ${s.pl}">${s.pl==='yt'?'YT':s.pl==='twitch'?'Twitch':'TikTok'}</span>
-        <span class="sli-name">${s.n}</span>
-        ${catBadge}
-      </div>
-      <div class="sli-ttl">${s.t}</div>
-      ${vstr}
-    </div>
-  </div>`;
-}
-
-function selectStream(i){
-  activeStream=i;
-  const s=STREAMS[i];
-  ['ls-name','lb-name'].forEach(id=>document.getElementById(id).textContent=s.e+' '+s.n);
-  ['ls-title','lb-title'].forEach(id=>document.getElementById(id).textContent=s.t);
-  document.getElementById('ls-viewers').textContent=s.live?fmtV(s.v)+' đang xem':'Sắp live...';
-  document.getElementById('lb-viewers').textContent=s.live?fmtV(s.v)+' viewers':'—';
-  const plat=document.getElementById('lb-plat');
-  plat.className='live-bar-plat '+(s.pl==='twitch'?'twitch':'yt');
-  plat.textContent=s.pl==='yt'?'YouTube':s.pl==='twitch'?'Twitch':'TikTok';
-  document.querySelectorAll('[id^="sli-"]').forEach((el,ii)=>el.classList.toggle('sli-active',ii===i));
-  if(document.getElementById('fw').classList.contains('show')) fwSwitch(STREAMS.filter(s=>s.live).findIndex((_,ii)=>ii===i));
-}
-function lsOpen(){ window.open(STREAMS[activeStream].url,'_blank'); }
-
-// Simulate viewer count fluctuation every 12s
-setInterval(() => {
-  STREAMS.forEach(s => {
-    if (s.live && s.v > 0) s.v = Math.max(500, Math.round(s.v * (1 + (Math.random()-0.48)*0.03)));
-  });
-  renderStreamMini();
-  fwRender();
-}, 12000);
-
-function renderStreamMini() {
-  const live = STREAMS.filter(s=>s.live).sort((a,b)=>b.v-a.v);
-  const offline = STREAMS.filter(s=>!s.live);
-  const all = [...live, ...offline];
-  document.getElementById('stream-mini').innerHTML = all.map((s,i)=>sliHTML(s,STREAMS.indexOf(s),`gotoPage('live');selectStream(${STREAMS.indexOf(s)})`)).join('');
-}
-function renderStreamFull() {
-  const live = STREAMS.filter(s=>s.live).sort((a,b)=>b.v-a.v);
-  const offline = STREAMS.filter(s=>!s.live);
-  let html = `<div class="ph" style="font-size:10px;background:rgba(255,77,106,.04);">🔴 ĐANG LIVE (${live.length})</div>`;
-  html += live.map(s=>sliHTML(s,STREAMS.indexOf(s),`selectStream(${STREAMS.indexOf(s)})`)).join('');
-  html += `<div class="ph" style="font-size:10px;">⏰ SẮP LIVE (${offline.length})</div>`;
-  html += offline.map(s=>sliHTML(s,STREAMS.indexOf(s),`selectStream(${STREAMS.indexOf(s)})`)).join('');
-  document.getElementById('stream-full').innerHTML = html;
-}
-renderStreamMini();
-renderStreamFull();
-
-// ═════════════════════════════════
-// FLOATING WIDGET — live channels priority
-// ═════════════════════════════════
-let fwOpen=false,fwIdx=0;
-const fwLive = () => STREAMS.filter(s=>s.live).sort((a,b)=>b.v-a.v);
-
-function toggleFW(){
-  fwOpen=!fwOpen;
-  document.getElementById('fw').classList.toggle('show',fwOpen);
-  const btn=document.getElementById('fw-btn');
-  btn.classList.toggle('on',fwOpen);
-  btn.innerHTML=fwOpen?'📺 LIVE ●':'📺 LIVE';
-  if(fwOpen) fwRender();
-}
-function fwRender(){
-  const live = fwLive();
-  if(!live.length) return;
-  const s = live[fwIdx] || live[0];
-  document.getElementById('fw-title').textContent=s.e+' '+s.n+' — 🔴 LIVE';
-  document.getElementById('fw-viewers').textContent=fmtV(s.v)+' 👁';
-  document.getElementById('fw-sname').textContent=s.e+' '+s.n;
-  document.getElementById('fw-hint').textContent=s.t.substring(0,40)+(s.t.length>40?'...':'');
-  document.getElementById('fw-tabs').innerHTML=live.map((st,i)=>
-    `<div class="fw-tab${i===fwIdx?' on':''}" onclick="fwSwitch(${i})"><span class="fw-ldot"></span>${st.e} ${st.n} <span style="color:var(--t3);font-size:10px;">${fmtV(st.v)}</span></div>`
-  ).join('');
-}
-function fwSwitch(i){ fwIdx=i; fwRender(); }
-function fwOpenStream(){
-  const live=fwLive();
-  const s=live[fwIdx]||live[0];
-  if(s) window.open(s.url,'_blank');
-}
-
-// Drag widget
-(()=>{
-  const el=document.getElementById('fw'),bar=document.getElementById('fw-bar');
-  let drag=false,ox=0,oy=0,sx=0,sy=0;
-  bar.addEventListener('mousedown',e=>{
-    if(e.target.id==='fw-x')return;drag=true;sx=e.clientX;sy=e.clientY;
-    const r=el.getBoundingClientRect();ox=r.left;oy=r.top;
-    el.style.right='auto';el.style.bottom='auto';el.style.left=ox+'px';el.style.top=oy+'px';
-    document.body.style.userSelect='none';e.preventDefault();
-  });
-  document.addEventListener('mousemove',e=>{
-    if(!drag)return;
-    el.style.left=Math.max(0,Math.min(window.innerWidth-el.offsetWidth,ox+(e.clientX-sx)))+'px';
-    el.style.top=Math.max(0,Math.min(window.innerHeight-el.offsetHeight,oy+(e.clientY-sy)))+'px';
-  });
-  document.addEventListener('mouseup',()=>{drag=false;document.body.style.userSelect='';});
-})();
-
-// ═════════════════════════════════
-// ALERTS
-// ═════════════════════════════════
-let alertCond='above';
-let ALERTS=[
-  {card:'Charizard Base Shadowless',cond:'Vượt ngưỡng',thresh:9000,cur:8240,src:'TCGPlayer',triggered:false,time:'2 ngày trước'},
-  {card:"Blaine's Charizard",cond:'Vượt ngưỡng',thresh:150,cur:158,src:'eBay',triggered:true,time:'14 phút trước'},
-  {card:'Prismatic Evol. Box',cond:'Xuống dưới',thresh:280,cur:320,src:'TCGPlayer',triggered:false,time:'1 tuần trước'},
-  {card:'PSA 10 Umbreon VMAX',cond:'Thay đổi ±15%',thresh:390,cur:340,src:'PSA SMR',triggered:false,time:'3 ngày trước'},
-];
-function renderAlerts(){
-  const trig=ALERTS.filter(a=>a.triggered).length;
-  const html=ALERTS.map((a,i)=>`<div class="aa${a.triggered?' triggered':''}">
-    <div class="aa-hdr"><div class="aa-st ${a.triggered?'trig':'ok'}">${a.triggered?'🚨 TRIGGERED':'● ACTIVE'}</div><div class="aa-cn">${a.card}</div></div>
-    <div class="aa-body">
-      <div><div class="asl">Điều kiện</div><div class="asv" style="font-size:13px;color:var(--t2)">${a.cond}</div></div>
-      <div><div class="asl">Ngưỡng</div><div class="asv" style="color:var(--gold)">$${a.thresh.toLocaleString()}</div></div>
-      <div><div class="asl">Hiện tại</div><div class="asv" style="color:${a.triggered?'var(--red)':'var(--grn)'}">$${a.cur.toLocaleString()}</div></div>
-    </div>
-    <div class="aa-ft"><span class="aa-time">${a.src} · ${a.time}</span><button class="aa-del" onclick="delAlert(${i})">✕ Xóa</button></div>
-  </div>`).join('');
-  ['alert-full','alert-mini'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html;});
-  ['alert-badge','alert-mini-badge'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=trig>0?trig+' TRIGGERED':ALERTS.length+' ACTIVE';});
-}
-function renderAlertMini(){renderAlerts();}
-function delAlert(i){ALERTS.splice(i,1);renderAlerts();}
-function setCond(el,c){document.querySelectorAll('.cond-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');alertCond=c;}
-function createAlert(){
-  const card=document.getElementById('af-card').value.trim();
-  const price=parseFloat(document.getElementById('af-price').value);
-  const src=document.getElementById('af-src').value;
-  if(!card||!price){alert('Nhập tên card và ngưỡng giá!');return;}
-  const m={above:'Vượt ngưỡng',below:'Xuống dưới',pct:'Thay đổi %'};
-  ALERTS.unshift({card,cond:m[alertCond],thresh:price,cur:Math.round(price*.93),src,triggered:false,time:'Vừa tạo'});
-  renderAlerts();
-  document.getElementById('af-card').value='';
-  document.getElementById('af-price').value='';
-}
-renderAlerts();
-
-// ═════════════════════════════════
-// EN vs JP COMPARE
-// ═════════════════════════════════
-function buildCmp(q){
-  const s=q.toLowerCase().trim();
-  if(!s)return'<div class="cmp-empty">Nhập tên card để so sánh...</div>';
-  const en=EN.filter(c=>c.n.toLowerCase().includes(s)||c.s.toLowerCase().includes(s)).slice(0,8);
-  const jp=JP.filter(c=>c.n.toLowerCase().includes(s)||c.s.toLowerCase().includes(s)).slice(0,8);
-  const len=Math.max(en.length,jp.length);
-  if(!len)return`<div class="cmp-empty">Không tìm thấy kết quả cho "<strong>${q}</strong>"</div>`;
-  let html='';
-  for(let i=0;i<len;i++){
-    const e=en[i],j=jp[i];
-    const eU=e?e.p:null,jU=j?j.p:null;
-    let winner='eq',spread='N/A';
-    if(eU&&jU){const diff=Math.abs(eU-jU);spread=((diff/Math.min(eU,jU))*100).toFixed(1)+'%';winner=jU<eU?'jp':'en';}
-    const wl={jp:'🇯🇵 JP rẻ hơn',en:'🇺🇸 EN rẻ hơn',eq:'≈ Ngang nhau'}[winner];
-    html+=`<div class="cmp-row">
-      <div class="cmp-cell">${e?`<div class="cc-n">${e.n}</div><div class="cc-s">${e.s}</div><div class="cc-p en">$${e.p.toLocaleString()}</div><div class="cc-d ${e.c>=0?'up':'dn'}">${e.c>=0?'▲':'▼'} ${Math.abs(e.c).toFixed(1)}% 24h</div>`:'<div style="color:var(--t3);padding:8px 0">— Không có dữ liệu EN</div>'}</div>
-      <div class="cmp-cell mid"><div class="cmp-mid-in">${eU&&jU?`<div class="wb ${winner}">${wl}</div><div class="spread-t">Chênh: ${spread}</div><div style="font-size:11px;color:var(--t3);font-weight:700;">JP≈$${jU.toLocaleString()}</div>`:'<div style="color:var(--t3);font-size:12px">Thiếu data</div>'}</div></div>
-      <div class="cmp-cell">${j?`<div class="cc-n">${j.n}</div><div class="cc-s">${j.s}</div><div class="cc-p jp">${j.ps}</div><div class="cc-d ${j.c>=0?'up':'dn'}">${j.c>=0?'▲':'▼'} ${Math.abs(j.c).toFixed(1)}% 24h</div>`:'<div style="color:var(--t3);padding:8px 0">— Không có dữ liệu JP</div>'}</div>
-    </div>`;
-  }
-  return html;
-}
-let cmpTO=null;
-function runCmp(q,id){clearTimeout(cmpTO);cmpTO=setTimeout(()=>{const el=document.getElementById(id);if(el)el.innerHTML=buildCmp(q);},180);}
-function quickCmp(q){document.getElementById('qcmp').value=q;runCmp(q,'cmp-mini');}
-function cmpFull(q){document.getElementById('cmp-inp').value=q;runCmp(q,'cmp-full');}
-runCmp('Charizard','cmp-mini');
-runCmp('Charizard','cmp-full');
-
-// ═════════════════════════════════
-// PORTFOLIO
-// ═════════════════════════════════
-let portfolio=[
-  {n:'Charizard Base Shadowless',s:'Base Set 1999',lang:'EN',grade:'PSA 9',qty:1,buy:6800,cur:8240},
-  {n:'Umbreon VMAX Alt Art',s:'Evolving Skies',lang:'EN',grade:'Raw NM',qty:2,buy:260,cur:340},
-  {n:'Lugia ex Alt Art',s:'Silver Tempest',lang:'EN',grade:'Raw NM',qty:1,buy:280,cur:380},
-  {n:'ルカリオex SA',s:'拡張パック 2023',lang:'JP',grade:'Raw NM',qty:3,buy:240,cur:320},
-  {n:'Palkia ex Alt Art',s:'Crown Zenith',lang:'EN',grade:'PSA 10',qty:1,buy:120,cur:189},
-];
-function renderPortfolio(){
-  let tv=0,tb=0;
-  document.getElementById('port-tbody').innerHTML=portfolio.map((c,i)=>{
-    const pnl=(c.cur-c.buy)*c.qty,pct=((c.cur-c.buy)/c.buy*100).toFixed(1);
-    tv+=c.cur*c.qty;tb+=c.buy*c.qty;
-    const dc=pnl>=0?'up':'dn';
-    return`<tr>
-      <td><div class="pn">${c.n}</div><div class="ps">${c.lang} · ${c.s}</div></td>
-      <td class="grd">${c.grade}</td>
-      <td class="r" style="color:var(--t1)">${c.qty}</td>
-      <td class="r">$${c.buy.toLocaleString()}</td>
-      <td class="r ${dc}" style="font-size:15px;">$${c.cur.toLocaleString()}</td>
-      <td class="${dc}">$${Math.abs(pnl).toLocaleString()}</td>
-      <td class="${dc}">${pnl>=0?'+':'−'}${Math.abs(pct)}%</td>
-      <td><button class="delbtn" onclick="delCard(${i})">✕</button></td>
-    </tr>`;
-  }).join('');
-  const pnl=tv-tb,pct=tb>0?((pnl/tb)*100).toFixed(1):0;
-  document.getElementById('port-total').textContent='$'+Math.round(tv).toLocaleString();
-  document.getElementById('port-pnl').textContent=(pnl>=0?'+':'-')+'$'+Math.abs(Math.round(pnl)).toLocaleString();
-  document.getElementById('port-pnl').style.color=pnl>=0?'var(--grn)':'var(--red)';
-  document.getElementById('port-pct').textContent=(pct>=0?'+':'')+pct+'%';
-  document.getElementById('port-pct').style.color=pct>=0?'var(--grn)':'var(--red)';
-  document.getElementById('port-cnt').textContent=portfolio.length;
-  // Distribution
-  const cats={Vintage:0,Modern:0,JP:0,Graded:0};
-  portfolio.forEach(c=>{const v=c.cur*c.qty;if(c.lang==='JP')cats.JP+=v;else if(c.grade.includes('PSA')||c.grade.includes('BGS'))cats.Graded+=v;else if(['Base Set','Neo','Team Rocket','Gym'].some(x=>c.s.includes(x)))cats.Vintage+=v;else cats.Modern+=v;});
-  const tot=Object.values(cats).reduce((a,b)=>a+b,0)||1;
-  const cols={Vintage:'var(--gold)',Modern:'var(--blu)',JP:'var(--pur)',Graded:'var(--grn)'};
-  document.getElementById('dist-inner').innerHTML=Object.entries(cats).map(([k,v])=>`<div class="dist-row"><div class="dist-lbl">${k}</div><div class="dist-bar"><div style="height:100%;width:${(v/tot*100).toFixed(0)}%;background:${cols[k]};"></div></div><div class="dist-pct">${(v/tot*100).toFixed(0)}%</div></div>`).join('');
-}
-function addCard(){
-  const n=document.getElementById('pf-name').value.trim();
-  const s=document.getElementById('pf-set').value.trim();
-  const lang=document.getElementById('pf-lang').value;
-  const grade=document.getElementById('pf-grade').value;
-  const buy=parseFloat(document.getElementById('pf-buy').value);
-  const qty=parseInt(document.getElementById('pf-qty').value)||1;
-  if(!n||!buy){alert('Nhập tên card và giá mua!');return;}
-  portfolio.push({n,s:s||'—',lang,grade,qty,buy,cur:Math.round(buy*1.05)});
-  renderPortfolio();
-  ['pf-name','pf-set','pf-buy'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('pf-qty').value='1';
-}
-function delCard(i){portfolio.splice(i,1);renderPortfolio();}
-renderPortfolio();
-
-// ═════════════════════════════════
-// GAME MODAL
-// ═════════════════════════════════
-const GAMES={
-  mtg:{name:'🧙 Magic: The Gathering',col:'#4da6ff',
-    idx:[{l:'MTG Index',v:'1,284',d:'▲ +18.3 (+1.4%)',c:'up'},{l:'Vintage Singles',v:'$94.2K',d:'▲ +2.1% 7d',c:'up'},{l:'Modern Avg',v:'$42',d:'▼ -1.8%',c:'dn'},{l:'Sealed Box',v:'$128',d:'▲ +0.9%',c:'up'}],
-    cards:[{n:'Black Lotus (Alpha)',s:'Alpha 1993',p:'$32,000',c:'▲ +3.1%',col:'#4da6ff'},{n:'Mox Sapphire',s:'Alpha 1993',p:'$12,500',c:'▲ +1.8%',col:'#4da6ff'},{n:'Underground Sea',s:'Revised 1994',p:'$2,800',c:'▲ +5.2%',col:'#4da6ff'},{n:'Tarmogoyf',s:'Future Sight 2007',p:'$42',c:'▼ -3.4%',col:'#ff4d6a'},{n:'Force of Will',s:'Alliances 1996',p:'$128',c:'▲ +2.0%',col:'#4da6ff'},{n:'Ragavan (Foil)',s:'Modern Horizons 2',p:'$165',c:'▲ +8.4%',col:'#4da6ff'},{n:'The One Ring',s:'Lord of the Rings',p:'$80',c:'▼ -2.1%',col:'#ff4d6a'},{n:'Jeweled Lotus',s:'Commander Legends',p:'$105',c:'▲ +1.5%',col:'#4da6ff'}],
-    news:[{src:'MTGGoldfish',h:'Modern staples hold after banlist update',t:'8m'},{src:'EDHREC',h:'Commander spike: Kindred Dominance +340%',t:'25m'},{src:'TCGPlayer',h:'Vintage sealed sells out — restock unknown',t:'1h'},{src:'r/mtgfinance',h:'Black Lotus PSA 9 sells $31,500 Heritage Auctions',t:'2h'}]},
-  op:{name:'☠️ One Piece TCG',col:'#fb923c',
-    idx:[{l:'OP Index',v:'342',d:'▲ +24.1 (+7.6%)',c:'up'},{l:'OP01 Vintage',v:'$2,840',d:'▲ +12.3% 7d',c:'up'},{l:'Modern Avg',v:'$22',d:'▲ +3.1%',c:'up'},{l:'Sealed Box',v:'$68',d:'▼ -2.4%',c:'dn'}],
-    cards:[{n:'Monkey D. Luffy (OP01-120)',s:'Romance Dawn 2022',p:'$2,840',c:'▲ +12.3%',col:'#fb923c'},{n:'Shanks (OP01-118)',s:'Romance Dawn 2022',p:'$1,200',c:'▲ +8.4%',col:'#fb923c'},{n:'Boa Hancock (ST02-007)',s:'Starter Deck 02',p:'$380',c:'▲ +6.1%',col:'#fb923c'},{n:'Kaido (OP02-098)',s:'Paramount War',p:'$540',c:'▲ +4.2%',col:'#fb923c'},{n:'Nami Alt Art (OP06)',s:'Wings of Captain',p:'$142',c:'▲ +18.5%',col:'#fb923c'},{n:'Nico Robin Alt',s:'OP05',p:'$95',c:'▲ +9.8%',col:'#fb923c'},{n:'Zoro Leader (OP07)',s:'500 Years Future',p:'$210',c:'▲ +28.0%',col:'#fb923c'},{n:'Whitebeard SEC',s:'OP02',p:'$320',c:'▼ -2.1%',col:'#ff4d6a'}],
-    news:[{src:'OP Official',h:'OP09 announced — Gear 5 Luffy alt art confirmed',t:'15m'},{src:'TCGPlayer',h:'OP01 reprint denied — prices surge immediately',t:'40m'},{src:'r/OnePieceTCG',h:'Zoro OP07 removed from meta — format shift',t:'1h'},{src:'Cardmarket EU',h:'European OP market +45% — anime S2 hype',t:'2h'}]},
-  lorcana:{name:'✨ Disney Lorcana',col:'#b06aff',
-    idx:[{l:'Lorcana Index',v:'218',d:'▲ +9.4 (+4.5%)',c:'up'},{l:'TFC Vintage',v:'$1,420',d:'▲ +6.2% 7d',c:'up'},{l:'Modern Avg',v:'$18',d:'▲ +1.4%',c:'up'},{l:'Sealed Box',v:'$82',d:'▲ +3.1%',c:'up'}],
-    cards:[{n:'Elsa — Spirit of Winter',s:'The First Chapter 2023',p:'$1,420',c:'▲ +6.2%',col:'#b06aff'},{n:'Moana of Motunui',s:'The First Chapter',p:'$840',c:'▲ +4.8%',col:'#b06aff'},{n:'Mickey Mouse — Brave',s:'The First Chapter',p:'$620',c:'▲ +3.1%',col:'#b06aff'},{n:'Maleficent — Dragon',s:'The First Chapter',p:'$480',c:'▲ +7.2%',col:'#b06aff'},{n:'Stitch — Carefree',s:'Into the Inklands',p:'$320',c:'▲ +12.5%',col:'#b06aff'},{n:'Hercules — Divine',s:'Ursula Returns',p:'$145',c:'▲ +9.0%',col:'#b06aff'},{n:'Cruella De Vil',s:'Rise of Floodborn',p:'$210',c:'▼ -1.8%',col:'#ff4d6a'},{n:'Captain Hook',s:'Into the Inklands',p:'$88',c:'▲ +5.5%',col:'#b06aff'}],
-    news:[{src:'Lorcana Official',h:'Azurite Sea announced — Q2 2025',t:'1h'},{src:'TCGPlayer',h:'The First Chapter sealed hits $300+ — supply critical',t:'2h'},{src:'r/Lorcana',h:'Elsa PSA 10 sells $3,800 — new record',t:'3h'},{src:'Cardmarket EU',h:'European Lorcana +62% YTD',t:'4h'}]},
-};
-function switchGame(id,el){
-  document.querySelectorAll('.gtab').forEach(t=>t.classList.remove('active'));
-  if(id==='pokemon'){el.classList.add('active');return;}
-  el.classList.add('active');
-  const g=GAMES[id];
-  if(!g)return;
-  document.getElementById('gmod-name').textContent=g.name;
-  document.getElementById('gmod-name').style.color=g.col;
-  document.getElementById('gmod-sub').textContent='Market Intelligence · Live Data';
-  document.getElementById('gmod-body').innerHTML=`
-    <div class="gm-sec"><div class="gm-stitle">📈 Market Indices</div>
-      <div class="gm-idx4">${g.idx.map(i=>`<div class="gm-idxc"><div class="gm-idxc-l">${i.l}</div><div class="gm-idxc-v" style="color:${i.c==='up'?'var(--grn)':'var(--red)'}">${i.v}</div><div class="gm-idxc-d" style="color:${i.c==='up'?'var(--grn)':'var(--red)'}">${i.d}</div></div>`).join('')}</div></div>
-    <div class="gm-sec"><div class="gm-stitle">🔥 Top Cards</div>
-      <div class="gm-cards4">${g.cards.map(c=>`<div class="gm-card"><div class="gm-cn">${c.n}</div><div class="gm-cs">${c.s}</div><div class="gm-cp" style="color:${c.col}">${c.p}</div><div class="gm-cd" style="color:${c.c.includes('▲')?'var(--grn)':'var(--red)'}">${c.c}</div></div>`).join('')}</div></div>
-    <div class="gm-sec"><div class="gm-stitle">📡 Latest News</div>
-      <div class="gm-news">${g.news.map(n=>`<div class="gm-ni"><div><div class="gm-ni-src">${n.src}</div><div class="gm-ni-t">${n.t} ago</div></div><div class="gm-ni-h">${n.h}</div></div>`).join('')}</div></div>`;
-  document.getElementById('gmod').classList.add('open');
-}
-function closeGmod(){document.getElementById('gmod').classList.remove('open');document.getElementById('gt-pokemon').classList.add('active');}
 </script>
 </body>
 </html>
