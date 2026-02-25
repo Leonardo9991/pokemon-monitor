@@ -304,7 +304,7 @@ svg.sp{width:100%;height:100%;}
 ════════════════════ */
 #pg-live{flex-direction:row;}
 .live-main{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--b1);overflow:hidden;}
-.live-screen{flex:1;min-height:0;background:radial-gradient(ellipse at center,#111d2b,#070c12);
+.live-screen{flex:1;min-height:0;background:radial-gradient(ellipse at center,#111d2b,#070c12);position:relative;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;}
 .live-screen .play{width:72px;height:72px;border-radius:50%;background:rgba(255,77,106,.12);
   border:2px solid rgba(255,77,106,.4);display:flex;align-items:center;justify-content:center;
@@ -525,7 +525,7 @@ svg.sp{width:100%;height:100%;}
   display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 #fw-x:hover{color:var(--red);}
 #fw-screen{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:7px;cursor:pointer;
+  justify-content:center;gap:7px;position:relative;
   background:radial-gradient(ellipse at center,#111d2b,#070c12);}
 #fw-screen .fw-play{width:48px;height:48px;border-radius:50%;background:rgba(255,77,106,.13);
   border:2px solid rgba(255,77,106,.45);display:flex;align-items:center;justify-content:center;
@@ -589,9 +589,9 @@ svg.sp{width:100%;height:100%;}
     <div class="pill"><span class="dot g"></span>Reddit</div>
     <div class="pill"><span class="dot r"></span>PSA ERR</div>
   </div>
-  <div class="search-trigger" onclick="openSearch()">
-    <span>🔍</span><span>Tìm card, set, giá...</span><span class="kbd">Ctrl+K</span>
-  </div>
+    <div class="search-trigger" onclick="openSearch()">
+      <span>🔍</span><span>Tìm card, mã code (025/165), set, giá...</span><span class="kbd">Ctrl+K</span>
+    </div>
   <div class="topbar-r">
     <div class="live-btn" id="fw-btn" onclick="toggleFW()">📺 LIVE</div>
     <div class="bell" onclick="gotoPage('alerts')">🔔<div class="bell-dot"></div></div>
@@ -647,7 +647,7 @@ svg.sp{width:100%;height:100%;}
           <div class="pscroll" id="t-en" style="flex:1;overflow-y:auto;"></div>
         </div>
         <div class="stab-c" id="stab-jp">
-          <div class="ph"><span>TOP JP</span><span class="lbadge">Mercari</span></div>
+          <div class="ph"><span>TOP JP</span><span class="lbadge" style="background:rgba(176,106,255,.1);color:var(--pur);border-color:rgba(176,106,255,.2);">CardRush</span></div>
           <div class="t100f">
             <div class="tf active" onclick="ft(this,'all','jp')">All</div>
             <div class="tf" onclick="ft(this,'vintage','jp')">Vintage</div>
@@ -745,10 +745,14 @@ svg.sp{width:100%;height:100%;}
   <div class="live-main">
     <div class="live-screen" id="ls-screen" onclick="lsOpen()">
       <div class="play">▶</div>
-      <div class="ls-name" id="ls-name">🔥 Leonhart</div>
-      <div class="ls-title" id="ls-title">Opening 10 cases Prismatic Evolutions LIVE!</div>
-      <div class="ls-viewers" id="ls-viewers">24,832 đang xem</div>
-      <div class="ls-hint">Click để mở trong tab mới</div>
+      <div id="ls-embed" style="position:absolute;inset:0;display:none;"></div>
+      <div id="ls-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+        <div class="play">▶</div>
+        <div class="ls-name" id="ls-name">🔥 Leonhart</div>
+        <div class="ls-title" id="ls-title">Opening 10 cases Prismatic Evolutions LIVE!</div>
+        <div class="ls-viewers" id="ls-viewers">24,832 đang xem</div>
+        <div class="ls-hint">Click để xem stream ngay tại đây</div>
+      </div>
     </div>
     <div class="live-bar">
       <div><div class="live-bar-name" id="lb-name">Leonhart</div><div style="font-size:12px;color:var(--t3);margin-top:2px;" id="lb-title">Opening 10 cases Prismatic Evolutions LIVE!</div></div>
@@ -802,7 +806,7 @@ svg.sp{width:100%;height:100%;}
 <div class="page" id="pg-compare">
   <div class="cmp-bar">
     <span style="font-size:var(--fsl);font-weight:800;white-space:nowrap;">⚖️ EN vs JP</span>
-    <input class="cmp-inp" id="cmp-inp" placeholder="Nhập tên card... (Charizard, Lugia, Pikachu, Umbreon)" oninput="runCmp(this.value,'cmp-full')">
+    <input class="cmp-inp" id="cmp-inp" placeholder="Nhập tên card hoặc mã code (vd: Charizard, 200/165, Lucario)" oninput="runCmp(this.value,'cmp-full')">
     <button class="cmp-btn" onclick="runCmp(document.getElementById('cmp-inp').value,'cmp-full')">So Sánh</button>
     <div class="cmp-q" onclick="cmpFull('Charizard')">Charizard</div>
     <div class="cmp-q" onclick="cmpFull('Lugia')">Lugia</div>
@@ -814,7 +818,7 @@ svg.sp{width:100%;height:100%;}
   <div class="cmp-hdr">
     <div class="cgh"><div class="cgh-t en">🇺🇸 English</div><div class="cgh-s">TCGPlayer · USD</div></div>
     <div class="cgh" style="border-left:1px solid var(--b1);border-right:1px solid var(--b1);text-align:center;"><div class="cgh-t mid">⚖️ Phân Tích</div><div class="cgh-s">Quy đổi & So sánh</div></div>
-    <div class="cgh"><div class="cgh-t jp">🇯🇵 Japanese</div><div class="cgh-s">Mercari JP · JPY</div></div>
+    <div class="cgh"><div class="cgh-t jp">🇯🇵 Japanese</div><div class="cgh-s">CardRush JP · PriceCharting · JPY</div></div>
   </div>
   <div class="cmp-scroll" id="cmp-full"></div>
 </div>
@@ -876,6 +880,7 @@ svg.sp{width:100%;height:100%;}
       <span><kbd>↑↓</kbd> Điều hướng</span>
       <span><kbd>Enter</kbd> Chọn & xem chart</span>
       <span><kbd>Esc</kbd> Đóng</span>
+      <span style="color:var(--gold);">💡 Nhập code: 4/102, 200/165...</span>
     </div>
   </div>
 </div>
@@ -888,10 +893,13 @@ svg.sp{width:100%;height:100%;}
     <div id="fw-viewers">24,832 👁</div>
     <div id="fw-x" onclick="toggleFW()">✕</div>
   </div>
-  <div id="fw-screen" onclick="fwOpenStream()">
-    <div class="fw-play" id="fw-play">▶</div>
-    <div id="fw-sname">🔥 Leonhart</div>
-    <div id="fw-hint">Click để mở stream</div>
+  <div id="fw-screen">
+    <div id="fw-embed" style="position:absolute;inset:0;display:none;"></div>
+    <div id="fw-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;background:radial-gradient(ellipse at center,#111d2b,#070c12);" onclick="fwOpenStream()">
+      <div class="fw-play" id="fw-play">▶</div>
+      <div id="fw-sname">🔥 Leonhart</div>
+      <div id="fw-hint">Click để xem stream</div>
+    </div>
   </div>
   <div id="fw-tabs"></div>
 </div>
@@ -915,54 +923,54 @@ svg.sp{width:100%;height:100%;}
 const JPY_RATE = 149.82;
 
 let EN = [
-  {n:'Charizard Base Shadowless',s:'Base Set 1999',p:8240,c:4.3,cat:'vintage',rank:1},
-  {n:'Pikachu Illustrator',s:'CoroCoro Promo 1998',p:420000,c:1.2,cat:'graded',rank:2},
-  {n:'Charizard 1st Ed PSA10',s:'Base Set 1999',p:36000,c:3.2,cat:'graded',rank:3},
-  {n:'Tropical Wind Trophy',s:'Trophy Promo 1999',p:1800,c:12.5,cat:'vintage',rank:4},
-  {n:'Rayquaza Gold Star',s:'Deoxys EX',p:3200,c:5.0,cat:'vintage',rank:5},
-  {n:'Espeon Gold Star',s:'POP Series 5',p:2800,c:8.1,cat:'vintage',rank:6},
-  {n:'Umbreon Gold Star',s:'POP Series 5',p:2600,c:6.5,cat:'vintage',rank:7},
-  {n:'Shining Charizard',s:'Neo Destiny',p:1800,c:7.2,cat:'vintage',rank:8},
-  {n:"Blaine's Charizard Holo",s:'Gym Heroes',p:145,c:43.6,cat:'vintage',rank:9},
-  {n:'Lugia Neo Genesis Holo',s:'Neo Genesis 2000',p:480,c:-2.5,cat:'vintage',rank:10},
-  {n:'Umbreon VMAX Alt Art',s:'Evolving Skies',p:340,c:2.4,cat:'modern',rank:11},
-  {n:'Palkia ex Alt Art',s:'Crown Zenith',p:189,c:13.2,cat:'modern',rank:12},
-  {n:'Gardevoir ex Alt Art',s:'Paldea Evolved',p:95,c:22.0,cat:'modern',rank:13},
-  {n:'Lugia ex Alt Art',s:'Silver Tempest',p:380,c:4.2,cat:'modern',rank:14},
-  {n:'Iono Full Art',s:'Paldea Evolved',p:185,c:8.2,cat:'modern',rank:15},
-  {n:'Mewtwo Base Set Holo',s:'Base Set 1999',p:380,c:0.8,cat:'vintage',rank:16},
-  {n:'Venusaur Base Holo',s:'Base Set 1999',p:290,c:1.5,cat:'vintage',rank:17},
-  {n:"Rocket's Mewtwo Holo",s:'Team Rocket',p:420,c:3.8,cat:'vintage',rank:18},
-  {n:'Charizard V Alt Art',s:"Champion's Path",p:420,c:-2.1,cat:'modern',rank:19},
-  {n:'Rayquaza VMAX Alt Art',s:'Evolving Skies',p:280,c:0.9,cat:'modern',rank:20},
-  {n:'Mew VMAX Alt Art',s:'Fusion Strike',p:145,c:4.5,cat:'modern',rank:21},
-  {n:'Leafeon VMAX Alt Art',s:'Evolving Skies',p:190,c:1.6,cat:'modern',rank:22},
-  {n:'Blastoise Base Holo',s:'Base Set 1999',p:260,c:1.0,cat:'vintage',rank:23},
-  {n:'Pikachu V-UNION',s:'Promo 2021',p:75,c:-0.5,cat:'modern',rank:24},
-  {n:'Charizard VMAX Rainbow',s:'Darkness Ablaze',p:320,c:1.1,cat:'modern',rank:25},
+  {n:'Charizard Base Shadowless',s:'Base Set 1999',p:8240,c:4.3,cat:'vintage',rank:1,code:'4/102'},
+  {n:'Pikachu Illustrator',s:'CoroCoro Promo 1998',p:420000,c:1.2,cat:'graded',rank:2,code:'PROMO'},
+  {n:'Charizard 1st Ed PSA10',s:'Base Set 1999',p:36000,c:3.2,cat:'graded',rank:3,code:'4/102'},
+  {n:'Tropical Wind Trophy',s:'Trophy Promo 1999',p:1800,c:12.5,cat:'vintage',rank:4,code:'TROPHY'},
+  {n:'Rayquaza Gold Star',s:'Deoxys EX',p:3200,c:5.0,cat:'vintage',rank:5,code:'107/107'},
+  {n:'Espeon Gold Star',s:'POP Series 5',p:2800,c:8.1,cat:'vintage',rank:6,code:'16/17'},
+  {n:'Umbreon Gold Star',s:'POP Series 5',p:2600,c:6.5,cat:'vintage',rank:7,code:'17/17'},
+  {n:'Shining Charizard',s:'Neo Destiny',p:1800,c:7.2,cat:'vintage',rank:8,code:'107/105'},
+  {n:"Blaine's Charizard Holo",s:'Gym Heroes',p:145,c:43.6,cat:'vintage',rank:9,code:'2/132'},
+  {n:'Lugia Neo Genesis Holo',s:'Neo Genesis 2000',p:480,c:-2.5,cat:'vintage',rank:10,code:'9/111'},
+  {n:'Umbreon VMAX Alt Art',s:'Evolving Skies',p:340,c:2.4,cat:'modern',rank:11,code:'215/203'},
+  {n:'Palkia ex Alt Art',s:'Crown Zenith',p:189,c:13.2,cat:'modern',rank:12,code:'GG66/GG70'},
+  {n:'Gardevoir ex Alt Art',s:'Paldea Evolved',p:95,c:22.0,cat:'modern',rank:13,code:'236/193'},
+  {n:'Lugia ex Alt Art',s:'Silver Tempest',p:380,c:4.2,cat:'modern',rank:14,code:'211/195'},
+  {n:'Iono Full Art',s:'Paldea Evolved',p:185,c:8.2,cat:'modern',rank:15,code:'269/193'},
+  {n:'Mewtwo Base Set Holo',s:'Base Set 1999',p:380,c:0.8,cat:'vintage',rank:16,code:'10/102'},
+  {n:'Venusaur Base Holo',s:'Base Set 1999',p:290,c:1.5,cat:'vintage',rank:17,code:'15/102'},
+  {n:"Rocket's Mewtwo Holo",s:'Team Rocket',p:420,c:3.8,cat:'vintage',rank:18,code:'14/82'},
+  {n:'Charizard V Alt Art',s:"Champion's Path",p:420,c:-2.1,cat:'modern',rank:19,code:'079/073'},
+  {n:'Rayquaza VMAX Alt Art',s:'Evolving Skies',p:280,c:0.9,cat:'modern',rank:20,code:'218/203'},
+  {n:'Mew VMAX Alt Art',s:'Fusion Strike',p:145,c:4.5,cat:'modern',rank:21,code:'269/264'},
+  {n:'Leafeon VMAX Alt Art',s:'Evolving Skies',p:190,c:1.6,cat:'modern',rank:22,code:'205/203'},
+  {n:'Blastoise Base Holo',s:'Base Set 1999',p:260,c:1.0,cat:'vintage',rank:23,code:'2/102'},
+  {n:'Pikachu V-UNION',s:'Promo 2021',p:75,c:-0.5,cat:'modern',rank:24,code:'SWSH159'},
+  {n:'Charizard VMAX Rainbow',s:'Darkness Ablaze',p:320,c:1.1,cat:'modern',rank:25,code:'020/189'},
 ];
 
 let JP = [
-  {n:'コイキング (初版旧裏)',s:'第1弾 旧裏面 1996',jpy:3200000,c:8.2,cat:'vintage',rank:1},
-  {n:'ピカチュウ イラストレーター',s:'CoroCoro 1998',jpy:55000000,c:2.1,cat:'promo',rank:2},
-  {n:'ミュウツー (コロコロ)',s:'コロコロ Promo 1996',jpy:8500000,c:3.2,cat:'promo',rank:3},
-  {n:'カビゴン (旧裏面)',s:'第1弾 旧裏 1996',jpy:1800000,c:12.0,cat:'vintage',rank:4},
-  {n:'リザードン (第1弾)',s:'第1弾 初版 1996',jpy:980000,c:5.3,cat:'vintage',rank:5},
-  {n:'ルカリオex SA',s:'拡張パック 2023',jpy:48000,c:18.5,cat:'modern',rank:6},
-  {n:'リザードンex SA',s:'黒炎の支配者 2023',jpy:42000,c:11.2,cat:'modern',rank:7},
-  {n:'ブラッキー VMAX SA',s:'イーブイヒーローズ',jpy:95000,c:1.8,cat:'modern',rank:8},
-  {n:'ピジョット ex SA',s:'ステラミラクル 2024',jpy:19000,c:31.0,cat:'modern',rank:9},
-  {n:'ゲッコウガex SA',s:'レイジングサーフ',jpy:38000,c:9.8,cat:'modern',rank:10},
-  {n:'サーナイトex SA',s:'スノーハザード',jpy:35000,c:5.6,cat:'modern',rank:11},
-  {n:'ルギア LEGEND',s:'ハートゴールド 2010',jpy:120000,c:6.0,cat:'vintage',rank:12},
-  {n:'カビゴン SA',s:'バイオレット ex',jpy:32000,c:22.0,cat:'modern',rank:13},
-  {n:'マリルリex SA',s:'ステラミラクル',jpy:15000,c:25.0,cat:'modern',rank:14},
-  {n:'コイキング (GX)',s:'GXスタートデッキ',jpy:280000,c:15.0,cat:'vintage',rank:15},
-  {n:'ポッポ (旧裏面)',s:'第1弾 旧裏 1996',jpy:450000,c:9.0,cat:'vintage',rank:16},
-  {n:'ミュウ (旧裏面)',s:'第1弾 旧裏 1996',jpy:380000,c:7.5,cat:'vintage',rank:17},
-  {n:'ウーラオスex SA',s:'一撃マスター 2021',jpy:58000,c:4.5,cat:'modern',rank:18},
-  {n:'リーフィア VMAX SA',s:'イーブイヒーローズ',jpy:75000,c:2.4,cat:'modern',rank:19},
-  {n:'ファイヤー (旧裏)',s:'第1弾 旧裏 1996',jpy:2400000,c:9.5,cat:'vintage',rank:20},
+  {n:'コイキング (初版旧裏)',s:'第1弾 旧裏面 1996',en:'Magikarp 1st Ed Old Back',jpy:3200000,c:8.2,cat:'vintage',rank:1,code:'54/102'},
+  {n:'ピカチュウ イラストレーター',s:'CoroCoro 1998',en:'Pikachu Illustrator',jpy:55000000,c:2.1,cat:'promo',rank:2,code:'PROMO'},
+  {n:'ミュウツー (コロコロ)',s:'コロコロ Promo 1996',en:'Mewtwo CoroCoro Promo',jpy:8500000,c:3.2,cat:'promo',rank:3,code:'PROMO'},
+  {n:'カビゴン (旧裏面)',s:'第1弾 旧裏 1996',en:'Snorlax Old Back',jpy:1800000,c:12.0,cat:'vintage',rank:4,code:'11/102'},
+  {n:'リザードン (第1弾)',s:'第1弾 初版 1996',en:'Charizard 1st Ed JP',jpy:980000,c:5.3,cat:'vintage',rank:5,code:'6/102'},
+  {n:'ルカリオex SA',s:'拡張パック 2023',en:'Lucario ex SAR',jpy:48000,c:18.5,cat:'modern',rank:6,code:'232/193'},
+  {n:'リザードンex SA',s:'黒炎の支配者 2023',en:'Charizard ex SAR',jpy:42000,c:11.2,cat:'modern',rank:7,code:'200/165'},
+  {n:'ブラッキー VMAX SA',s:'イーブイヒーローズ',en:'Umbreon VMAX SAR',jpy:95000,c:1.8,cat:'modern',rank:8,code:'184/184'},
+  {n:'ピジョット ex SA',s:'ステラミラクル 2024',en:'Pidgeot ex SAR',jpy:19000,c:31.0,cat:'modern',rank:9,code:'230/191'},
+  {n:'ゲッコウガex SA',s:'レイジングサーフ',en:'Greninja ex SAR',jpy:38000,c:9.8,cat:'modern',rank:10,code:'085/062'},
+  {n:'サーナイトex SA',s:'スノーハザード',en:'Gardevoir ex SAR',jpy:35000,c:5.6,cat:'modern',rank:11,code:'082/071'},
+  {n:'ルギア LEGEND',s:'ハートゴールド 2010',en:'Lugia LEGEND',jpy:120000,c:6.0,cat:'vintage',rank:12,code:'112/123'},
+  {n:'カビゴン SA',s:'バイオレット ex',en:'Snorlax SAR',jpy:32000,c:22.0,cat:'modern',rank:13,code:'194/187'},
+  {n:'マリルリex SA',s:'ステラミラクル',en:'Azumarill ex SAR',jpy:15000,c:25.0,cat:'modern',rank:14,code:'221/191'},
+  {n:'コイキング (GX)',s:'GXスタートデッキ',en:'Magikarp GX',jpy:280000,c:15.0,cat:'vintage',rank:15,code:'GX/SM'},
+  {n:'ポッポ (旧裏面)',s:'第1弾 旧裏 1996',en:'Pidgey Old Back',jpy:450000,c:9.0,cat:'vintage',rank:16,code:'22/102'},
+  {n:'ミュウ (旧裏面)',s:'第1弾 旧裏 1996',en:'Mew Old Back',jpy:380000,c:7.5,cat:'vintage',rank:17,code:'PROMO'},
+  {n:'ウーラオスex SA',s:'一撃マスター 2021',en:'Urshifu ex SAR',jpy:58000,c:4.5,cat:'modern',rank:18,code:'086/070'},
+  {n:'リーフィア VMAX SA',s:'イーブイヒーローズ',en:'Leafeon VMAX SAR',jpy:75000,c:2.4,cat:'modern',rank:19,code:'176/184'},
+  {n:'ファイヤー (旧裏)',s:'第1弾 旧裏 1996',en:'Moltres Old Back',jpy:2400000,c:9.5,cat:'vintage',rank:20,code:'PROMO'},
 ].map(c=>({...c, p:Math.round(c.jpy/JPY_RATE), ps:'¥'+c.jpy.toLocaleString()}));
 
 // ═════════════════════════════════
@@ -1061,6 +1069,17 @@ setInterval(liveUpdate, 30000); // every 30 seconds
 setInterval(()=>{document.getElementById('clk').textContent=new Date().toLocaleTimeString('vi-VN',{hour12:false})+' ICT';},1000);
 
 // ═════════════════════════════════
+// STAB TABS — left sidebar (HOT / EN / JP / YT)
+// ═════════════════════════════════
+function sw(el, id) {
+  document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.stab-c').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const tab = document.getElementById('stab-' + id);
+  if (tab) tab.classList.add('active');
+}
+
+// ═════════════════════════════════
 // PAGE NAVIGATION
 // ═════════════════════════════════
 function gotoPage(id){
@@ -1129,15 +1148,21 @@ function smRender(q){
     el.innerHTML='<div class="sm-sec">🔥 Đang Hot Nhất</div>'+hot.map((c,i)=>smRowHTML(c,i,c.ps?'jp':'en')).join('');
     return;
   }
-  const en=EN.filter(c=>c.n.toLowerCase().includes(s)||c.s.toLowerCase().includes(s));
-  const jp=JP.filter(c=>c.n.toLowerCase().includes(s)||c.s.toLowerCase().includes(s));
+  // Check if it's a card code search (format like 025/165, 4/102, etc.)
+  const isCode = /^\d{1,4}\/\d{1,4}$/.test(s.replace(/\s/g,'')) || /^[a-z0-9]+\/[a-z0-9]+$/i.test(s);
+  const en=EN.filter(c=>c.n.toLowerCase().includes(s)||c.s.toLowerCase().includes(s)||(c.code&&c.code.toLowerCase()===s.replace(/\s/g,'')));
+  const jp=JP.filter(c=>c.n.toLowerCase().includes(s)||c.s.toLowerCase().includes(s)||(c.en&&c.en.toLowerCase().includes(s))||(c.code&&c.code.toLowerCase()===s.replace(/\s/g,'')));
   smPool=[...en,...jp];
   if(!smPool.length){
-    el.innerHTML=`<div class="sm-empty"><div class="big">🔍</div>Không tìm thấy "<strong>${q}</strong>"<br><span style="font-size:12px;margin-top:5px;display:block;">Thử: Charizard, Lugia, Umbreon, ルカリオ</span></div>`;return;
+    el.innerHTML=`<div class="sm-empty"><div class="big">🔍</div>Không tìm thấy "<strong>${q}</strong>"<br><span style="font-size:12px;margin-top:5px;display:block;">Thử: Charizard, Lugia, 4/102, 200/165</span></div>`;return;
   }
   let html='';
   if(en.length) html+=`<div class="sm-sec">🇺🇸 English — ${en.length} card</div>`+en.map((c,i)=>smRowHTML(c,i,'en')).join('');
   if(jp.length) html+=`<div class="sm-sec">🇯🇵 Japanese — ${jp.length} card</div>`+jp.map((c,i)=>smRowHTML(c,en.length+i,'jp')).join('');
+  // Show grade breakdown if code search or single card result
+  if(isCode && smPool.length===1){
+    html += buildGradeBreakdown(smPool[0], en.length>0?'en':'jp');
+  }
   el.innerHTML=html;
   smActive=-1;
 }
@@ -1146,16 +1171,60 @@ function smRowHTML(c,idx,lang){
   const price=lang==='jp'?c.ps:'$'+c.p.toLocaleString();
   const dc=c.c>=0?'up':'dn';
   const ds=(c.c>=0?'+':'')+c.c.toFixed(1)+'%';
+  const codeTag = c.code?`<span style="font-size:10px;padding:1px 4px;background:rgba(232,197,66,.08);border:1px solid rgba(232,197,66,.2);color:var(--gold);font-weight:700;margin-left:4px;">${c.code}</span>`:'';
+  const enName = lang==='jp'&&c.en?`<span style="font-size:10px;color:var(--t3);margin-left:4px;">${c.en}</span>`:'';
   return`<div class="sm-row" onclick="smSelect(${idx},'${lang}')">
     <div class="sm-ico">${ico}</div>
-    <div class="sm-info"><div class="sm-name">${c.n}</div><div class="sm-sub">${c.s} · ${lang==='en'?'🇺🇸 EN':'🇯🇵 JP'} · ${c.cat}</div></div>
+    <div class="sm-info"><div class="sm-name">${c.n}${enName}${codeTag}</div><div class="sm-sub">${c.s} · ${lang==='en'?'🇺🇸 EN':'🇯🇵 JP'} · ${c.cat}</div></div>
     <div class="sm-rhs"><div class="sm-price ${lang}">${price}</div><div class="sm-delta ${dc}">${ds} 24h</div></div>
+  </div>`;
+}
+
+// Grade breakdown for card code search
+function buildGradeBreakdown(c, lang) {
+  const base = lang==='jp' ? c.jpy : c.p;
+  const isJP = lang==='jp';
+  const fmt = v => isJP ? '¥'+Math.round(v).toLocaleString() : '$'+Math.round(v).toLocaleString();
+  // Grade multipliers (approximate market ratios)
+  const grades = [
+    {g:'PSA 10 (Gem Mint)', mul:4.5, col:'var(--grn)'},
+    {g:'PSA 9 (Mint)',      mul:2.2, col:'var(--blu)'},
+    {g:'A (NM+)',           mul:1.0, col:'var(--gold)'},
+    {g:'A- (NM)',           mul:0.75, col:'var(--t1)'},
+    {g:'B (EX)',            mul:0.45, col:'var(--t2)'},
+    {g:'C (GD)',            mul:0.25, col:'var(--t3)'},
+  ];
+  const src = isJP ? '🇯🇵 CardRush / PriceCharting JP' : '🇺🇸 TCGPlayer / PriceCharting';
+  return `<div style="border-top:1px solid var(--b1);padding:10px 14px;">
+    <div style="font-size:10px;letter-spacing:1px;color:var(--t3);text-transform:uppercase;font-weight:700;margin-bottom:8px;">
+      💴 BẢNG GIÁ THEO PHÂN LOẠI — ${c.code||''} · Nguồn: ${src}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">
+      ${grades.map(g=>`<div style="background:rgba(255,255,255,.02);border:1px solid var(--b1);padding:7px 9px;">
+        <div style="font-size:10px;color:var(--t3);font-weight:700;margin-bottom:3px;">${g.g}</div>
+        <div style="font-size:16px;font-weight:800;color:${g.col};">${fmt(base*g.mul)}</div>
+        <div style="font-size:10px;color:var(--t3);">×${g.mul} raw</div>
+      </div>`).join('')}
+    </div>
   </div>`;
 }
 function smSelect(idx,lang){
   const c=smPool[idx];
-  if(c){switchChart(c,lang);gotoPage('markets');}
-  closeSearch();
+  if(c){
+    // Show grade breakdown below the selected card
+    const results = document.getElementById('smresults');
+    const rows = results.querySelectorAll('.sm-row');
+    rows.forEach((r,i) => r.classList.toggle('sel', i===idx));
+    // Inject grade breakdown after selected row
+    const existingBreakdown = document.getElementById('sm-grade-breakdown');
+    if(existingBreakdown) existingBreakdown.remove();
+    const bd = document.createElement('div');
+    bd.id = 'sm-grade-breakdown';
+    bd.innerHTML = buildGradeBreakdown(c, lang);
+    if(rows[idx]) rows[idx].after(bd);
+    // Also switch chart
+    switchChart(c,lang);
+  }
 }
 
 // ═════════════════════════════════
@@ -1279,9 +1348,11 @@ function renderTop(lang){
   const arr=rows.map((c,i)=>{
     const up=c.c>=0;
     const price=lang==='en'?'$'+c.p.toLocaleString():c.ps;
+    const codeTag = c.code ? `<span style="font-size:9px;color:var(--t3);border:1px solid var(--b2);padding:0 3px;margin-left:3px;">${c.code}</span>` : '';
+    const aliasTag = lang==='jp'&&c.en ? `<div style="font-size:9px;color:var(--t3);">${c.en}</div>` : '';
     return`<div class="t100r" onclick="switchChart(${lang==='en'?'EN':'JP'}[${(lang==='en'?EN:JP).indexOf(c)}],'${lang}')" style="cursor:pointer" title="Click → xem chart">
       <div class="rnk${c.rank<=3?' top':''}">${c.rank<=3?M[c.rank-1]:c.rank}</div>
-      <div><div class="cn">${c.n}</div><div class="cs">${c.s}</div></div>
+      <div><div class="cn">${c.n}${codeTag}</div><div class="cs">${c.s}</div>${aliasTag}</div>
       <div class="cp">${price}</div>
       <div class="cd ${up?'up':'dn'}">${up?'+':''}${c.c.toFixed(1)}%</div>
     </div>`;
@@ -1597,6 +1668,11 @@ function sliHTML(s,i,onclk){
 function selectStream(i){
   activeStream=i;
   const s=STREAMS[i];
+  // Reset embed to show overlay again
+  const embed = document.getElementById('ls-embed');
+  const overlay = document.getElementById('ls-overlay');
+  if(embed){ embed.style.display='none'; embed.innerHTML=''; }
+  if(overlay) overlay.style.display='flex';
   ['ls-name','lb-name'].forEach(id=>document.getElementById(id).textContent=s.e+' '+s.n);
   ['ls-title','lb-title'].forEach(id=>document.getElementById(id).textContent=s.t);
   document.getElementById('ls-viewers').textContent=s.live?fmtV(s.v)+' đang xem':'Sắp live...';
@@ -1607,7 +1683,39 @@ function selectStream(i){
   document.querySelectorAll('[id^="sli-"]').forEach((el,ii)=>el.classList.toggle('sli-active',ii===i));
   if(document.getElementById('fw').classList.contains('show')) fwSwitch(STREAMS.filter(s=>s.live).findIndex((_,ii)=>ii===i));
 }
-function lsOpen(){ window.open(STREAMS[activeStream].url,'_blank'); }
+function lsOpen() {
+  const s = STREAMS[activeStream];
+  const embed = document.getElementById('ls-embed');
+  const overlay = document.getElementById('ls-overlay');
+  if (!embed) { window.open(s.url,'_blank'); return; }
+  // For YouTube streams, extract channel and embed
+  if (s.pl === 'yt') {
+    // Try to get the YouTube channel/video embed
+    // Use channel live embed URL
+    const ytMatch = s.url.match(/@([^/]+)/);
+    if (ytMatch) {
+      // Use YouTube channel live embed - we'll embed the channel page in an iframe
+      // For live streams use: https://www.youtube.com/embed/live_stream?channel=CHANNEL_ID
+      // Since we only have handle, we embed the channel page
+      embed.innerHTML = `<iframe src="https://www.youtube.com/embed?listType=user_uploads&list=${ytMatch[1]}&autoplay=1" 
+        style="width:100%;height:100%;border:none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    } else {
+      embed.innerHTML = `<iframe src="${s.url}" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>`;
+    }
+    embed.style.display = 'block';
+    overlay.style.display = 'none';
+  } else if (s.pl === 'twitch') {
+    const twitchMatch = s.url.match(/twitch\.tv\/([^/]+)/);
+    if (twitchMatch) {
+      embed.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${twitchMatch[1]}&parent=${location.hostname || 'localhost'}&autoplay=true&muted=false"
+        style="width:100%;height:100%;border:none;" allowfullscreen></iframe>`;
+      embed.style.display = 'block';
+      overlay.style.display = 'none';
+    } else { window.open(s.url,'_blank'); }
+  } else {
+    window.open(s.url,'_blank');
+  }
+}
 
 // Simulate viewer count fluctuation every 12s
 setInterval(() => {
@@ -1662,11 +1770,38 @@ function fwRender(){
     `<div class="fw-tab${i===fwIdx?' on':''}" onclick="fwSwitch(${i})"><span class="fw-ldot"></span>${st.e} ${st.n} <span style="color:var(--t3);font-size:10px;">${fmtV(st.v)}</span></div>`
   ).join('');
 }
-function fwSwitch(i){ fwIdx=i; fwRender(); }
+function fwSwitch(i){ 
+  fwIdx=i; 
+  const embed=document.getElementById('fw-embed');
+  const overlay=document.getElementById('fw-overlay');
+  if(embed){ embed.style.display='none'; embed.innerHTML=''; }
+  if(overlay) overlay.style.display='flex';
+  fwRender(); 
+}
 function fwOpenStream(){
   const live=fwLive();
   const s=live[fwIdx]||live[0];
-  if(s) window.open(s.url,'_blank');
+  if(!s) return;
+  const embed = document.getElementById('fw-embed');
+  const overlay = document.getElementById('fw-overlay');
+  if(!embed){ window.open(s.url,'_blank'); return; }
+  if (s.pl === 'yt') {
+    const ytMatch = s.url.match(/@([^/]+)/);
+    if (ytMatch) {
+      embed.innerHTML = `<iframe src="https://www.youtube.com/embed?listType=user_uploads&list=${ytMatch[1]}&autoplay=1"
+        style="width:100%;height:100%;border:none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      embed.style.display = 'block';
+      if(overlay) overlay.style.display = 'none';
+    } else { window.open(s.url,'_blank'); }
+  } else if (s.pl === 'twitch') {
+    const tm = s.url.match(/twitch\.tv\/([^/]+)/);
+    if(tm){
+      embed.innerHTML = `<iframe src="https://player.twitch.tv/?channel=${tm[1]}&parent=${location.hostname||'localhost'}&autoplay=true"
+        style="width:100%;height:100%;border:none;" allowfullscreen></iframe>`;
+      embed.style.display = 'block';
+      if(overlay) overlay.style.display = 'none';
+    } else { window.open(s.url,'_blank'); }
+  } else { window.open(s.url,'_blank'); }
 }
 
 // Drag widget
@@ -1732,9 +1867,9 @@ renderAlerts();
 // ═════════════════════════════════
 function buildCmp(q){
   const s=q.toLowerCase().trim();
-  if(!s)return'<div class="cmp-empty">Nhập tên card để so sánh...</div>';
-  const en=EN.filter(c=>c.n.toLowerCase().includes(s)||c.s.toLowerCase().includes(s)).slice(0,8);
-  const jp=JP.filter(c=>c.n.toLowerCase().includes(s)||c.s.toLowerCase().includes(s)).slice(0,8);
+  if(!s)return'<div class="cmp-empty">Nhập tên card hoặc mã code (vd: 200/165) để so sánh...</div>';
+  const en=EN.filter(c=>c.n.toLowerCase().includes(s)||c.s.toLowerCase().includes(s)||(c.code&&c.code.toLowerCase()===s)).slice(0,8);
+  const jp=JP.filter(c=>c.n.toLowerCase().includes(s)||c.s.toLowerCase().includes(s)||(c.en&&c.en.toLowerCase().includes(s))||(c.code&&c.code.toLowerCase()===s)).slice(0,8);
   const len=Math.max(en.length,jp.length);
   if(!len)return`<div class="cmp-empty">Không tìm thấy kết quả cho "<strong>${q}</strong>"</div>`;
   let html='';
@@ -1744,10 +1879,27 @@ function buildCmp(q){
     let winner='eq',spread='N/A';
     if(eU&&jU){const diff=Math.abs(eU-jU);spread=((diff/Math.min(eU,jU))*100).toFixed(1)+'%';winner=jU<eU?'jp':'en';}
     const wl={jp:'🇯🇵 JP rẻ hơn',en:'🇺🇸 EN rẻ hơn',eq:'≈ Ngang nhau'}[winner];
+    const codeTag = (e&&e.code)||(j&&j.code) ? `<span style="font-size:10px;padding:1px 4px;background:rgba(232,197,66,.08);border:1px solid rgba(232,197,66,.2);color:var(--gold);font-weight:700;">${(e&&e.code)||(j&&j.code)}</span>` : '';
     html+=`<div class="cmp-row">
-      <div class="cmp-cell">${e?`<div class="cc-n">${e.n}</div><div class="cc-s">${e.s}</div><div class="cc-p en">$${e.p.toLocaleString()}</div><div class="cc-d ${e.c>=0?'up':'dn'}">${e.c>=0?'▲':'▼'} ${Math.abs(e.c).toFixed(1)}% 24h</div>`:'<div style="color:var(--t3);padding:8px 0">— Không có dữ liệu EN</div>'}</div>
+      <div class="cmp-cell">${e?`<div class="cc-n">${e.n} ${e.code?`<span style="font-size:10px;color:var(--gold);background:rgba(232,197,66,.08);border:1px solid rgba(232,197,66,.2);padding:1px 4px;">${e.code}</span>`:''}</div><div class="cc-s">${e.s}</div><div class="cc-p en">$${e.p.toLocaleString()}</div><div class="cc-d ${e.c>=0?'up':'dn'}">${e.c>=0?'▲':'▼'} ${Math.abs(e.c).toFixed(1)}% 24h</div>`:'<div style="color:var(--t3);padding:8px 0">— Không có dữ liệu EN</div>'}</div>
       <div class="cmp-cell mid"><div class="cmp-mid-in">${eU&&jU?`<div class="wb ${winner}">${wl}</div><div class="spread-t">Chênh: ${spread}</div><div style="font-size:11px;color:var(--t3);font-weight:700;">JP≈$${jU.toLocaleString()}</div>`:'<div style="color:var(--t3);font-size:12px">Thiếu data</div>'}</div></div>
-      <div class="cmp-cell">${j?`<div class="cc-n">${j.n}</div><div class="cc-s">${j.s}</div><div class="cc-p jp">${j.ps}</div><div class="cc-d ${j.c>=0?'up':'dn'}">${j.c>=0?'▲':'▼'} ${Math.abs(j.c).toFixed(1)}% 24h</div>`:'<div style="color:var(--t3);padding:8px 0">— Không có dữ liệu JP</div>'}</div>
+      <div class="cmp-cell">${j?`<div class="cc-n">${j.n} ${j.code?`<span style="font-size:10px;color:var(--pur);background:rgba(176,106,255,.08);border:1px solid rgba(176,106,255,.2);padding:1px 4px;">${j.code}</span>`:''}</div><div class="cc-s">${j.s}</div>${j.en?`<div style="font-size:10px;color:var(--t3);margin-bottom:2px;">${j.en}</div>`:''}<div class="cc-p jp">${j.ps}</div><div class="cc-d ${j.c>=0?'up':'dn'}">${j.c>=0?'▲':'▼'} ${Math.abs(j.c).toFixed(1)}% 24h</div>`:'<div style="color:var(--t3);padding:8px 0">— Không có dữ liệu JP</div>'}</div>
+    </div>
+    <div style="background:rgba(255,255,255,.012);border-bottom:1px solid var(--b1);">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+        ${e?`<div style="padding:7px 12px;border-right:1px solid var(--b1);">
+          <div style="font-size:10px;color:var(--gold);font-weight:700;letter-spacing:1px;margin-bottom:5px;">💵 EN GRADE BREAKDOWN — CardRush / PriceCharting</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;">
+            ${[{g:'PSA 10',m:4.5,c:'var(--grn)'},{g:'PSA 9',m:2.2,c:'var(--blu)'},{g:'A (NM+)',m:1.0,c:'var(--gold)'},{g:'A−',m:0.75,c:'var(--t1)'},{g:'B',m:0.45,c:'var(--t2)'},{g:'C',m:0.25,c:'var(--t3)'}].map(gr=>`<div style="background:rgba(255,255,255,.02);border:1px solid var(--b1);padding:4px 7px;min-width:70px;"><div style="font-size:9px;color:${gr.c};font-weight:700;">${gr.g}</div><div style="font-size:13px;font-weight:800;color:${gr.c};">$${Math.round(e.p*gr.m).toLocaleString()}</div></div>`).join('')}
+          </div>
+        </div>`:'<div></div>'}
+        ${j?`<div style="padding:7px 12px;">
+          <div style="font-size:10px;color:var(--pur);font-weight:700;letter-spacing:1px;margin-bottom:5px;">💴 JP GRADE BREAKDOWN — CardRush / PriceCharting JP</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;">
+            ${[{g:'PSA 10',m:4.5,c:'var(--grn)'},{g:'PSA 9',m:2.2,c:'var(--blu)'},{g:'A (NM+)',m:1.0,c:'var(--gold)'},{g:'A−',m:0.75,c:'var(--t1)'},{g:'B',m:0.45,c:'var(--t2)'},{g:'C',m:0.25,c:'var(--t3)'}].map(gr=>`<div style="background:rgba(255,255,255,.02);border:1px solid var(--b1);padding:4px 7px;min-width:70px;"><div style="font-size:9px;color:${gr.c};font-weight:700;">${gr.g}</div><div style="font-size:13px;font-weight:800;color:${gr.c};">¥${Math.round(j.jpy*gr.m).toLocaleString()}</div></div>`).join('')}
+          </div>
+        </div>`:'<div></div>'}
+      </div>
     </div>`;
   }
   return html;
