@@ -1015,45 +1015,92 @@ const CFG = {
   SIMULATE_INT: 30 * 1000,         // simulation fallback 30s
 };
 
-// ── CARD ID MAP → Pokémon TCG API card IDs ──────────────────────
-// Format: 'Card Name' → 'set-number'
-// Lấy ID từ: https://pokemontcg.io/  (search → copy id field)
+// ── CARD ID MAP → Pokémon TCG API (pokemontcg.io) ───────────────
+// 40+ EN cards mapped, covers all sections
 const PTCG_ID_MAP = {
-  'Charizard Base Shadowless':     'base4-4',
-  "Blaine's Charizard Holo":       'gym2-2',
-  'Lugia Neo Genesis Holo':        'neo1-9',
-  'Mewtwo Base Set Holo':          'base1-10',
-  'Venusaur Base Holo':            'base1-15',
-  'Blastoise Base Holo':           'base1-2',
-  "Rocket's Mewtwo Holo":          'base6-14',
-  'Shining Charizard':             'neo4-107',
-  'Rayquaza Gold Star':            'ex7-107',
-  'Espeon Gold Star':              'pop5-16',
-  'Umbreon Gold Star':             'pop5-17',
-  'Umbreon VMAX Alt Art':          'swsh7-215',
-  'Palkia ex Alt Art':             'swsh12pt5-GG66',
-  'Gardevoir ex Alt Art':          'sv2-236',
-  'Lugia ex Alt Art':              'swsh11-211',
-  'Iono Full Art':                 'sv2-269',
-  'Charizard V Alt Art':           'swsh35-79',
-  'Rayquaza VMAX Alt Art':         'swsh7-218',
-  'Mew VMAX Alt Art':              'swsh8-269',
-  'Leafeon VMAX Alt Art':          'swsh7-205',
-  'Charizard VMAX Rainbow':        'swsh3-20',
+  // ── VINTAGE BASE SET ──────────────────────────────────
+  'Charizard Base Shadowless':      'base4-4',
+  'Charizard 1st Ed PSA10':         'base1-4',
+  'Mewtwo Base Set Holo':           'base1-10',
+  'Venusaur Base Holo':             'base1-15',
+  'Blastoise Base Holo':            'base1-2',
+  'Clefairy Base Holo':             'base1-5',
+  'Chansey Base Holo':              'base1-3',
+  'Ninetales Base Holo':            'base1-12',
+  'Raichu Base Holo':               'base1-14',
+  'Scyther Jungle Holo':            'jungle1-10',
+  'Vaporeon Jungle Holo':           'jungle1-12',
+  // ── GYM / ROCKETS ─────────────────────────────────────
+  "Blaine's Charizard Holo":        'gym2-2',
+  "Rocket's Mewtwo Holo":           'base6-14',
+  // ── NEO ───────────────────────────────────────────────
+  'Lugia Neo Genesis Holo':         'neo1-9',
+  'Shining Charizard':              'neo4-107',
+  'Shining Mewtwo':                 'neo4-109',
+  'Shining Gyarados':               'neo4-65',
+  // ── EX ERA ────────────────────────────────────────────
+  'Rayquaza Gold Star':             'ex7-107',
+  'Espeon Gold Star':               'pop5-16',
+  'Umbreon Gold Star':              'pop5-17',
+  'Charizard ex Holo':              'ex1-100',
+  'Mewtwo ex Holo':                 'ex1-101',
+  // ── HGSS / BW ─────────────────────────────────────────
+  'Lugia LEGEND Top':               'hgss2-113',
+  'Zekrom Full Art':                'bw1-114',
+  'Reshiram Full Art':              'bw1-113',
+  // ── XY ERA ────────────────────────────────────────────
+  'M Charizard EX FA':              'xy3-101',
+  'Mega Gengar EX FA':              'xy3-121',
+  // ── SUN & MOON ────────────────────────────────────────
+  'Charizard GX Rainbow':           'sm35-150',
+  'Pikachu VMAX':                   'swsh45-188',
+  // ── SWORD & SHIELD ────────────────────────────────────
+  'Umbreon VMAX Alt Art':           'swsh7-215',
+  'Lugia ex Alt Art':               'swsh11-211',
+  'Rayquaza VMAX Alt Art':          'swsh7-218',
+  'Mew VMAX Alt Art':               'swsh8-269',
+  'Leafeon VMAX Alt Art':           'swsh7-205',
+  'Charizard V Alt Art':            'swsh35-79',
+  'Charizard VMAX Rainbow':         'swsh3-20',
+  'Palkia ex Alt Art':              'swsh12pt5-GG66',
+  'Pikachu V-UNION':                'swsh45-SWSH159',
+  // ── SCARLET & VIOLET ──────────────────────────────────
+  'Gardevoir ex Alt Art':           'sv2-236',
+  'Iono Full Art':                  'sv2-269',
+  'Charizard ex tera':              'sv3-228',
+  'Miraidon ex Alt Art':            'sv1-254',
+  'Koraidon ex Alt Art':            'sv1-253',
+  'Arcanine ex Alt Art':            'sv1-201',
+  'Pidgeot ex Alt Art':             'sv6-230',
 };
 
-// ── TCGDEX CARD MAP → TCGdex IDs cho JP cards ──────────────────
-// TCGdex hỗ trợ JP sets: sv3, sv3a, sv4, sv6a...
+// ── JP CARD SOURCES → CardRush/Cardmarket search URLs ───────────
+// Dùng cho modal JP + redirect đúng marketplace
+const JP_MARKET_MAP = {
+  'リザードンex SA':    { url: 'https://www.cardrush-pokemon.jp/fs/cardrush/c/searchtop?search_word=%E3%83%AA%E3%82%B6%E3%83%BC%E3%83%89%E3%83%B3ex', label: 'CardRush' },
+  'ルカリオex SA':      { url: 'https://www.cardrush-pokemon.jp/fs/cardrush/c/searchtop?search_word=%E3%83%AB%E3%82%AB%E3%83%AA%E3%82%AA', label: 'CardRush' },
+  'ブラッキー VMAX SA': { url: 'https://www.cardrush-pokemon.jp/fs/cardrush/c/searchtop?search_word=%E3%83%96%E3%83%A9%E3%83%83%E3%82%AD%E3%83%BC', label: 'CardRush' },
+  'ゲッコウガex SA':    { url: 'https://www.cardrush-pokemon.jp/fs/cardrush/c/searchtop?search_word=%E3%82%B2%E3%83%83%E3%82%B3%E3%82%A6%E3%82%AC', label: 'CardRush' },
+  'サーナイトex SA':    { url: 'https://www.cardrush-pokemon.jp/fs/cardrush/c/searchtop?search_word=%E3%82%B5%E3%83%BC%E3%83%8A%E3%82%A4%E3%83%88', label: 'CardRush' },
+  'ピジョット ex SA':   { url: 'https://www.cardrush-pokemon.jp/fs/cardrush/c/searchtop?search_word=%E3%83%94%E3%82%B8%E3%83%A7%E3%83%83%E3%83%88', label: 'CardRush' },
+};
+
+// ── TCGDEX CARD MAP → artwork JP cards ─────────────────────────
 const TCGDEX_JP_MAP = {
-  'リザードンex SA':  'sv3-200',    // Obsidian Flames (JP: Tera Charizard ex)
-  'ルカリオex SA':    'sv2-232',    // Paldea Evolved
+  'リザードンex SA':    'sv3-200',
+  'ルカリオex SA':      'sv2-232',
   'ブラッキー VMAX SA': 'swsh4-184',
-  'ゲッコウガex SA':  'sv3a-85',
-  'サーナイトex SA':  'sv2a-82',
-  'ピジョット ex SA': 'sv6-230',
+  'ゲッコウガex SA':    'sv3a-85',
+  'サーナイトex SA':    'sv2a-82',
+  'ピジョット ex SA':   'sv6-230',
 };
 
-// ── BASE DATA (fallback khi API lỗi) ───────────────────────────
+// ── LIVE CARD CACHE — lưu full PTCG API response ────────────────
+// Dùng để mở modal với đầy đủ thông tin set, legality, HP, etc.
+const PTCG_CARD_CACHE = {}; // { ptcgId: fullCardData }
+const ART_CACHE = {};        // { cardName: imageUrl }
+
+// ── BASE DATA ────────────────────────────────────────────────────
 let JPY_RATE = 149.82;
 let EUR_RATE = 0.921;
 
@@ -1083,6 +1130,11 @@ let EN = [
   {n:'Blastoise Base Holo',s:'Base Set 1999',p:260,c:1.0,cat:'vintage',rank:23,code:'2/102'},
   {n:'Pikachu V-UNION',s:'Promo 2021',p:75,c:-0.5,cat:'modern',rank:24,code:'SWSH159'},
   {n:'Charizard VMAX Rainbow',s:'Darkness Ablaze',p:320,c:1.1,cat:'modern',rank:25,code:'020/189'},
+  {n:'Shining Mewtwo',s:'Neo Destiny',p:2100,c:9.3,cat:'vintage',rank:26,code:'109/105'},
+  {n:'Shining Gyarados',s:'Neo Destiny',p:680,c:4.2,cat:'vintage',rank:27,code:'65/105'},
+  {n:'Charizard ex tera',s:'Obsidian Flames',p:78,c:15.4,cat:'modern',rank:28,code:'228/197'},
+  {n:'Miraidon ex Alt Art',s:'Scarlet & Violet',p:62,c:6.8,cat:'modern',rank:29,code:'254/198'},
+  {n:'Pidgeot ex Alt Art',s:'Stellar Miracle',p:145,c:31.0,cat:'modern',rank:30,code:'230/191'},
 ];
 
 let JP = [
@@ -1098,334 +1150,240 @@ let JP = [
   {n:'ゲッコウガex SA',s:'レイジングサーフ',en:'Greninja ex SAR',jpy:38000,c:9.8,cat:'modern',rank:10,code:'085/062'},
   {n:'サーナイトex SA',s:'スノーハザード',en:'Gardevoir ex SAR',jpy:35000,c:5.6,cat:'modern',rank:11,code:'082/071'},
   {n:'ルギア LEGEND',s:'ハートゴールド 2010',en:'Lugia LEGEND',jpy:120000,c:6.0,cat:'vintage',rank:12,code:'112/123'},
-  {n:'カビゴン SA',s:'バイオレット ex',en:'Snorlax SAR',jpy:32000,c:22.0,cat:'modern',rank:13,code:'194/187'},
-  {n:'マリルリex SA',s:'ステラミラクル',en:'Azumarill ex SAR',jpy:15000,c:25.0,cat:'modern',rank:14,code:'221/191'},
-  {n:'コイキング (GX)',s:'GXスタートデッキ',en:'Magikarp GX',jpy:280000,c:15.0,cat:'vintage',rank:15,code:'GX/SM'},
-  {n:'ポッポ (旧裏面)',s:'第1弾 旧裏 1996',en:'Pidgey Old Back',jpy:450000,c:9.0,cat:'vintage',rank:16,code:'22/102'},
-  {n:'ミュウ (旧裏面)',s:'第1弾 旧裏 1996',en:'Mew Old Back',jpy:380000,c:7.5,cat:'vintage',rank:17,code:'PROMO'},
-  {n:'ウーラオスex SA',s:'一撃マスター 2021',en:'Urshifu ex SAR',jpy:58000,c:4.5,cat:'modern',rank:18,code:'086/070'},
-  {n:'リーフィア VMAX SA',s:'イーブイヒーローズ',en:'Leafeon VMAX SAR',jpy:75000,c:2.4,cat:'modern',rank:19,code:'176/184'},
-  {n:'ファイヤー (旧裏)',s:'第1弾 旧裏 1996',en:'Moltres Old Back',jpy:2400000,c:9.5,cat:'vintage',rank:20,code:'PROMO'},
-].map(c=>({...c, p:Math.round(c.jpy/JPY_RATE), ps:'¥'+c.jpy.toLocaleString()}));
-
-// ── ARTWORK CACHE (từ TCGdex) ────────────────────────────────────
-const ART_CACHE = {};  // { cardName: imageUrl }
-
-// ── NEWS POOL (fallback) ─────────────────────────────────────────
-let NEWS_POOL = [
-  {sev:'critical',src:'Reddit r/PokemonTCG',h:'PSA xác nhận backlog giảm xuống còn 65 ngày',tags:['PSA','WATCH']},
-  {sev:'high',src:'PokeBeach',h:"Blaine's Charizard có thể xuất hiện trong reprint Q2 2025 — UNCONFIRMED",tags:['REPRINT','HOT']},
-  {sev:'high',src:'TCGPlayer Blog',h:'151 set: eBay tăng +18% trong tuần — supply khan hiếm',tags:['151','WATCH']},
-  {sev:'medium',src:'YouTube Leonhart',h:'10 case Prismatic Evol. mở live đạt 400k view trong 3h',tags:['SEALED']},
-  {sev:'low',src:'Twitter/X',h:'Gardevoir ex dẫn đầu meta tournament — ảnh hưởng giá Alt Art',tags:['META']},
-  {sev:'high',src:'eBay Data',h:'Charizard Base Shadowless: 3 deals $8,000+ trong 24h — thị trường sôi động',tags:['HOT','EN']},
-  {sev:'medium',src:'Mercari JP',h:'ルカリオex SA: ¥48,000 → ¥58,000 sau tournament kết quả',tags:['JP','META']},
-  {sev:'critical',src:'Heritage Auctions',h:'Pikachu Illustrator PSA 10 ước tính $6.2M tại phiên đấu giá tháng 3',tags:['GRADED','HOT']},
-  {sev:'medium',src:'Discord TCG VN',h:'Prismatic Evolutions sealed box về VN tăng 20% — nhập khó',tags:['SEALED','VN']},
-  {sev:'low',src:'Pokebeach',h:'Stellar Crown set: danh sách card mới rò rỉ từ scan JP',tags:['JP','NEW']},
-];
-let newsRotateIdx = 0;
-
-const ECON_DATA = [
-  {l:'USD/JPY',key:'jpy',v:149.82,vstr:'149.82',d:'+0.34',c:'up'},
-  {l:'USD/EUR',key:'eur',v:0.921,vstr:'0.921',d:'-0.003',c:'dn'},
-  {l:'eBay GMV TCG',key:'ebay',v:2.4,vstr:'$2.4M',d:'+8.2% 7d',c:'up'},
-  {l:'PSA Vol/mo',key:'psa',v:18.4,vstr:'18.4K',d:'grading jobs',c:''},
-  {l:'Reddit TCG/24h',key:'reddit',v:4821,vstr:'4,821',d:'+12% posts',c:'up'},
+  {n:'リザードン (旧裏 HR)',s:'第2弾 旧裏 1997',en:'Charizard Old Back HR',jpy:650000,c:7.8,cat:'vintage',rank:13,code:'6/102'},
+  {n:'ミュウ (旧裏 幻)',s:'第1弾 旧裏 1996',en:'Mew Old Back Illus',jpy:420000,c:4.1,cat:'vintage',rank:14,code:'PROMO'},
+  {n:'ラティアス ex SA',s:'151 スカーレット',en:'Latias ex SAR',jpy:22000,c:14.5,cat:'modern',rank:15,code:'SM158'},
 ];
 
-// ════════════════════════════════════════════════════════════════
-// API STATUS MANAGER
-// ════════════════════════════════════════════════════════════════
-const ApiStatus = {
-  sources: { forex:'loading', ptcg:'loading', tcgdex:'loading', reddit:'loading' },
+// ── GLOBAL STATE ─────────────────────────────────────────────────
+EN.forEach(c => { c._source = 'sim'; c.p = c.p; });
+JP.forEach(c => { c.ps = '¥'+c.jpy.toLocaleString(); c.p = Math.round(c.jpy/JPY_RATE); c._source='sim'; });
 
-  set(src, status) { // 'live' | 'err' | 'loading' | 'sim'
-    this.sources[src] = status;
-    const pill = document.getElementById('pill-' + src);
-    const bar  = document.getElementById('apib-' + src);
-    [pill, bar].forEach(el => {
-      if (!el) return;
-      el.className = el.className.replace(/(live|loading|err|sim)/g, '').trim();
-      el.classList.add('api-src');
-      if (status === 'live') el.classList.add('live');
-      else if (status === 'err') el.classList.add('err');
-      else if (status === 'loading') el.classList.add('loading');
-    });
-    const ts = document.getElementById('api-last');
-    if (ts) ts.textContent = 'Updated ' + new Date().toLocaleTimeString('vi-VN',{hour12:false,hour:'2-digit',minute:'2-digit'});
-  },
-
-  allLive() { return Object.values(this.sources).every(s => s === 'live'); },
-};
-
-// ════════════════════════════════════════════════════════════════
-// PHASE 1A — FRANKFURTER: TỶ GIÁ THỰC
-// https://api.frankfurter.app — free, no key, CORS OK
-// ════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// PHASE 1A — FRANKFURTER FOREX (no key needed)
+// ═══════════════════════════════════════════════════════════════
 async function fetchForex() {
+  ApiStatus.set('forex','loading');
   try {
-    ApiStatus.set('forex', 'loading');
-    const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=JPY,EUR');
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-
-    const newJPY = parseFloat(data.rates.JPY);
-    const newEUR = parseFloat(data.rates.EUR);
-    const oldJPY = JPY_RATE;
-    JPY_RATE = newJPY;
-    EUR_RATE = newEUR;
-
-    // Cập nhật ECON_DATA
-    const jd = ECON_DATA.find(e => e.key === 'jpy');
-    if (jd) {
-      const diff = (newJPY - oldJPY);
-      jd.vstr = newJPY.toFixed(2);
-      jd.d = (diff >= 0 ? '+' : '') + diff.toFixed(2) + ' vs prev';
-      jd.c = diff >= 0 ? 'up' : 'dn';
-      jd.v = newJPY;
-    }
-    const ed = ECON_DATA.find(e => e.key === 'eur');
-    if (ed) { ed.vstr = newEUR.toFixed(4); ed.v = newEUR; }
-
-    // Re-calc JP USD values với rate mới
-    JP.forEach(c => {
-      c.p = Math.round(c.jpy / JPY_RATE);
-      c.ps = '¥' + c.jpy.toLocaleString();
-    });
-
-    // Update rate display
-    const rEls = ['jpy-rate', 'cmp-jpy'];
-    rEls.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = newJPY.toFixed(2); });
-
-    renderEcon(); renderTicker();
-    ApiStatus.set('forex', 'live');
-    console.log('[Forex] USD/JPY =', newJPY.toFixed(2));
+    const res = await fetch('https://api.frankfurter.app/latest?from=USD&to=JPY,EUR',
+      { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const d = await res.json();
+    JPY_RATE = d.rates.JPY;
+    EUR_RATE = d.rates.EUR;
+    JP.forEach(c => { c.p = Math.round(c.jpy / JPY_RATE); c.ps = '¥' + c.jpy.toLocaleString(); });
+    const jd = ECON_DATA.find(e=>e.key==='jpy');
+    if (jd) jd.v = JPY_RATE.toFixed(2)+'¥';
+    ApiStatus.set('forex','live');
+    console.log('[Forex] JPY='+JPY_RATE.toFixed(2)+' EUR='+EUR_RATE.toFixed(3));
   } catch(e) {
-    ApiStatus.set('forex', 'err');
-    console.warn('[Forex] Fallback to hardcoded rate:', e.message);
+    ApiStatus.set('forex','err');
+    console.warn('[Forex] Failed:', e.message);
   }
 }
 
-// ════════════════════════════════════════════════════════════════
-// PHASE 1B — REDDIT: TIN TỨC THỰC
-// https://www.reddit.com/r/PokemonTCG/hot.json — no key, CORS OK
-// ════════════════════════════════════════════════════════════════
-async function fetchRedditNews() {
-  const subs = ['PokemonTCG', 'pokemoncardcollectors', 'PokemonCardMarket'];
-  const allPosts = [];
-  let anySuccess = false;
-
-  for (const sub of subs) {
-    try {
-      const res = await fetch(
-        `https://www.reddit.com/r/${sub}/hot.json?limit=8&t=day`,
-        { headers: { 'Accept': 'application/json' }, signal: AbortSignal.timeout(8000) }
-      );
-      if (!res.ok) continue;
-      const data = await res.json();
-      anySuccess = true;
-
-      data.data.children
-        .filter(p => !p.data.stickied && p.data.title.length > 10)
-        .slice(0, 6)
-        .forEach(p => {
-          const post = p.data;
-          const age  = Math.round((Date.now()/1000 - post.created_utc) / 60);
-          const ageStr = age < 60 ? age + 'm' : Math.round(age/60) + 'h';
-          allPosts.push({
-            sev:  post.score > 1000 ? 'critical' : post.score > 300 ? 'high' : 'medium',
-            src:  'r/' + sub,
-            h:    post.title.length > 80 ? post.title.slice(0,77) + '…' : post.title,
-            url:  'https://reddit.com' + post.permalink,
-            score: post.score,
-            tags: extractRedditTags(post.title),
-            t:    ageStr,
-          });
-        });
-    } catch(e) { /* tiếp tục sub khác */ }
-  }
-
-  if (anySuccess && allPosts.length > 0) {
-    NEWS_POOL = allPosts.sort((a, b) => b.score - a.score);
-    newsRotateIdx = 0;
-    renderNewsFeed();
-    ApiStatus.set('reddit', 'live');
-    console.log('[Reddit] Loaded', allPosts.length, 'posts');
-  } else {
-    ApiStatus.set('reddit', 'err');
-  }
-}
+// ═══════════════════════════════════════════════════════════════
+// PHASE 1B — REDDIT JSON API (no key, CORS OK)
+// ═══════════════════════════════════════════════════════════════
+const REDDIT_SUBS = ['PokemonTCG','pokemoncardcollectors','PokemonCardMarket','pkmntcgcollections'];
+const REDDIT_TAG_RULES = [
+  ['REPRINT',  /reprint|reissue|reprinting/i],
+  ['GRADED',   /psa|bgs|cgc|graded|grade|gem mint|psa 10/i],
+  ['JP',       /japan|japanese|jp card|yen|¥/i],
+  ['BANNED',   /banned|suspension|cheating|fraud/i],
+  ['HOT',      /spike|moon|explode|surge|huge|massive|all.time/i],
+  ['SEALED',   /sealed|booster|case|box|pack/i],
+  ['VINTAGE',  /base set|1st edition|shadowless|1999|2000|old back|旧裏/i],
+  ['WATCH',    /watch|monitor|tracking|keep.an.eye/i],
+  ['ALERT',    /crash|dump|collapse|plummet|tank/i],
+];
 
 function extractRedditTags(title) {
-  const rules = [
-    [/charizard/i,'CHARIZARD'], [/PSA|BGS|CGC/i,'GRADED'],
-    [/reprint/i,'REPRINT'],     [/japan|JP\b|japanese/i,'JP'],
-    [/sealed|box|case|pack/i,'SEALED'], [/price|market|value/i,'MARKET'],
-    [/fake|counterfeit/i,'⚠️FAKE'], [/tournament|meta/i,'META'],
-    [/pull|opening/i,'PULL'],   [/invest/i,'INVEST'],
-  ];
-  const tags = rules.filter(([re]) => re.test(title)).map(([,t]) => t);
-  return tags.length ? tags.slice(0, 3) : ['TCG'];
+  const tags = [];
+  for (const [tag, rx] of REDDIT_TAG_RULES) {
+    if (rx.test(title) && !tags.includes(tag)) tags.push(tag);
+  }
+  return tags.length ? tags : ['NEWS'];
 }
 
-// ════════════════════════════════════════════════════════════════
-// PHASE 2A — POKÉMON TCG API: GIÁ THỰC TỪ TCGPLAYER
-// https://api.pokemontcg.io/v2/cards/{id}
-// Free key tại pokemontcg.io (1000 req/day không key, unlimited với key)
-// ════════════════════════════════════════════════════════════════
+async function fetchRedditNews() {
+  ApiStatus.set('reddit','loading');
+  const newPosts = [];
+  for (const sub of REDDIT_SUBS) {
+    try {
+      const res = await fetch(
+        `https://www.reddit.com/r/${sub}/hot.json?limit=8&raw_json=1`,
+        { signal: AbortSignal.timeout(7000), headers: {'Accept':'application/json'} }
+      );
+      if (!res.ok) continue;
+      const d = await res.json();
+      const posts = d?.data?.children || [];
+      posts.filter(p => !p.data.stickied && p.data.score > 20).forEach(p => {
+        const post = p.data;
+        const sev = post.score>2000 ? 'critical' : post.score>500 ? 'high' : post.score>100 ? 'medium' : 'low';
+        newPosts.push({
+          src: 'r/'+sub,
+          h: post.title.slice(0,110) + (post.title.length>110?'…':''),
+          url: 'https://www.reddit.com'+post.permalink,
+          score: post.score,
+          t: Math.floor((Date.now()/1000-post.created_utc)/60)+'m',
+          tags: extractRedditTags(post.title),
+          sev,
+          body: post.selftext ? post.selftext.slice(0,400)+'…' : null,
+          imgUrl: post.url?.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? post.url : null,
+          numComments: post.num_comments,
+          redditId: post.id,
+        });
+      });
+      await sleep(200);
+    } catch(e) { console.warn('[Reddit] r/'+sub+' failed:', e.message); }
+  }
+
+  if (newPosts.length > 0) {
+    // Merge vào NEWS_POOL, giữ live posts ở đầu
+    const liveIds = new Set(newPosts.map(p=>p.redditId));
+    const filtered = NEWS_POOL.filter(p => !p.redditId || !liveIds.has(p.redditId));
+    NEWS_POOL.length = 0;
+    NEWS_POOL.push(...newPosts, ...filtered.slice(0, 20));
+    ApiStatus.set('reddit','live');
+    renderNewsFeed();
+    console.log('[Reddit] Loaded', newPosts.length, 'posts');
+  } else {
+    ApiStatus.set('reddit','err');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PHASE 2 — POKÉMON TCG API (pokemontcg.io)
+// Fetch full card data: price + artwork + set info + legality
+// ═══════════════════════════════════════════════════════════════
 async function fetchPtcgPrices() {
-  ApiStatus.set('ptcg', 'loading');
+  ApiStatus.set('ptcg','loading');
   const headers = CFG.PTCG_KEY ? { 'X-Api-Key': CFG.PTCG_KEY } : {};
   let updated = 0, errors = 0;
+  const entries = Object.entries(PTCG_ID_MAP);
 
-  // Priority queue — fetch theo batch để tránh rate limit
-  const priority = Object.entries(PTCG_ID_MAP);
-
-  for (const [cardName, cardId] of priority) {
+  for (const [cardName, cardId] of entries) {
     try {
-      const res = await fetch(`https://api.pokemontcg.io/v2/cards/${cardId}`, { headers });
+      const res = await fetch(`https://api.pokemontcg.io/v2/cards/${cardId}`,
+        { headers, signal: AbortSignal.timeout(8000) });
       if (res.status === 429) {
-        console.warn('[PTCG] Rate limited — dừng batch, dùng simulation');
-        ApiStatus.set('ptcg', 'err');
-        break;
+        console.warn('[PTCG] Rate limited — pausing');
+        ApiStatus.set('ptcg','err'); break;
       }
       if (!res.ok) { errors++; continue; }
       const { data } = await res.json();
 
-      // Lấy giá market từ TCGPlayer
+      // Cache full response cho modal
+      PTCG_CARD_CACHE[cardId] = data;
+
+      // Cập nhật artwork
+      if (data?.images?.large)  ART_CACHE[cardName] = data.images.large;
+      else if (data?.images?.small) ART_CACHE[cardName] = data.images.small;
+
+      // Cập nhật giá từ TCGPlayer
       const prices = data?.tcgplayer?.prices || {};
       const mkt = prices.holofoil?.market
                || prices['1stEditionHolofoil']?.market
                || prices.normal?.market
                || prices.reverseHolofoil?.market
-               || prices.unlimited?.market;
+               || prices.unlimited?.market
+               || prices['1stEdition']?.market;
 
       if (mkt && mkt > 0) {
         const card = EN.find(c => c.n === cardName);
         if (card) {
           const prev = card.p;
-          card.p = Math.round(mkt);
-          card.c = prev > 0 ? parseFloat(((mkt - prev) / prev * 100).toFixed(2)) : card.c;
+          card.p       = Math.round(mkt * 100) / 100;
+          card.c       = prev > 0 ? parseFloat(((mkt-prev)/prev*100).toFixed(2)) : card.c;
           card._source = 'tcgplayer';
           card._updated = Date.now();
+          card._ptcgId  = cardId;
+          // Lưu thêm metadata từ PTCG
+          card._ptcgData = {
+            hp: data.hp,
+            types: data.types,
+            supertype: data.supertype,
+            subtypes: data.subtypes,
+            rarity: data.rarity,
+            set: data.set,
+            tcgplayerUrl: data.tcgplayer?.url,
+            cardmarketUrl: data.cardmarket?.url,
+            legalities: data.legalities,
+            attacks: data.attacks,
+            artist: data.artist,
+            flavorText: data.flavorText,
+            nationalPokedexNumbers: data.nationalPokedexNumbers,
+          };
           updated++;
         }
       }
-
-      // Lưu artwork nếu có (dùng luôn từ PTCG API, không cần TCGdex nữa)
-      if (data?.images?.large) {
-        ART_CACHE[cardName] = data.images.large;
-      } else if (data?.images?.small) {
-        ART_CACHE[cardName] = data.images.small;
-      }
-
-      await sleep(120); // throttle 120ms giữa các request
+      await sleep(150);
     } catch(e) {
       errors++;
-      if (e.name === 'AbortError') break;
+      console.warn('[PTCG] Failed', cardName, e.message);
     }
   }
 
   if (updated > 0) {
+    ApiStatus.set('ptcg','live');
     renderHotspots(); renderTop('en'); renderTicker();
-    ApiStatus.set('ptcg', 'live');
-    console.log('[PTCG] Updated', updated, 'card prices from TCGPlayer');
-  } else if (errors >= priority.length) {
-    ApiStatus.set('ptcg', 'err');
+    renderAnomalyAlerts(); renderGradedTable();
+    console.log('[PTCG] Updated', updated, 'cards from TCGPlayer API');
   } else {
-    ApiStatus.set('ptcg', errors < updated ? 'live' : 'err');
+    ApiStatus.set('ptcg', errors >= entries.length ? 'err' : 'live');
   }
 }
 
-// ════════════════════════════════════════════════════════════════
-// PHASE 2B — TCGDEX: CARD INFO + ARTWORK (đặc biệt JP cards)
-// https://api.tcgdex.net/v2/en/cards/{id}
-// Free, no key, CORS OK — focus: JP card artwork + set info
-// ════════════════════════════════════════════════════════════════
+// ── TCGDEX: JP artwork fallback ─────────────────────────────────
 async function fetchTcgdexArtwork() {
-  ApiStatus.set('tcgdex', 'loading');
+  ApiStatus.set('tcgdex','loading');
   let loaded = 0;
-
-  // Fetch JP card artworks mà PTCG API không có
-  const jpEntries = Object.entries(TCGDEX_JP_MAP);
-  for (const [jpName, cardId] of jpEntries) {
-    if (ART_CACHE[jpName]) { loaded++; continue; } // đã có từ PTCG
+  for (const [jpName, cardId] of Object.entries(TCGDEX_JP_MAP)) {
+    if (ART_CACHE[jpName]) { loaded++; continue; }
     try {
       const res = await fetch(`https://api.tcgdex.net/v2/en/cards/${cardId}`,
         { signal: AbortSignal.timeout(6000) });
       if (!res.ok) continue;
       const card = await res.json();
-      if (card.image) {
-        ART_CACHE[jpName] = card.image + '/high.png';
-        loaded++;
-      }
-      await sleep(80);
-    } catch(e) { /* bỏ qua card này */ }
-  }
-
-  // Cũng thử fetch EN cards mà PTCG chưa có artwork
-  const enWithoutArt = EN.filter(c => !ART_CACHE[c.n] && PTCG_ID_MAP[c.n]);
-  for (const card of enWithoutArt.slice(0, 8)) {
-    const ptcgId = PTCG_ID_MAP[card.n];
-    // Chuyển PTCG ID format sang TCGdex format (thường tương thích)
-    const tcgdexId = ptcgId.replace('base4-', 'base1-').replace('neo1-', 'neo1-');
-    try {
-      const res = await fetch(`https://api.tcgdex.net/v2/en/cards/${ptcgId}`,
-        { signal: AbortSignal.timeout(5000) });
-      if (!res.ok) continue;
-      const data = await res.json();
-      if (data.image) { ART_CACHE[card.n] = data.image + '/high.png'; loaded++; }
+      if (card.image) { ART_CACHE[jpName] = card.image+'/high.png'; loaded++; }
       await sleep(80);
     } catch(e) {}
   }
-
-  if (loaded > 0) {
-    ApiStatus.set('tcgdex', 'live');
-    // Re-render để hiện artwork mới
-    renderHotspots(); renderTop('en'); renderTop('jp');
-    console.log('[TCGdex] Loaded', loaded, 'artworks');
-  } else {
-    ApiStatus.set('tcgdex', 'err');
+  // EN cards không có artwork từ PTCG
+  for (const card of EN.filter(c => !ART_CACHE[c.n] && PTCG_ID_MAP[c.n]).slice(0,6)) {
+    try {
+      const res = await fetch(`https://api.tcgdex.net/v2/en/cards/${PTCG_ID_MAP[card.n]}`,
+        { signal: AbortSignal.timeout(5000) });
+      if (!res.ok) continue;
+      const d = await res.json();
+      if (d.image) { ART_CACHE[card.n] = d.image+'/high.png'; loaded++; }
+      await sleep(80);
+    } catch(e) {}
   }
+  if (loaded > 0) {
+    ApiStatus.set('tcgdex','live');
+    renderHotspots(); renderTop('en'); renderTop('jp');
+  } else { ApiStatus.set('tcgdex','err'); }
 }
 
-// ── HELPER ──────────────────────────────────────────────────────
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ════════════════════════════════════════════════════════════════
-// DATA MANAGER — orchestrate tất cả API calls
-// ════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// DATA MANAGER
+// ═══════════════════════════════════════════════════════════════
 const DataManager = {
   async init() {
-    console.log('[DM] Initializing API connections...');
-
-    // Phase 1: chạy ngay, không cần key
-    await Promise.allSettled([
-      fetchForex(),
-      fetchRedditNews(),
-    ]);
-
-    // Phase 2: chạy ngay sau (có thể chậm hơn)
+    console.log('[DM] Starting API connections…');
+    await Promise.allSettled([fetchForex(), fetchRedditNews()]);
     await fetchPtcgPrices();
-    fetchTcgdexArtwork(); // background, không await
-
-    // Auto-refresh intervals
+    fetchTcgdexArtwork();
     setInterval(fetchForex,       CFG.FOREX_TTL);
     setInterval(fetchRedditNews,  CFG.NEWS_TTL);
     setInterval(fetchPtcgPrices,  CFG.PRICES_TTL);
     setInterval(fetchTcgdexArtwork, CFG.TCGDEX_TTL);
-
-    // Vẫn giữ simulation để smooth UX giữa các API call
     setInterval(simulateMicro, CFG.SIMULATE_INT);
-
-    // Key đã được cấu hình sẵn
-    // if (!CFG.PTCG_KEY && !localStorage.getItem('ptcg_key_dismissed')) {
-    //   setTimeout(() => {
-    //     const b = document.getElementById('api-key-banner');
-    //     if (b) b.style.display = 'flex';
-    //   }, 3000);
-    // }
+    console.log('[DM] All intervals set');
   }
 };
 
@@ -1665,24 +1623,6 @@ function buildGradeBreakdown(c, lang) {
     </div>
   </div>`;
 }
-function smSelect(idx,lang){
-  const c=smPool[idx];
-  if(c){
-    // Show grade breakdown below the selected card
-    const results = document.getElementById('smresults');
-    const rows = results.querySelectorAll('.sm-row');
-    rows.forEach((r,i) => r.classList.toggle('sel', i===idx));
-    // Inject grade breakdown after selected row
-    const existingBreakdown = document.getElementById('sm-grade-breakdown');
-    if(existingBreakdown) existingBreakdown.remove();
-    const bd = document.createElement('div');
-    bd.id = 'sm-grade-breakdown';
-    bd.innerHTML = buildGradeBreakdown(c, lang);
-    if(rows[idx]) rows[idx].after(bd);
-    // Also switch chart
-    switchChart(c,lang);
-  }
-}
 
 // ═════════════════════════════════
 // CHART — switches per card clicked
@@ -1761,265 +1701,578 @@ function sc(el,r){
   el.classList.add('active');drawChart(r);
 }
 
-// ═════════════════════════════════
-// HOTSPOTS — clickable → switches chart
-// ═════════════════════════════════
-const HOTSPOTS=[
-  {en:EN[0],sev:'critical',v:92,a:false,icon:'🔥'},
-  {en:EN[8],sev:'critical',v:98,a:true,icon:'🚨'},
-  {en:EN[11],sev:'high',v:75,a:false,icon:'⬆️'},
-  {en:EN[10],sev:'high',v:60,a:false,icon:'📈'},
-  {en:EN[3],sev:'high',v:20,a:false,icon:'🏆'},
-  {en:EN[13],sev:'high',v:58,a:false,icon:'💎'},
-  {en:EN[9],sev:'medium',v:40,a:false,icon:'📉'},
-  {en:EN[4],sev:'high',v:45,a:false,icon:'⭐'},
-];
-function renderHotspots(){
-  document.getElementById('hct').textContent=HOTSPOTS.length;
-  document.getElementById('hl').innerHTML=HOTSPOTS.map((h,i)=>{
-    const c=h.en;
-    const up=c.c>=0;
-    return`<div class="hi ${h.sev}${h.a?' anom':''}" onclick="switchChart(EN[${EN.indexOf(c)}],'en')" style="cursor:pointer;position:relative;display:flex;gap:8px;align-items:flex-start;" title="Click → xem chart">
-      ${ART_CACHE[c.n]?`<img class="hi-art" src="${ART_CACHE[c.n]}" alt="${c.n}" onclick="event.stopPropagation();showCardArt('${ART_CACHE[c.n]}','${c.n.replace(/'/g,"\'")}')">`:''} 
-      <div style="flex:1">
-      <div class="hi-flag">${h.icon}</div>
-      <div class="hi-n">${c.n}</div>
-      <div class="hi-s">${c.s}</div>
-      <div class="hi-m">
-        <span class="hi-p ${up?'up':'dn'}">$${c.p.toLocaleString()}</span>
-        <span class="hi-c ${up?'up':'dn'}">${up?'+':''}${c.c.toFixed(1)}%</span>
+
+// ════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// UNIVERSAL CARD DETAIL MODAL
+// Powered by PTCG API — giá thực, artwork, set info, links
+// ═══════════════════════════════════════════════════════════════
+function openCardModal(cardName, lang) {
+  const c = lang==='jp' ? JP.find(x=>x.n===cardName) : EN.find(x=>x.n===cardName);
+  if (!c) return;
+  const isJP = lang === 'jp';
+
+  // Build or reuse modal
+  let modal = document.getElementById('cdm');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'cdm';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9900;display:none;align-items:flex-start;justify-content:center;padding-top:40px;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);overflow-y:auto';
+    modal.innerHTML = `
+<div id="cdm-box" style="width:760px;max-width:96vw;background:var(--bg2);border:1px solid rgba(255,255,255,.08);box-shadow:0 32px 100px rgba(0,0,0,.95);margin-bottom:40px" onclick="event.stopPropagation()">
+  <!-- Header -->
+  <div id="cdm-hdr" style="display:flex;align-items:stretch;border-bottom:1px solid var(--b1);position:relative">
+    <div id="cdm-img-wrap" style="width:140px;flex-shrink:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;min-height:120px;cursor:pointer" onclick="document.getElementById('cdm-img').src&&showCardArt(document.getElementById('cdm-img').src,document.getElementById('cdm-name').textContent)">
+      <img id="cdm-img" src="" style="width:140px;max-height:200px;object-fit:contain;display:none" onerror="this.style.display='none'">
+      <div id="cdm-img-ph" style="font-size:36px">🃏</div>
+    </div>
+    <div style="flex:1;padding:14px 16px 14px">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+        <div id="cdm-lang-badge" style="font-size:11px;padding:2px 8px;font-weight:700;border:1px solid"></div>
+        <div id="cdm-rarity" style="font-size:11px;padding:2px 8px;background:var(--ga);border:1px solid rgba(232,197,66,.3);color:var(--gold);font-weight:700"></div>
+        <div id="cdm-source" style="margin-left:auto;font-size:11px;padding:2px 8px;font-weight:700;border:1px solid"></div>
       </div>
-      <div class="vb"><div class="vf" style="width:${h.v}%;background:${up?'var(--grn)':'var(--red)'}"></div></div>
-      ${c._source==='tcgplayer'?'<span class="src-live">TCGPlayer</span>':'<span class="src-sim">SIM</span>'}
-      </div></div>`;
+      <div id="cdm-name" style="font-size:22px;font-weight:800;line-height:1.2;margin-bottom:2px"></div>
+      <div id="cdm-set" style="font-size:12px;color:var(--t3);margin-bottom:10px"></div>
+      <div style="display:flex;gap:14px;align-items:baseline;flex-wrap:wrap">
+        <div id="cdm-price" style="font-size:34px;font-weight:800"></div>
+        <div id="cdm-delta" style="font-size:16px;font-weight:700"></div>
+        <div id="cdm-jpy-eq" style="font-size:14px;color:var(--pur)"></div>
+      </div>
+      <div id="cdm-meta" style="margin-top:6px;font-size:11px;color:var(--t3);display:flex;gap:12px;flex-wrap:wrap"></div>
+    </div>
+    <button onclick="closeCdm()" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,.06);border:1px solid var(--b2);color:var(--t3);width:28px;height:28px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">✕</button>
+  </div>
+  <!-- Body tabs -->
+  <div style="display:flex;border-bottom:1px solid var(--b1);background:rgba(0,0,0,.2)">
+    <button class="cdm-tab active" onclick="cdmTab(this,'grades')" style="flex:1;padding:8px;background:none;border:none;border-bottom:2px solid var(--gold);color:var(--gold);font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px">💰 GIÁ GRADES</button>
+    <button class="cdm-tab" onclick="cdmTab(this,'info')" style="flex:1;padding:8px;background:none;border:none;border-bottom:2px solid transparent;color:var(--t3);font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px">📋 CHI TIẾT</button>
+    <button class="cdm-tab" onclick="cdmTab(this,'links')" style="flex:1;padding:8px;background:none;border:none;border-bottom:2px solid transparent;color:var(--t3);font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px">🔗 MUA / BÁN</button>
+    <button class="cdm-tab" onclick="cdmTab(this,'reddit')" style="flex:1;padding:8px;background:none;border:none;border-bottom:2px solid transparent;color:var(--t3);font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px">📡 REDDIT</button>
+  </div>
+  <div id="cdm-body" style="min-height:200px"></div>
+  <!-- Footer -->
+  <div id="cdm-footer" style="padding:10px 14px;border-top:1px solid var(--b1);display:flex;gap:7px;flex-wrap:wrap;background:rgba(0,0,0,.2)"></div>
+</div>`;
+    modal.onclick = e => { if(e.target===modal) closeCdm(); };
+    document.body.appendChild(modal);
+  }
+
+  // Store current card for tab switching
+  modal._card = c;
+  modal._lang = lang;
+  modal._ptcgData = c._ptcgData || null;
+
+  const art = ART_CACHE[c.n] || '';
+  const imgEl = document.getElementById('cdm-img');
+  const phEl  = document.getElementById('cdm-img-ph');
+  if (art) { imgEl.src = art; imgEl.style.display = 'block'; if(phEl) phEl.style.display = 'none'; }
+  else      { imgEl.style.display = 'none'; if(phEl) phEl.style.display = 'block'; }
+
+  const baseUSD = isJP ? c.p : c.p;
+  document.getElementById('cdm-name').textContent    = c.n;
+  document.getElementById('cdm-set').textContent     = c.s + (c.code ? ' · ' + c.code : '') + (c._ptcgData?.artist ? ' · 🎨 ' + c._ptcgData.artist : '');
+  document.getElementById('cdm-price').textContent   = isJP ? '¥'+c.jpy.toLocaleString() : '$'+c.p.toLocaleString();
+  document.getElementById('cdm-price').style.color   = isJP ? 'var(--pur)' : 'var(--gold)';
+  document.getElementById('cdm-delta').textContent   = (c.c>=0?'+':'')+c.c.toFixed(1)+'% 24h';
+  document.getElementById('cdm-delta').className     = c.c>=0 ? 'up' : 'dn';
+  document.getElementById('cdm-jpy-eq').textContent  = isJP ? '≈ $'+c.p.toLocaleString() : '≈ ¥'+Math.round(c.p*JPY_RATE).toLocaleString();
+
+  const rarity = c._ptcgData?.rarity || c.cat;
+  document.getElementById('cdm-rarity').textContent  = rarity || 'Card';
+  document.getElementById('cdm-source').textContent  = c._source==='tcgplayer' ? '✓ TCGPlayer Live' : '⟳ Estimated';
+  document.getElementById('cdm-source').style.cssText = c._source==='tcgplayer'
+    ? 'margin-left:auto;font-size:11px;padding:2px 8px;font-weight:700;border:1px solid rgba(57,217,138,.4);color:var(--grn);background:var(--gna)'
+    : 'margin-left:auto;font-size:11px;padding:2px 8px;font-weight:700;border:1px solid var(--b2);color:var(--t3);background:var(--b1)';
+
+  const langBadge = document.getElementById('cdm-lang-badge');
+  if (isJP) { langBadge.textContent='🇯🇵 Japanese'; langBadge.style.cssText='font-size:11px;padding:2px 8px;font-weight:700;border:1px solid rgba(176,106,255,.4);color:var(--pur);background:var(--pua)'; }
+  else       { langBadge.textContent='🇺🇸 English';  langBadge.style.cssText='font-size:11px;padding:2px 8px;font-weight:700;border:1px solid rgba(77,166,255,.4);color:var(--blu);background:var(--bla)'; }
+
+  // Meta info from PTCG API
+  const meta = [];
+  if (c._ptcgData?.hp)     meta.push('HP ' + c._ptcgData.hp);
+  if (c._ptcgData?.types)  meta.push(c._ptcgData.types.join('/'));
+  if (c._ptcgData?.set?.releaseDate) meta.push('📅 ' + c._ptcgData.set.releaseDate);
+  if (c._ptcgData?.set?.total)       meta.push(c._ptcgData.set.total+' cards in set');
+  if (c._ptcgData?.legalities?.standard) meta.push('Standard: '+c._ptcgData.legalities.standard);
+  document.getElementById('cdm-meta').innerHTML = meta.map(m=>`<span style="background:rgba(255,255,255,.04);padding:2px 7px;border:1px solid var(--b1)">${m}</span>`).join('');
+
+  // Render default tab
+  cdmTab(document.querySelector('.cdm-tab'), 'grades');
+
+  // Footer buttons
+  const tcgUrl = c._ptcgData?.tcgplayerUrl
+    || `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(c.n)}&view=grid`;
+  const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.n+' pokemon card')}&LH_Sold=1`;
+  const jpMkt = JP_MARKET_MAP[c.n];
+
+  document.getElementById('cdm-footer').innerHTML = `
+    <button onclick="switchChart(${isJP?'JP':'EN'}.find(x=>x.n===modal._card.n),'${lang}');closeCdm()"
+      style="padding:6px 14px;background:var(--ga);border:1px solid rgba(232,197,66,.3);color:var(--gold);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer">
+      📈 Chart
+    </button>
+    <button onclick="cmpFull('${c.n.split(' ')[0]}');gotoPage('compare');closeCdm()"
+      style="padding:6px 14px;background:var(--bla);border:1px solid rgba(77,166,255,.3);color:var(--blu);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer">
+      ⚖️ So sánh EN/JP
+    </button>
+    <a href="${tcgUrl}" target="_blank"
+      style="padding:6px 14px;background:rgba(255,255,255,.04);border:1px solid var(--b2);color:var(--t2);font-size:12px;font-weight:700;text-decoration:none">
+      ↗ TCGPlayer
+    </a>
+    <a href="${ebayUrl}" target="_blank"
+      style="padding:6px 14px;background:rgba(255,106,0,.06);border:1px solid rgba(255,106,0,.25);color:#ff8c00;font-size:12px;font-weight:700;text-decoration:none">
+      ↗ eBay Sold
+    </a>
+    ${jpMkt ? `<a href="${jpMkt.url}" target="_blank" style="padding:6px 14px;background:var(--pua);border:1px solid rgba(176,106,255,.3);color:var(--pur);font-size:12px;font-weight:700;text-decoration:none">↗ ${jpMkt.label}</a>` : ''}
+    <div style="margin-left:auto;font-size:11px;color:var(--t3);display:flex;align-items:center">
+      ${c._updated ? '🕐 ' + new Date(c._updated).toLocaleTimeString('vi-VN',{hour12:false,hour:'2-digit',minute:'2-digit'}) : ''}
+    </div>`;
+
+  modal.style.display = 'flex';
+}
+
+function cdmTab(btn, tab) {
+  document.querySelectorAll('.cdm-tab').forEach(b => {
+    b.style.borderBottomColor = 'transparent';
+    b.style.color = 'var(--t3)';
+  });
+  btn.style.borderBottomColor = 'var(--gold)';
+  btn.style.color = 'var(--gold)';
+
+  const modal = document.getElementById('cdm');
+  const c = modal?._card;
+  if (!c) return;
+  const isJP = modal._lang === 'jp';
+  const body = document.getElementById('cdm-body');
+  const basePrice = isJP ? c.jpy : c.p;
+  const fmtP = v => isJP ? '¥'+Math.round(v).toLocaleString() : '$'+Math.round(v).toLocaleString();
+  const pcUrl = `https://www.pricecharting.com/search-products?q=${encodeURIComponent(c.n)}`;
+
+  if (tab === 'grades') {
+    const grades = [
+      {g:'PSA 10',lbl:'Gem Mint',mul:isJP?3.2:4.5,col:'var(--grn)'},
+      {g:'PSA 9', lbl:'Mint',    mul:isJP?1.8:2.2,col:'var(--blu)'},
+      {g:'BGS 9.5',lbl:'Gem',   mul:isJP?2.8:3.8,col:'#b06aff'},
+      {g:'PSA 8', lbl:'NM-Mint',mul:isJP?1.2:1.4,col:'var(--t1)'},
+      {g:'A / NM+',lbl:'Ungraded',mul:1.0,col:'var(--gold)'},
+      {g:'EX',   lbl:'Light Play',mul:0.70,col:'var(--t2)'},
+      {g:'GD',   lbl:'Played',   mul:0.35,col:'var(--t3)'},
+    ];
+    body.innerHTML = `
+      <div style="padding:12px 14px">
+        <div style="font-size:10px;color:var(--t3);letter-spacing:1.5px;font-weight:700;text-transform:uppercase;margin-bottom:10px">
+          Ước tính dựa trên ${c._source==='tcgplayer'?'TCGPlayer market price · click để xem trên PriceCharting':'giá mô phỏng'}
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">
+          ${grades.map(g=>`
+            <div style="background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);padding:10px 4px;text-align:center;cursor:pointer;transition:background .15s"
+                 onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background='rgba(255,255,255,.025)'"
+                 onclick="window.open('${pcUrl}','_blank')">
+              <div style="font-size:11px;font-weight:800;color:${g.col};margin-bottom:1px">${g.g}</div>
+              <div style="font-size:9px;color:var(--t3);margin-bottom:6px">${g.lbl}</div>
+              <div style="font-size:15px;font-weight:800;color:${g.col}">${fmtP(basePrice*g.mul)}</div>
+              <div style="font-size:9px;color:var(--t3);margin-top:2px">×${g.mul}</div>
+            </div>`).join('')}
+        </div>
+        <div style="margin-top:10px;padding:8px 10px;background:rgba(77,166,255,.05);border:1px solid rgba(77,166,255,.15);font-size:11px;color:var(--t2)">
+          ℹ️ Tỷ số multiplier dựa trên dữ liệu PSA population report & lịch sử giao dịch. Click ô để xem PriceCharting.
+        </div>
+      </div>`;
+  } else if (tab === 'info') {
+    const pd = c._ptcgData;
+    const attacks = pd?.attacks?.map(a =>
+      `<div style="padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong style="color:var(--t1)">${a.name}</strong>
+          <span style="color:var(--gold);font-size:14px;font-weight:700">${a.damage||'—'}</span>
+        </div>
+        ${a.text?`<div style="font-size:11px;color:var(--t3);margin-top:2px">${a.text}</div>`:''}
+      </div>`).join('') || '<div style="color:var(--t3);font-size:12px">Không có dữ liệu tấn công từ PTCG API</div>';
+
+    body.innerHTML = `
+      <div style="padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div>
+          <div style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:1px;margin-bottom:8px">📋 THÔNG TIN CARD</div>
+          <div style="display:grid;gap:4px;font-size:12px">
+            ${pd ? [
+              ['Supertype', pd.supertype],
+              ['Subtypes', pd.subtypes?.join(', ')],
+              ['HP', pd.hp],
+              ['Types', pd.types?.join(', ')],
+              ['Rarity', pd.rarity],
+              ['Artist', pd.artist],
+              ['Set', pd.set?.name + ' (' + pd.set?.releaseDate + ')'],
+              ['Set Size', pd.set?.total + ' cards'],
+              ['Legality', pd.legalities ? Object.entries(pd.legalities).filter(([,v])=>v!=='Legal').map(([k,v])=>`${k}: ${v}`).join(', ')||'✓ Legal in all formats' : '—'],
+            ].filter(r=>r[1]).map(([k,v])=>`
+              <div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+                <span style="color:var(--t3)">${k}</span>
+                <span style="color:var(--t1);text-align:right;max-width:60%">${v}</span>
+              </div>`).join('')
+            : '<div style="color:var(--t3);font-size:12px;grid-column:1/-1">Dữ liệu chi tiết sẽ có sau khi PTCG API fetch card này.</div>'}
+          </div>
+          ${pd?.flavorText ? `<div style="margin-top:10px;padding:8px;border-left:2px solid rgba(232,197,66,.3);font-size:11px;color:var(--t3);font-style:italic">${pd.flavorText}</div>` : ''}
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:1px;margin-bottom:8px">⚔️ ATTACKS</div>
+          ${attacks}
+          ${pd?.nationalPokedexNumbers ? `
+            <div style="margin-top:12px">
+              <div style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:1px;margin-bottom:6px">🎮 POKÉDEX #</div>
+              <div style="font-size:20px;font-weight:800;color:var(--gold)">#${pd.nationalPokedexNumbers[0]}</div>
+            </div>` : ''}
+        </div>
+      </div>`;
+  } else if (tab === 'links') {
+    const tcgUrl  = c._ptcgData?.tcgplayerUrl || `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(c.n)}&view=grid`;
+    const cmUrl   = c._ptcgData?.cardmarketUrl || `https://www.cardmarket.com/en/Pokemon/Products/Search?searchString=${encodeURIComponent(c.n)}`;
+    const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(c.n+' pokemon card')}&LH_Sold=1`;
+    const pcUrl2  = `https://www.pricecharting.com/search-products?q=${encodeURIComponent(c.n)}`;
+    const psaUrl  = `https://www.psacard.com/pop/tcg-cards/0/pokemon/10029#${encodeURIComponent(c.n)}`;
+    const jpMkt   = JP_MARKET_MAP[c.n];
+
+    const mkLink = (href,label,emoji,bg,bc,color) =>
+      `<a href="${href}" target="_blank" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:${bg};border:1px solid ${bc};color:${color};text-decoration:none;font-weight:700;font-size:13px;transition:opacity .15s" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
+        <span style="font-size:20px">${emoji}</span>
+        <div><div>${label}</div><div style="font-size:11px;font-weight:400;color:var(--t3);margin-top:1px">${href.split('/')[2]}</div></div>
+        <span style="margin-left:auto;font-size:14px">↗</span>
+      </a>`;
+
+    body.innerHTML = `
+      <div style="padding:12px 14px;display:grid;gap:6px">
+        <div style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:1px;margin-bottom:4px">🛒 MARKETPLACE MUA/BÁN</div>
+        ${mkLink(tcgUrl, 'TCGPlayer — US Market', '🇺🇸', 'rgba(77,166,255,.06)', 'rgba(77,166,255,.3)', 'var(--blu)')}
+        ${mkLink(ebayUrl, 'eBay — Sold Listings (Giá thực giao dịch)', '💰', 'rgba(255,140,0,.06)', 'rgba(255,140,0,.25)', '#ff8c00')}
+        ${mkLink(cmUrl, 'Cardmarket — EU Market', '🇪🇺', 'rgba(57,217,138,.04)', 'rgba(57,217,138,.2)', 'var(--grn)')}
+        ${jpMkt ? mkLink(jpMkt.url, jpMkt.label + ' — JP Market', '🇯🇵', 'rgba(176,106,255,.06)', 'rgba(176,106,255,.25)', 'var(--pur)') : ''}
+        <div style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:1px;margin:8px 0 4px">📊 PRICE TRACKING</div>
+        ${mkLink(pcUrl2, 'PriceCharting — Lịch sử giá & graded', '📈', 'rgba(255,255,255,.03)', 'rgba(255,255,255,.08)', 'var(--t1)')}
+        ${mkLink(psaUrl, 'PSA Pop Report — Population data', '🏆', 'rgba(232,197,66,.04)', 'rgba(232,197,66,.2)', 'var(--gold)')}
+        ${mkLink(`https://www.pokecardex.com/search?q=${encodeURIComponent(c.n)}`, 'PokéCardex — Set & Print variations', '🔍', 'rgba(255,255,255,.03)', 'rgba(255,255,255,.08)', 'var(--t2)')}
+      </div>`;
+  } else if (tab === 'reddit') {
+    const kw = c.n.split(' ')[0].toLowerCase();
+    const enKw = (c.en||'').split(' ')[0].toLowerCase();
+    const related = NEWS_POOL.filter(n =>
+      n.h.toLowerCase().includes(kw) ||
+      (enKw && n.h.toLowerCase().includes(enKw))
+    ).slice(0,6);
+
+    body.innerHTML = `
+      <div style="padding:12px 14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:1px">📡 REDDIT — Posts Liên Quan</div>
+          <a href="https://www.reddit.com/r/PokemonTCG/search?q=${encodeURIComponent(c.n)}&sort=hot" target="_blank"
+             style="font-size:11px;color:var(--blu);text-decoration:none">Tìm thêm ↗</a>
+        </div>
+        ${related.length ? related.map((n,i) => `
+          <div style="padding:8px 0;border-bottom:1px solid rgba(28,45,62,.5);cursor:pointer"
+               onclick="openNewsModal(NEWS_POOL.indexOf(${JSON.stringify(n)}))">
+            <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+              <span style="color:var(--gold);font-size:10px;font-weight:700">${n.src}</span>
+              <div style="display:flex;gap:8px">
+                ${n.score?`<span style="color:var(--grn);font-size:10px">▲${n.score.toLocaleString()}</span>`:''}
+                ${n.t?`<span style="color:var(--t3);font-size:10px">${n.t} ago</span>`:''}
+              </div>
+            </div>
+            <div style="font-size:13px;font-weight:600;color:var(--t1);line-height:1.4">${n.h}</div>
+            <div style="font-size:10px;color:var(--blu);margin-top:3px">↗ Click để đọc chi tiết</div>
+          </div>`).join('')
+        : `<div style="color:var(--t3);font-size:12px;padding:16px;text-align:center">
+            Chưa có bài Reddit liên quan.<br>
+            <a href="https://www.reddit.com/r/PokemonTCG/search?q=${encodeURIComponent(c.n)}" target="_blank" style="color:var(--blu)">Tìm trên Reddit ↗</a>
+           </div>`}
+      </div>`;
+  }
+}
+
+function closeCdm() {
+  const m = document.getElementById('cdm');
+  if (m) m.style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NEWS / SIGNAL MODAL — click từ feed mở full post
+// ═══════════════════════════════════════════════════════════════
+function openNewsModal(n) {
+  // n có thể là index hoặc object
+  const item = typeof n === 'number' ? NEWS_POOL[n] : n;
+  if (!item) return;
+
+  let modal = document.getElementById('nim');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'nim';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9910;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.88);backdrop-filter:blur(8px)';
+    modal.innerHTML = `
+      <div style="width:600px;max-width:95vw;max-height:85vh;background:var(--bg2);border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 80px rgba(0,0,0,.95);display:flex;flex-direction:column;overflow:hidden" onclick="event.stopPropagation()">
+        <div style="padding:12px 14px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <div id="nim-dot" style="width:9px;height:9px;border-radius:50%;flex-shrink:0"></div>
+          <div id="nim-src" style="font-size:12px;font-weight:700;color:var(--gold)"></div>
+          <div id="nim-score" style="font-size:11px;color:var(--grn)"></div>
+          <div id="nim-time" style="font-size:11px;color:var(--t3)"></div>
+          <button onclick="closeNim()" style="margin-left:auto;background:rgba(255,255,255,.06);border:1px solid var(--b2);color:var(--t3);width:26px;height:26px;cursor:pointer;font-size:15px">✕</button>
+        </div>
+        <div style="overflow-y:auto;padding:16px 14px;flex:1;scrollbar-width:thin">
+          <div id="nim-tags" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px"></div>
+          <div id="nim-h" style="font-size:20px;font-weight:800;line-height:1.45;margin-bottom:14px;color:var(--t1)"></div>
+          <div id="nim-body" style="font-size:14px;color:var(--t2);line-height:1.9"></div>
+          <div id="nim-img" style="margin-top:12px"></div>
+        </div>
+        <div id="nim-footer" style="padding:10px 14px;border-top:1px solid var(--b1);display:flex;gap:7px;flex-wrap:wrap;background:rgba(0,0,0,.2);flex-shrink:0"></div>
+      </div>`;
+    modal.onclick = e => { if(e.target===modal) closeNim(); };
+    document.body.appendChild(modal);
+  }
+
+  const sevColor = {critical:'var(--red)',high:'var(--gold)',medium:'var(--blu)',low:'var(--t3)'};
+  document.getElementById('nim-dot').style.background   = sevColor[item.sev] || 'var(--t3)';
+  document.getElementById('nim-src').textContent        = item.src;
+  document.getElementById('nim-score').textContent      = item.score ? '▲ '+item.score.toLocaleString()+' upvotes' : '';
+  document.getElementById('nim-time').textContent       = item.t ? item.t+' ago' : '';
+  document.getElementById('nim-h').textContent          = item.h;
+  document.getElementById('nim-tags').innerHTML         = (item.tags||[]).map(t =>
+    `<span class="ntag ${t==='HOT'?'hot':t==='WATCH'?'w':''}">${t}</span>`).join('');
+  document.getElementById('nim-body').innerHTML = item.body
+    ? `<p>${item.body.replace(/\n\n/g,'</p><p>')}</p>`
+    : `<p style="color:var(--t3)">Bấm "Đọc Full Post" để xem nội dung đầy đủ trên Reddit.</p>`;
+
+  const imgDiv = document.getElementById('nim-img');
+  imgDiv.innerHTML = item.imgUrl
+    ? `<img src="${item.imgUrl}" style="max-width:100%;border:1px solid var(--b1)" onerror="this.style.display='none'">`
+    : '';
+
+  const postUrl = item.url || `https://www.reddit.com/r/PokemonTCG/search?q=${encodeURIComponent(item.h.split(' ').slice(0,5).join(' '))}`;
+  document.getElementById('nim-footer').innerHTML = `
+    <a href="${postUrl}" target="_blank"
+       style="padding:7px 16px;background:var(--bla);border:1px solid rgba(77,166,255,.3);color:var(--blu);font-size:13px;font-weight:700;text-decoration:none">
+      ↗ Đọc Full Post
+    </a>
+    <a href="https://www.reddit.com/${item.src}" target="_blank"
+       style="padding:7px 14px;background:rgba(255,255,255,.03);border:1px solid var(--b2);color:var(--t3);font-size:13px;font-weight:700;text-decoration:none">
+      r/ Subreddit ↗
+    </a>
+    ${item.numComments != null ? `<span style="font-size:12px;color:var(--t3);display:flex;align-items:center;gap:4px">💬 ${item.numComments} comments</span>` : ''}
+    <span style="font-size:11px;color:var(--t3);display:flex;align-items:center;margin-left:auto">${item.src}</span>`;
+
+  modal.style.display = 'flex';
+}
+function closeNim() {
+  const m = document.getElementById('nim');
+  if (m) m.style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HOTSPOTS — live từ EN data, click → card modal
+// Dynamic: top movers by |%change| từ real PTCG prices
+// ═══════════════════════════════════════════════════════════════
+function renderHotspots() {
+  const movers = [...EN].sort((a,b) => Math.abs(b.c)-Math.abs(a.c)).slice(0,8);
+  document.getElementById('hct').textContent = movers.length;
+  document.getElementById('hl').innerHTML = movers.map(c => {
+    const up = c.c >= 0;
+    const absC = Math.abs(c.c);
+    const sev  = absC>15 ? 'critical' : absC>7 ? 'high' : 'medium';
+    const icon = absC>15 ? (up?'🚨':'💥') : absC>7 ? (up?'🔥':'📉') : (up?'📈':'⚠️');
+    const bar  = Math.min(99, Math.round(absC*3.5)+15);
+    const art  = ART_CACHE[c.n];
+    return `<div class="hi ${sev}${absC>20?' anom':''}"
+        onclick="openCardModal('${c.n.replace(/'/g,"\\'").replace(/"/g,'&quot;')}','en')"
+        style="cursor:pointer;position:relative;display:flex;gap:7px;align-items:flex-start"
+        title="Click → Chi tiết card & Mua">
+      ${art ? `<img class="hi-art" src="${art}" alt=""
+                onclick="event.stopPropagation();showCardArt('${art}','${c.n.replace(/'/g,"\\'")}')">` : ''}
+      <div style="flex:1;min-width:0">
+        <div class="hi-flag">${icon} ${c._source==='tcgplayer'?'<span style="font-size:9px;color:var(--grn)">●LIVE</span>':''}</div>
+        <div class="hi-n" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.n}</div>
+        <div class="hi-s">${c.s}</div>
+        <div class="hi-m">
+          <span class="hi-p ${up?'up':'dn'}">$${c.p.toLocaleString()}</span>
+          <span class="hi-c ${up?'up':'dn'}">${up?'+':''}${c.c.toFixed(1)}%</span>
+        </div>
+        <div class="vb"><div class="vf" style="width:${bar}%;background:${up?'var(--grn)':'var(--red)'}"></div></div>
+        <div style="font-size:9px;color:var(--blu);margin-top:2px;text-align:right">↗ Chi tiết & Mua</div>
+      </div>
+    </div>`;
   }).join('');
 }
 renderHotspots();
 
-// ═════════════════════════════════
-// TOP 100 — clickable → switches chart
-// ═════════════════════════════════
-let fEN='all',fJP='all';
-function ft(el,cat,lang){el.closest('.t100f').querySelectorAll('.tf').forEach(t=>t.classList.remove('active'));el.classList.add('active');lang==='en'?fEN=cat:fJP=cat;renderTop(lang);}
-function renderTop(lang){
-  const src=lang==='en'?EN:JP,f=lang==='en'?fEN:fJP;
-  const rows=f==='all'?src:src.filter(c=>c.cat===f);
-  const M=['🥇','🥈','🥉'];
-  const arr=rows.map((c,i)=>{
-    const up=c.c>=0;
-    const price=lang==='en'?'$'+c.p.toLocaleString():c.ps;
-    const codeTag = c.code ? `<span style="font-size:9px;color:var(--t3);border:1px solid var(--b2);padding:0 3px;margin-left:3px;">${c.code}</span>` : '';
-    const aliasTag = lang==='jp'&&c.en ? `<div style="font-size:9px;color:var(--t3);">${c.en}</div>` : '';
-    return`<div class="t100r" onclick="switchChart(${lang==='en'?'EN':'JP'}[${(lang==='en'?EN:JP).indexOf(c)}],'${lang}')" style="cursor:pointer;grid-template-columns:24px 28px 1fr 62px 38px;" title="Click → xem chart">
+// ═══════════════════════════════════════════════════════════════
+// TOP EN / JP — với artwork thumbnail + click mở card modal
+// ═══════════════════════════════════════════════════════════════
+let fEN='all', fJP='all';
+function ft(el,cat,lang) {
+  el.closest('.t100f').querySelectorAll('.tf').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active'); lang==='en'?fEN=cat:fJP=cat; renderTop(lang);
+}
+function renderTop(lang) {
+  const src  = lang==='en' ? EN : JP;
+  const f    = lang==='en' ? fEN : fJP;
+  const rows = f==='all' ? src : src.filter(c=>c.cat===f);
+  const M    = ['🥇','🥈','🥉'];
+  document.getElementById('t-'+lang).innerHTML = rows.map(c => {
+    const up  = c.c >= 0;
+    const art = ART_CACHE[c.n];
+    const pr  = lang==='en' ? '$'+c.p.toLocaleString() : c.ps;
+    return `<div class="t100r"
+        onclick="openCardModal('${c.n.replace(/'/g,"\\'").replace(/"/g,'&quot;')}','${lang}')"
+        style="cursor:pointer;display:grid;grid-template-columns:22px ${art?'26px ':''}1fr 62px 38px;gap:3px;align-items:center;padding:5px 8px;border-bottom:1px solid rgba(28,45,62,.5)"
+        title="Click → Chi tiết + Mua">
       <div class="rnk${c.rank<=3?' top':''}">${c.rank<=3?M[c.rank-1]:c.rank}</div>
-      <div><div class="cn">${c.n}${codeTag}</div><div class="cs">${c.s}</div>${aliasTag}</div>
-      <div class="cp">${price}</div>
+      ${art ? `<img src="${art}" style="width:24px;height:24px;object-fit:cover;border:1px solid var(--b1);cursor:pointer"
+               onclick="event.stopPropagation();showCardArt('${art}','${c.n.replace(/'/g,"\\'")}')">` : ''}
+      <div>
+        <div class="cn">${c.n}${c.code?`<span style="font-size:9px;color:var(--t3);border:1px solid var(--b2);padding:0 3px;margin-left:3px">${c.code}</span>`:''}</div>
+        <div class="cs">${c.s}${lang==='jp'&&c.en?`<span style="color:var(--t3)"> · ${c.en}</span>`:''}</div>
+      </div>
+      <div class="cp">${pr}</div>
       <div class="cd ${up?'up':'dn'}">${up?'+':''}${c.c.toFixed(1)}%</div>
     </div>`;
-  });
-  document.getElementById('t-'+lang).innerHTML=arr.join('');
+  }).join('');
 }
-renderTop('en');renderTop('jp');
+renderTop('en'); renderTop('jp');
 
-// ═════════════════════════════════
-// TICKER
-// ═════════════════════════════════
-function renderTicker(){
-  const items=EN.slice(0,10).map(c=>({n:c.n.split(' ').slice(0,3).join(' '),p:'$'+c.p.toLocaleString(),c:(c.c>=0?'+':'')+c.c.toFixed(1)+'%',up:c.c>=0}));
-  items.push({n:'USD/JPY',p:JPY_RATE.toFixed(2),c:ECON_DATA.find(e=>e.key==='jpy')?.d||'+0.34',up:true});
-  const d=[...items,...items];
-  document.getElementById('ticker').innerHTML=d.map(t=>`<span class="ti"><span class="ti-n">${t.n}</span><span style="color:var(--t1)">${t.p}</span><span class="${t.up?'up':'dn'}">${t.c}</span></span>`).join('');
+// ── TICKER ───────────────────────────────────────────────────────
+function renderTicker() {
+  const items = EN.slice(0,12).map(c=>({
+    n: c.n.split(' ').slice(0,3).join(' '),
+    p: '$'+c.p.toLocaleString(),
+    c: (c.c>=0?'+':'')+c.c.toFixed(1)+'%',
+    up: c.c>=0, live: c._source==='tcgplayer',
+    cn: c.n,
+  }));
+  items.push({n:'USD/JPY',p:JPY_RATE.toFixed(2),c:'+0.3%',up:true,live:true});
+  const d = [...items,...items];
+  document.getElementById('ticker').innerHTML = d.map(t =>
+    `<span class="ti" style="${t.live?'':'opacity:.65'}" ${t.cn?`onclick="openCardModal('${t.cn.replace(/'/g,"\\'")}','en')" style="cursor:pointer"`:''}  title="${t.cn||'USD/JPY'}">
+      <span class="ti-n">${t.n}${t.live?'<span style="font-size:8px;color:var(--grn);margin-left:2px">●</span>':''}</span>
+      <span style="color:var(--t1)">${t.p}</span>
+      <span class="${t.up?'up':'dn'}">${t.c}</span>
+    </span>`).join('');
 }
 renderTicker();
 
-// ═════════════════════════════════
-// NEWS FEED — rotates items on refresh
-// ═════════════════════════════════
-function renderNewsFeed(){
-  const pool=[];
-  for(let i=0;i<5;i++) pool.push(NEWS_POOL[(newsRotateIdx+i)%NEWS_POOL.length]);
-  document.getElementById('nf').innerHTML=pool.map(n=>`<div class="ni" style="display:flex;gap:7px;">
-    <div class="ni-sev ${n.sev}"></div>
-    <div style="flex:1;min-width:0">
-      <div class="ni-src"><span class="sn">${n.src}</span>${n.url?` <a href="${n.url}" target="_blank" style="color:var(--blu);font-size:10px;margin-left:4px;">↗</a>`:''} ${n.score?`<span style="font-size:10px;color:var(--grn);margin-left:4px;">▲${n.score.toLocaleString()}</span>`:''}</div>
-      <div class="ni-h">${n.h}</div>
-      <div class="ni-tags">${n.tags.map(t=>`<span class="ntag ${t==='HOT'?'hot':t==='WATCH'?'w':''}">${t}</span>`).join('')}</div>
-    </div>
-  </div>`).join('');
+// ── SIGNAL FEED — click mở news modal đầy đủ ──────────────────
+function renderNewsFeed() {
+  const pool = [];
+  for(let i=0;i<7;i++) pool.push({
+    item: NEWS_POOL[(newsRotateIdx+i)%NEWS_POOL.length],
+    idx:  (newsRotateIdx+i)%NEWS_POOL.length
+  });
+  document.getElementById('nf').innerHTML = pool.map(({item:n, idx}) => {
+    const sevColor = {critical:'var(--red)',high:'var(--gold)',medium:'var(--blu)',low:'var(--t3)'};
+    return `<div class="ni" style="display:flex;gap:7px;cursor:pointer;transition:background .15s"
+         onmouseover="this.style.background='rgba(255,255,255,.025)'" onmouseout="this.style.background=''"
+         onclick="openNewsModal(${idx})" title="Click → Đọc bài đầy đủ">
+      <div class="ni-sev" style="background:${sevColor[n.sev]||'var(--t3)'}"></div>
+      <div style="flex:1;min-width:0">
+        <div class="ni-src" style="display:flex;align-items:center;gap:5px">
+          <span class="sn">${n.src}</span>
+          ${n.score?`<span style="font-size:10px;color:var(--grn)">▲${n.score.toLocaleString()}</span>`:''}
+          ${n.t?`<span style="font-size:10px;color:var(--t3)">${n.t} ago</span>`:''}
+          <span style="margin-left:auto;font-size:10px;color:var(--blu)">↗ Đọc</span>
+        </div>
+        <div class="ni-h" style="margin-top:1px">${n.h}</div>
+        <div class="ni-tags" style="margin-top:3px">${(n.tags||[]).map(t=>
+          `<span class="ntag ${t==='HOT'?'hot':t==='WATCH'?'w':''}">${t}</span>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 renderNewsFeed();
 
-// ═════════════════════════════════
-// HEATMAP
-// ═════════════════════════════════
-(()=>{
-  const S=[{l:'BS Sdwless',v:'+43%',h:.95},{l:'Gym Heroes',v:'+41%',h:.92},{l:'Neo Gen',v:'+18%',h:.72},{l:'Evlv Skies',v:'+15%',h:.68},{l:'Crown Zen',v:'+13%',h:.63},{l:'151 SV',v:'+12%',h:.60},{l:'SV Prism',v:'+8%',h:.50},{l:'HGSS',v:'+7%',h:.44},{l:'Silver Tmp',v:'+6%',h:.42},{l:'Champion',v:'+3%',h:.30},{l:'VSTAR Uni',v:'+2%',h:.28},{l:'Shining Ft',v:'+4%',h:.35},{l:'Lost Orig',v:'-1%',h:.18},{l:'Fusion Stk',v:'-3%',h:.12},{l:'Chill Rain',v:'-5%',h:.08},{l:'BST 2021',v:'-7%',h:.05},{l:'Vivid Volt',v:'-9%',h:.03},{l:'DAA',v:'-11%',h:.01}];
-  function hc(h){if(h>.7)return`rgba(255,77,106,${(.25+h*.55).toFixed(2)})`;if(h>.4)return`rgba(232,197,66,${(.15+h*.5).toFixed(2)})`;if(h>.2)return`rgba(77,166,255,${(.15+h*.4).toFixed(2)})`;return`rgba(57,217,138,${(.04+h*.25).toFixed(2)})`;}
-  document.getElementById('hmap').innerHTML=S.map(s=>`<div class="hc" style="background:${hc(s.h)};border:1px solid ${hc(s.h)}" title="${s.l}: ${s.v}"><div class="hcv">${s.v}</div><div class="hcl">${s.l}</div></div>`).join('');
-})();
+// ── ANOMALY ALERTS — dynamic từ EN data + PTCG live ─────────────
+function renderAnomalyAlerts() {
+  const anomalies = [...EN]
+    .filter(c => Math.abs(c.c) > 5)
+    .sort((a,b) => Math.abs(b.c)-Math.abs(a.c))
+    .slice(0,5);
 
-// ═════════════════════════════════
-// PREDICTIONS
-// ═════════════════════════════════
-const PREDS=[
-  {q:"Charizard BS vượt $10,000 trước Q3 2025?",yes:68,vol:'$124K',cl:'45 ngày'},
-  {q:"Prismatic Evolutions reprint trong 2025?",yes:31,vol:'$89K',cl:'62 ngày'},
-  {q:"Blaine's Charizard giữ $200+ sau 30 ngày?",yes:74,vol:'$41K',cl:'30 ngày'},
-  {q:"PSA backlog xuống dưới 60 ngày trong 2025?",yes:55,vol:'$67K',cl:'90 ngày'},
-  {q:"Một card JP lập kỷ lục >¥100M trong 2025?",yes:12,vol:'$28K',cl:'300 ngày'},
-  {q:"151 set reprint được thông báo trước Q4?",yes:44,vol:'$52K',cl:'120 ngày'},
-];
-function predHTML(cls){
-  return PREDS.map(p=>`<div class="${cls}">
-    <div class="pred-q">${p.q}</div>
-    <div class="pred-bars">
-      <div class="pred-y"><div class="pv">${p.yes}%</div><div class="plbl">YES</div></div>
-      <div class="pred-n"><div class="pv">${100-p.yes}%</div><div class="plbl">NO</div></div>
-    </div>
-    <div class="pred-track"><div class="pred-fill" style="width:${p.yes}%"></div></div>
-    <div class="pred-meta"><span class="vol">Vol: ${p.vol}</span><span>Đóng: ${p.cl}</span></div>
-  </div>`).join('');
-}
-document.getElementById('pred-grid').innerHTML=predHTML('pred-item');
-document.getElementById('pred-live').innerHTML=predHTML('pred-item');
+  const staticAlerts = [
+    {i:'📡',t:'PTCG API '+( (EN.filter(c=>c._source==='tcgplayer').length) )+' cards live',
+     m:`<span style="color:var(--grn)">${EN.filter(c=>c._source==='tcgplayer').length}/${EN.length}</span> cards synced · Last: ${new Date().toLocaleTimeString('vi-VN',{hour12:false,hour:'2-digit',minute:'2-digit'})}`,
+     url: 'https://pokemontcg.io'},
+    {i:'💱',t:`USD/JPY: ${JPY_RATE.toFixed(2)}`,
+     m:`ECB Frankfurter · <span style="color:var(--grn)">Live forex rate</span>`,
+     url:'https://www.frankfurter.app'},
+  ];
 
-// ═════════════════════════════════
-// ECON
-// ═════════════════════════════════
-function renderEcon(){
-  document.getElementById('econ-row').innerHTML=ECON_DATA.map(e=>`<div class="econ-c">
-    <div class="econ-l">${e.l}</div>
-    <div class="econ-v" style="color:${e.c==='up'?'var(--grn)':e.c==='dn'?'var(--red)':'var(--t1)'}">${e.vstr}</div>
-    <div class="econ-d ${e.c}">${e.d}</div>
-  </div>`).join('');
-}
-renderEcon();
-
-// ═════════════════════════════════
-// REGIONAL NEWS — clickable, opens detail modal
-// ═════════════════════════════════
-const REG_NEWS = {
-  '🇺🇸 US': [
-    {s:'TCGPlayer',h:'PSA confirms 65-day turnaround — supply to increase Q2',t:'2m',body:'PSA đã xác nhận chính thức rằng thời gian xử lý grading đã giảm xuống còn 65 ngày cho tier Standard, xuống từ mức đỉnh 120 ngày. Điều này dự kiến sẽ tăng nguồn cung PSA 9/10 ra thị trường trong Q2 2025, có thể gây áp lực giảm nhẹ lên premium của graded cards.'},
-    {s:'Pokebeach',h:"Blaine's Charizard reprint rumor Q2 — unconfirmed",t:'18m',body:"Một nguồn tin ẩn danh trên Pokebeach tiết lộ Blaine's Charizard có thể xuất hiện trong set Anniversary sắp tới. Tin chưa được xác nhận nhưng đã khiến giá tăng 44% trong 24h. Cộng đồng đang chia rẽ giữa tin tức hợp lệ và FOMO pump."},
-    {s:'eBay Data',h:'Pokémon TCG GMV +18% this week vs prior week',t:'34m',body:'Dữ liệu eBay Terapeak cho thấy tổng GMV Pokémon TCG tăng 18% so với tuần trước. Driven by: Vintage WOTC +31%, Modern Alt Art +12%, Sealed Product +8%. Charizard Base Set ghi nhận 3 giao dịch $8,000+ trong 48h.'},
-    {s:'Heritage Auctions',h:'Pikachu Illustrator PSA 10 estimated $6.2M for March lot',t:'1h',body:'Heritage Auctions đã confirm Pikachu Illustrator PSA 10 (duy nhất tồn tại) sẽ được đấu giá tháng 3/2025, ước tính từ $5.8-6.5M. Đây sẽ là kỷ lục mới cho trading card nói chung, vượt qua mức $5.275M trước đó.'},
-    {s:'Reddit r/PokemonTCG',h:'Prismatic Evolutions supply update — stores restocking',t:'2h',body:'Nhiều cửa hàng Target và Walmart báo cáo đã nhận được thêm Prismatic Evolutions ETB. Tuy nhiên, supply vẫn còn khan hiếm ở khu vực East Coast. Giá eBay tuy hạ nhẹ nhưng vẫn còn premium 40% so với MSRP.'},
-    {s:'Pokebeach',h:'New Japanese set reveal scheduled March 15',t:'3h',body:'The Pokémon Company Japan xác nhận event reveal set mới vào ngày 15/3. Dự kiến sẽ có card Arceus ex và Giratina ex SA. Cộng đồng đang speculate về việc bộ này có ảnh hưởng đến giá EN version hay không.'},
-  ],
-  '🇯🇵 JP': [
-    {s:'ポケモン公式',h:'新拡張パック「ステラミラクル」追加カード公開',t:'5m',body:'ポケモンカードゲーム公式から新弾「ステラミラクル」の追加収録カードが公開されました。ピジョットex SAが予想より高いレアリティで収録されることが判明し、予約価格が急騰しています。予約サイトでは既に完売状態の店舗も出ています。'},
-    {s:'Mercari JP',h:'旧裏面コイキング ¥3,200,000で落札',t:'22m',body:'Mercari JPにて旧裏面コイキング PSA 10が¥3,200,000で落札されました。前回の取引価格から約15%の上昇。旧裏面カードの需要は2025年に入り継続して上昇傾向にあり、特にPSAグレード品の人気が顕著です。'},
-    {s:'Yahoo Auctions',h:'ピカチュウ イラストレーター PSA10 新規出品',t:'1h',body:'Yahoo!オークションにピカチュウ イラストレーター PSA 10が出品されました。現在の入札額は¥580,000,000（約$388万）。オークション終了は3日後。コレクター間での注目度は非常に高く、入札ペースが過去最速水準。'},
-    {s:'メルカリ相場',h:'ルカリオex SA: ¥38,000→¥52,000 急騰',t:'1h',body:'大会結果を受け、ルカリオex SAの相場がメルカリで急騰。先週の¥38,000から本日¥52,000台まで上昇しました。東京地区の大会で優勝デッキに4枚採用されたことがトリガーとなっています。'},
-    {s:'ポケモンカード投資グループ',h:'旧裏面相場：2025年上半期まとめ',t:'2h',body:'旧裏面カードの2025年上半期相場分析によると、全体的に前年比+35%の上昇。特にコイキング、ピカチュウ イラストレーター、ミュウツー（コロコロ）の3枚が牽引役。グレードなしの中程度コンディション品も人気上昇中。'},
-    {s:'Twitter JP TCG',h:'新弾BOXの転売問題 — 小売店が声明',t:'3h',body:'複数の大手カードショップが転売ヤーによるBOX買い占め問題に声明を発表。1人1BOX制限を強化し、会員登録必須の購入システムに移行する店舗が増加。公式もこの問題に対して取り組みを検討中とのこと。'},
-  ],
-  '🇪🇺 EU': [
-    {s:'Cardmarket',h:'151 EU prices 28% above US market average',t:'8m',body:'Cardmarket データによると、151 setのEU価格は米国市場平均より28%高い水準で推移しています。これはEUへの輸入コスト、VAT（20%）、および相対的に少ないリリース数が原因。特にCharizard ex SAは欧州で€380以上で取引されています。'},
-    {s:'TCGPlayer EU',h:'New VAT rules affect JP card imports from Jan 2025',t:'45m',body:'EU新VAT規制（2025年1月施行）により、日本からの個人輸入カードに対してもVATが適用されるようになりました。€150以上の商品は通関時に20%VAT + 手数料が発生。JP vintage cardの欧州での実質価格が10-15%上昇見込み。'},
-    {s:'Reddit r/pokemoncardscollectors',h:'UK collectors paying 20% premium on WOTC era cards',t:'1h',body:'英国のコレクター調査によると、WOTC時代のカードに対して平均20%のプレミアムを支払っていることが判明。Brexit後の輸入規制と関税が主な原因。Graded cardsの場合は更に高く、PSA 10のCharizard Base Setは英国で£7,200以上。'},
-    {s:'Cardmarket Blog',h:'German market leads EU growth — +45% YTD Pokémon',t:'2h',body:'Cardmarketsの年次レポートによると、ドイツ市場がEUのPokémon TCG成長を牽引し、YTD +45%を記録。フランス(+38%)、オランダ(+32%)が続く。特にヴィンテージカードの需要が高く、Base Set 1st Edition関連が最も人気。'},
-    {s:'PokeGoldfish EU',h:'European Championship impact on card prices',t:'3h',body:'欧州選手権の結果を受け、使用率の高いカードが軒並み価格上昇。Gardevoir ex関連カードが24h以内に15%上昇。トーナメントシーズン特有の価格変動で、大会終了後に調整が入る可能性もあります。'},
-  ],
-  '🇻🇳 VN': [
-    {s:'Group TCG Vietnam',h:'Charizard Base $8,240 — cộng đồng VN phân tích',t:'10m',body:'Cộng đồng TCG Việt Nam đang sôi nổi thảo luận về mức giá $8,240 của Charizard Base Set Shadowless. Theo các nhà đầu tư VN, đây vẫn còn undervalued so với tiềm năng 5 năm tới. Nhiều người đặt mục tiêu $15,000 vào 2027. Nhóm đang tổ chức buổi phân tích thị trường online vào thứ 7 tuần này.'},
-    {s:'Shopee TCG VN',h:'Hàng JP qua Mercari tăng 15% phí vận chuyển',t:'35m',body:'Các shop nhập hàng JP qua Mercari thông báo tăng phí vận chuyển 15% do Nhật tăng phí bưu điện từ tháng 3. Cụ thể: thẻ đơn tăng 200-400 JPY/thẻ, BOX tăng 800-1500 JPY. Khách hàng nên gom đơn để giảm tác động chi phí.'},
-    {s:'Discord TCG VN',h:'Hướng dẫn submit PSA từ Việt Nam — cập nhật 2025',t:'1h',body:'Thread hướng dẫn submit PSA từ VN được cập nhật: Hiện tại có 3 middleman uy tín nhận gửi hàng. Chi phí khoảng $25-35/thẻ cho tier Standard (65 ngày). Lưu ý: cần mua bảo hiểm tối thiểu $500 cho thẻ vintage. Thời gian về VN sau khi có kết quả thêm 7-14 ngày.'},
-    {s:'Facebook TCG VN',h:'Trading event Hà Nội tháng 3 — 200 người tham dự',t:'2h',body:'Sự kiện trading card lớn nhất Hà Nội năm 2025 dự kiến diễn ra ngày 22-23/3 tại GEM Center. Đã có 200 người đăng ký, bao gồm dealers từ TPHCM, Đà Nẵng. Có khu vực grading on-site, exhibition vintage cards, và mini tournament với prize pool 10 triệu VNĐ.'},
-    {s:'YouTube TCG VN',h:'Review set mới: Stellar Miracle — nên mua không?',t:'3h',body:'Video review mới nhất của kênh TCG Vietnam đánh giá set Stellar Miracle: Pull rate thực tế thấp hơn lý thuyết khoảng 20%. Pigeot ex SA (~¥19,000) là chính. Khuyến nghị: chỉ mua nếu bạn collect, không nên sealed investment vì supply JP rất cao.'},
-    {s:'Zalo TCG VN',h:'Cảnh báo: Thẻ fake grade đang lưu hành',t:'4h',body:'Cộng đồng phát hiện batch thẻ PSA fake đang được bán ở một số hội nhóm. Dấu hiệu nhận biết: logo PSA không sắc nét, số cert không khớp trên website PSA, hologram mờ. Khuyến cáo luôn verify số cert tại psacard.com trước khi mua graded cards.'},
-  ],
-};
-
-// News detail modal
-function showNewsModal(region, idx) {
-  const items = REG_NEWS[region];
-  if (!items || !items[idx]) return;
-  const n = items[idx];
-  let modal = document.getElementById('news-modal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'news-modal';
-    modal.style.cssText = 'position:fixed;inset:0;z-index:9800;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);';
-    modal.innerHTML = `<div style="width:580px;max-height:80vh;background:var(--bg2);border:1px solid var(--b2);box-shadow:0 24px 80px rgba(0,0,0,.9);display:flex;flex-direction:column;overflow:hidden;">
-      <div style="padding:13px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;flex-shrink:0;">
-        <div id="nm-region" style="font-size:12px;padding:1px 7px;background:var(--ga);color:var(--gold);border:1px solid rgba(232,197,66,.25);font-weight:700;"></div>
-        <div id="nm-src" style="font-size:12px;color:var(--gold);font-weight:700;"></div>
-        <div id="nm-time" style="font-size:11px;color:var(--t3);margin-left:4px;"></div>
-        <div onclick="document.getElementById('news-modal').remove()" style="margin-left:auto;cursor:pointer;font-size:20px;color:var(--t3);width:30px;height:30px;display:flex;align-items:center;justify-content:center;">✕</div>
+  document.getElementById('al').innerHTML = [
+    ...anomalies.map(c => {
+      const sigma = (Math.abs(c.c)/3.5).toFixed(1);
+      const icon  = c.c>15?'🚨':c.c>8?'⚡':c.c>0?'📈':'📉';
+      return {
+        i: icon, card: c.n,
+        t: `${c.n.split(' ').slice(0,3).join(' ')} — ${sigma}σ`,
+        m: `<span style="color:${c.c>=0?'var(--grn)':'var(--red)'}">${c.c>=0?'+':''}${c.c.toFixed(1)}%</span> · $${c.p.toLocaleString()} · ${c._source==='tcgplayer'?'<span style="color:var(--grn)">TCGPlayer ✓</span>':'<span style="color:var(--t3)">Simulated</span>'}`,
+      };
+    }),
+    ...staticAlerts,
+  ].map(a => `
+    <div class="alrt" style="cursor:${a.card||a.url?'pointer':'default'};transition:background .15s"
+         onmouseover="this.style.background='rgba(255,255,255,.025)'" onmouseout="this.style.background=''"
+         onclick="${a.card?`openCardModal('${a.card.replace(/'/g,"\\'")}','en')`:a.url?`window.open('${a.url}','_blank')`:'void(0)'}">
+      <div class="alrti">${a.i}</div>
+      <div style="flex:1;min-width:0">
+        <div class="alrtt">${a.t}</div>
+        <div class="alrtm">${a.m}</div>
+        ${a.card ? '<div style="font-size:10px;color:var(--blu);margin-top:2px">↗ Mở chi tiết card</div>' : ''}
+        ${a.url && !a.card ? '<div style="font-size:10px;color:var(--blu);margin-top:2px">↗ Xem nguồn</div>' : ''}
       </div>
-      <div style="overflow-y:auto;padding:18px 16px;">
-        <div id="nm-h" style="font-size:18px;font-weight:800;line-height:1.4;margin-bottom:14px;"></div>
-        <div id="nm-body" style="font-size:14px;color:var(--t2);line-height:1.85;border-left:2px solid rgba(232,197,66,.3);padding-left:12px;"></div>
-      </div>
-    </div>`;
-    modal.onclick = e => { if (e.target === modal) modal.remove(); };
-    document.body.appendChild(modal);
-  }
-  document.getElementById('nm-region').textContent = region;
-  document.getElementById('nm-src').textContent = n.s;
-  document.getElementById('nm-time').textContent = n.t + ' ago';
-  document.getElementById('nm-h').textContent = n.h;
-  document.getElementById('nm-body').textContent = n.body;
-  modal.style.display = 'flex';
-}
-
-function renderRegionalNews() {
-  document.getElementById('reg-row').innerHTML = Object.entries(REG_NEWS).map(([flag, items]) =>
-    `<div class="reg-col">
-      <div class="ph">${flag}</div>
-      ${items.map((n, i) => `<div class="rni" onclick="showNewsModal('${flag.replace(/'/g,"\\'")}',${i})" style="cursor:pointer;" title="Click để đọc chi tiết">
-        <div class="rni-s">${n.s} <span style="color:var(--t3);font-weight:400">· ${n.t} ago</span></div>
-        <div class="rni-h">${n.h}</div>
-        <div style="font-size:10px;color:var(--t3);margin-top:3px;display:flex;align-items:center;gap:3px;"><span style="color:var(--blu)">▸ Đọc thêm</span></div>
-      </div>`).join('')}
-    </div>`
-  ).join('');
-}
-renderRegionalNews();
-
-// ═════════════════════════════════
-// RIGHT PANEL
-// ═════════════════════════════════
-function renderAnomalyAlerts(){
-  document.getElementById('al').innerHTML=[
-    {i:'🚨',t:"Blaine's Charizard — Z-score 3.8σ",m:'Volume <span>+840%</span> vs 30d baseline'},
-    {i:'⚡',t:'Tropical Wind — Z-score 2.9σ',m:'Giá vượt <span>$1,800</span> ngưỡng kháng cự'},
-    {i:'📦',t:'Prismatic Evol. Box — Sealed drop',m:'eBay avg giảm <span>-4.7%</span> trong 48h'},
-    {i:'🔍',t:'PSA Data Gap — 2h+',m:'Pop report <span>không cập nhật</span>'},
-  ].map(a=>`<div class="alrt"><div class="alrti">${a.i}</div><div><div class="alrtt">${a.t}</div><div class="alrtm">${a.m}</div></div></div>`).join('');
+    </div>`).join('');
 }
 renderAnomalyAlerts();
 
-function renderSocialMentions(){
-  const top5=EN.slice(0,5).map(c=>({n:c.n.split(' ').slice(0,2).join(' '),p:Math.round(50+c.c*2.5),col:'var(--red)'}));
-  document.getElementById('sm').innerHTML=top5.map(m=>`<div class="smrow" style="display:flex;align-items:center;padding:5px 12px;border-bottom:1px solid rgba(28,45,62,.4);">
-    <div class="smn" style="font-size:var(--fsm);font-weight:700;min-width:110px;">${m.n}</div>
-    <div class="smbar" style="flex:1;margin:0 8px;height:3px;background:var(--b1);overflow:hidden;"><div class="smf" style="height:100%;width:${Math.min(100,m.p)}%;background:var(--red);opacity:.75;"></div></div>
-    <div class="smc" style="font-size:var(--fss);color:var(--t3);min-width:28px;text-align:right;font-weight:700;">${Math.min(100,m.p)}k</div>
-  </div>`).join('');
+// ── SOCIAL MENTIONS — click mở Reddit search ──────────────────
+function renderSocialMentions() {
+  const top5 = EN.slice(0,5).map(c=>({
+    n: c.n.split(' ').slice(0,2).join(' '),
+    full: c.n,
+    p: Math.max(1, Math.round(50+c.c*2.5)),
+    url: `https://www.reddit.com/r/PokemonTCG/search?q=${encodeURIComponent(c.n)}&sort=hot`,
+    card: c.n,
+  }));
+  document.getElementById('sm').innerHTML = top5.map(m =>
+    `<div style="display:flex;align-items:center;padding:5px 12px;border-bottom:1px solid rgba(28,45,62,.4);cursor:pointer;transition:background .15s"
+         onmouseover="this.style.background='rgba(255,255,255,.025)'" onmouseout="this.style.background=''"
+         onclick="openCardModal('${m.card.replace(/'/g,"\\'")}','en')" title="Click → Chi tiết card">
+      <div style="font-size:var(--fsm);font-weight:700;min-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.n}</div>
+      <div style="flex:1;margin:0 8px;height:3px;background:var(--b1);overflow:hidden">
+        <div style="height:100%;width:${Math.min(100,m.p)}%;background:var(--red);opacity:.75"></div>
+      </div>
+      <div style="font-size:var(--fss);color:var(--t3);min-width:28px;text-align:right;font-weight:700">${Math.min(100,m.p)}k</div>
+      <a href="${m.url}" target="_blank" onclick="event.stopPropagation()"
+         style="font-size:10px;color:var(--blu);margin-left:6px;text-decoration:none" title="Reddit search">↗</a>
+    </div>`).join('');
 }
 renderSocialMentions();
 
-function renderGradedTable(){
-  const rows=[
-    {c:'Charizard Base',g:'PSA 10',p:EN[2].p,d:EN[2].c},
-    {c:'Charizard Base',g:'PSA 9',p:EN[0].p,d:EN[0].c},
-    {c:"Blaine's Charz",g:'PSA 10',p:EN[8].p*4,d:EN[8].c},
-    {c:'Lugia Neo Gen',g:'PSA 9',p:EN[9].p*2.5,d:EN[9].c},
-  ];
-  document.getElementById('gb').innerHTML=rows.map(r=>`<tr>
-    <td>${r.c}</td><td class="grd">${r.g}</td>
-    <td>$${Math.round(r.p).toLocaleString()}</td>
-    <td class="${r.d>=0?'up':'dn'}">${r.d>=0?'+':''}${r.d.toFixed(1)}%</td>
-  </tr>`).join('');
+// ── GRADED TABLE — live từ EN data + click card modal ───────────
+function renderGradedTable() {
+  const rows = [
+    { c: EN.find(c=>c.n==='Charizard 1st Ed PSA10'), g:'PSA 10', mul:1.0 },
+    { c: EN.find(c=>c.n==='Charizard Base Shadowless'), g:'PSA 9', mul:0.22 },
+    { c: EN.find(c=>c.n==="Blaine's Charizard Holo"), g:'PSA 10', mul:4.5 },
+    { c: EN.find(c=>c.n==='Lugia Neo Genesis Holo'), g:'PSA 9', mul:2.5 },
+    { c: EN.find(c=>c.n==='Rayquaza Gold Star'), g:'PSA 10', mul:5.2 },
+    { c: EN.find(c=>c.n==='Espeon Gold Star'), g:'PSA 10', mul:5.0 },
+  ].filter(r=>r.c);
+  document.getElementById('gb').innerHTML = rows.map(r =>
+    `<tr style="cursor:pointer;transition:background .15s"
+         onmouseover="this.style.background='rgba(255,255,255,.04)'" onmouseout="this.style.background=''"
+         onclick="openCardModal('${r.c.n.replace(/'/g,"\\'")}','en')" title="Click → Chi tiết">
+      <td>${r.c.n.split(' ').slice(0,3).join(' ')}</td>
+      <td class="grd">${r.g}</td>
+      <td>$${Math.round(r.c.p*r.mul).toLocaleString()} ${r.c._source==='tcgplayer'?'<span style="font-size:9px;color:var(--grn)">●</span>':''}</td>
+      <td class="${r.c.c>=0?'up':'dn'}">${r.c.c>=0?'+':''}${r.c.c.toFixed(1)}%</td>
+      <td style="font-size:10px;color:var(--blu)">↗</td>
+    </tr>`).join('');
 }
 renderGradedTable();
 
-document.getElementById('sent').innerHTML=[{v:52,l:'BULLS',c:'var(--grn)',a:'var(--gna)'},{v:18,l:'NEUTRAL',c:'var(--t2)',a:'var(--b1)'},{v:30,l:'BEARS',c:'var(--red)',a:'var(--ra)'}].map(s=>`<div style="flex:${s.v};background:${s.a};border:1px solid ${s.c}22;padding:8px;text-align:center;"><div style="font-size:18px;font-weight:800;color:${s.c}">${s.v}%</div><div style="font-size:10px;color:var(--t3);font-weight:700">${s.l}</div></div>`).join('');
-
-// ═════════════════════════════════
 // YT CREATORS
 // ═════════════════════════════════
 (()=>{
